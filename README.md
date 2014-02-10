@@ -1,4 +1,4 @@
-Cyrene-ORM
+PHP Persistence API
 ======
 
-Cyrene-ORM is an ORM-Framework for PHP that implements the ActiveRecord pattern.
+The PHP Persistence API (PPA) is an Interface for PHP-Applications to access Object-Relational data, that implements the ActiveRecord pattern.
