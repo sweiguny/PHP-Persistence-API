@@ -17,9 +17,9 @@ class Entity {
     public function __construct() {
         $this->_classname = get_class($this);
         
-        $this->extractMetaData();
-        
-        var_dump($this);
+//        $this->extractMetaData();
+//        
+//        var_dump($this);
     }
 
     private function extractMetaData() {

@@ -19,11 +19,15 @@ class Right extends \PPA\Entity {
     /**
      * @column(name="name")
      */
-    private $name;
+    private $desc;
     
     public function __construct() {
         parent::__construct();
 //        echo get_class($this) . "<br>";
+    }
+    
+    public function deny() {
+        echo "perm denied!";
     }
 
 }
