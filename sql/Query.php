@@ -3,8 +3,10 @@
 namespace PPA\sql;
 
 use PDO;
+use PDOStatement;
 use PPA\Bootstrap;
-use ReflectionClass;
+use PPA\EntityAnalyzer;
+use PPA\EntityFactory;
 
 /**
  * @copyright copyright (c) by Simon Weiguny <s.weiguny@gmail.com>
@@ -29,9 +31,11 @@ class Query {
     }
 
     /**
+     * Depending on the $full_qualified_classname parameter, a list of objects
+     * is returned.
      * 
      * @param string $full_qualified_classname The full qualified classname.
-     * @return array
+     * @return array A list of objects.
      */
     public function getResultList($full_qualified_classname = null) {
         $statement = $this->_pdo->query($this->_query);
@@ -54,46 +58,33 @@ class Query {
         }
     }
     
+    /**
+     * Returns a list of objects. The kind of object depends on the $full_qualified_classname
+     * parameter.
+     * 
+     * @param PDOStatement $statement
+     * @param string $full_qualified_classname
+     * @return array The result list.
+     */
     private function getResultListInternal($statement, $full_qualified_classname = null) {
         if ($full_qualified_classname == null) {
             return $statement->fetchAll(PDO::FETCH_OBJ);
         } else {
             $resultList = array();
-            $reflection = new ReflectionClass($full_qualified_classname);
-            $properties = $reflection->getProperties();
+            $analyzer   = new EntityAnalyzer($full_qualified_classname);
+            $properties = $analyzer->getPersistenceProperties();
             
-            foreach ($properties as $prop) {
-                $prop->setAccessible(true);
+            foreach ($properties as $property) {
+                $property->setAccessible(true);
             }
             
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-                $$full_qualified_classname = $reflection->newInstanceWithoutConstructor();
+                $$full_qualified_classname = EntityFactory::create($full_qualified_classname);
                 
-                
-                \PPA\prettyDump($properties);
-                foreach ($properties as $prop) {
-                    $doccomment = explode("*", substr($prop->getDocComment(), 3, -2));
-                    $propName   = $prop->getName();
-//                    \PPA\prettyDump($doccomment);
+                foreach ($row as $key => $value) {
                     
-                    foreach ($doccomment as $doc) {
-                        $pattern = "#@column.*#i";
-                        preg_match($pattern, $doc, $matches);
-                        
-                        if (!empty($matches)) {
-//                            \PPA\prettyDump($matches);
-                            $pattern = "#\(.*name[\s]*=[\s]*[\"\'](.*)[\"\']\)#i";
-                            preg_match($pattern, $matches[0], $matches);
-//                            \PPA\prettyDump($matches);
-                            if (isset($matches[1])) {
-                                $propName = $matches[1];
-                            }
-                        }
-                    }
-                    
-                    
-                    if (isset($row[$propName])) {
-                        $prop->setValue($$full_qualified_classname, $row[$propName]);
+                    if (isset($properties[$key])) {
+                        $properties[$key]->setValue($$full_qualified_classname, $value);
                     }
                 }
                 

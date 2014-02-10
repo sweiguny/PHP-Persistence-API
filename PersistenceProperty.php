@@ -2,18 +2,26 @@
 
 namespace PPA;
 
+use ReflectionProperty;
+
 /**
  * @copyright copyright (c) by Simon Weiguny <s.weiguny@gmail.com>
  * @author Simon Weiguny - 10.02.2014
  */
-class PersistenceProperty {
+class PersistenceProperty extends ReflectionProperty {
 
-    public $name;
-    public $column;
+    protected $column;
 
+    public function __construct($class, $name) {
+        parent::__construct($class, $name);
+    }
 
-    public function __construct() {
-        
+    public function getColumn() {
+        return $this->column;
+    }
+    
+    public function setColumn($column) {
+        $this->column = $column;
     }
 
 }
