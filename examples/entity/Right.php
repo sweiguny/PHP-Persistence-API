@@ -6,9 +6,9 @@ namespace PPA\examples\entity;
  * @copyright copyright (c) by Simon Weiguny <s.weiguny@gmail.com>
  * @author Simon Weiguny - 10.02.2014
  * 
- * @table = "right"
+ * @table = 'right'
  */
-class Right {
+class Right extends \PPA\Entity {
     
     /**
      * @id
@@ -22,7 +22,8 @@ class Right {
     private $name;
     
     public function __construct() {
-        echo get_class($this) . "<br>";
+        parent::__construct();
+//        echo get_class($this) . "<br>";
     }
 
 }

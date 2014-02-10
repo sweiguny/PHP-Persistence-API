@@ -1,13 +1,9 @@
 <?php
 
-use PPA\examples\entity\Right;
+require_once './Bootstrap.php';
 
-require_once './examples/entity/Right.php';
+\PPA\Bootstrap::boot();
 
-
-new Right();
-
-
-
+new \PPA\examples\entity\Right();
 
 ?>
