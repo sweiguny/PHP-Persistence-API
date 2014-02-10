@@ -2,19 +2,23 @@
 
 namespace PPA;
 
+use PDO;
+
 /**
  * @copyright copyright (c) by Simon Weiguny <s.weiguny@gmail.com>
  * @author Simon Weiguny - 10.02.2014
  */
 class Bootstrap {
 
+    private static $pdo;
 
-    private function __construct() { }
-    private function __clone() { }
-
-    public static function boot() {
+    public static function boot($dsn, $username, $password) {
         require_once './Util.php';;
+        
         spl_autoload_register(array('self', 'classload'));
+        
+        self::$pdo = new PDO($dsn, $username, $password);
+        self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
     private static function classload($class_name) {
@@ -41,7 +45,13 @@ class Bootstrap {
         }
     }
 
-    
+    public static function getPDO() {
+        return self::$pdo;
+    }
+
+
+    private function __construct() { }
+    private function __clone() { }
 
 }
 

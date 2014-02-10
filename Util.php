@@ -7,10 +7,6 @@ namespace PPA;
  * @author Simon Weiguny - 10.02.2014
  */
 class Util {
-
-    public function __construct() {
-        
-    }
     
     public static function getNamespaces($class_name) {
         if (self::hasNamespace($class_name)) {

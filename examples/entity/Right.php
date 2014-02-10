@@ -11,8 +11,8 @@ namespace PPA\examples\entity;
 class Right extends \PPA\Entity {
     
     /**
-     * @id
-     * @column(name="id")
+     * @id = generatedValue
+     * @column(name = "id")
      */
     private $id;
     
