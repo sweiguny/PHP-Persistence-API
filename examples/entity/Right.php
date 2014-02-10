@@ -12,7 +12,7 @@ class Right extends \PPA\Entity {
     
     /**
      * @id = generatedValue
-     * @column(name = "id")
+     * @column(name="id")
      */
     private $id;
     

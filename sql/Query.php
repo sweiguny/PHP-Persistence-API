@@ -54,7 +54,7 @@ class Query {
         }
     }
     
-    private function getResultListInternal($statement, $full_qualified_classname) {
+    private function getResultListInternal($statement, $full_qualified_classname = null) {
         if ($full_qualified_classname == null) {
             return $statement->fetchAll(PDO::FETCH_OBJ);
         } else {
