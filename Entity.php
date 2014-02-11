@@ -9,32 +9,12 @@ namespace PPA;
 class Entity {
 
     
-//    private $_id;
-//    private $_table;
-//    private $_classname;
-//    private $_properties;
-//    private $_analyzer;
-//
-//    public function __construct() {
-//        $this->_classname = get_class($this);
-//        
-//        $this->_analyzer = new EntityAnalyzer($this->_classname);
-//        
-//        $this->_properties = $this->_analyzer->getPersistenceProperties();
-////        $this->extractMetaData();
-////        
-////        var_dump($this);
-//    }
-//
-//    private function extractMetaData() {
-//        $this->extractTableName();
-////        $this->extractProperties();
-//    }
-//    
-//    public function getProperties() {
-//        return $this->_properties;
-//    }
 
+//    public function __get($name) {
+//        if (!is_object($name) && isRelation($name)) {
+//            new sql\Query("select * from <tablename> where <idcol> = <val>");
+//        }
+//    }
 }
 
 ?>

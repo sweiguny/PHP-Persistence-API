@@ -8,7 +8,7 @@ use PPA\Entity;
  * @copyright copyright (c) by Simon Weiguny <s.weiguny@gmail.com>
  * @author Simon Weiguny - 10.02.2014
  * 
- * @table = "role"
+ 
  */
 class Role extends Entity {
 

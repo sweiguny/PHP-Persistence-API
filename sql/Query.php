@@ -7,6 +7,7 @@ use PDOStatement;
 use PPA\Bootstrap;
 use PPA\EntityAnalyzer;
 use PPA\EntityFactory;
+use PPA\EntityMap;
 
 /**
  * @copyright copyright (c) by Simon Weiguny <s.weiguny@gmail.com>
@@ -75,8 +76,7 @@ class Query {
             return $statement->fetchAll(PDO::FETCH_OBJ);
         } else {
             $resultList = array();
-            $analyzer   = new EntityAnalyzer($full_qualified_classname);
-            $properties = $analyzer->getPersistenceProperties();
+            $properties = EntityMap::getInstance()->getPropertiesByColumn($full_qualified_classname);
 //            \PPA\prettyDump($properties);
             
             // Fetch the row of the database as an associative array.
@@ -96,9 +96,19 @@ class Query {
                             $relation = $properties[$key]->getRelation();
                             if ($relation->isOneToOne()) {
                                 if ($relation->isLazy()) {
-
+throw new \Exception();
                                 } else {
                                     // must know id of $relation->mappedby
+//                                    var_dump($relation);
+                                    $id = EntityMap::getInstance()->getPrimaryProperty($relation->getMappedBy());
+                                    $table = EntityMap::getInstance()->getTableName($relation->getMappedBy());
+//                                    \PPA\prettyDump($id);
+//                                    \PPA\prettyDump($table);
+                                    
+                                    $query = "SELECT * FROM `{$table}` WHERE {$id->getColumn()} = {$value}";
+                                    $q = new Query($query);
+                                    
+                                    $properties[$key]->setValue($$full_qualified_classname, $q->getSingeResult($relation->getMappedBy()));
                                 }
                             }
                         } else {

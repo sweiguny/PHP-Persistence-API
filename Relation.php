@@ -21,7 +21,11 @@ class Relation {
         
         $this->type     = $type;
         $this->fetch    = $fetch;
-        $this->mappedBy = $mappedBy;
+        $this->mappedBy = str_replace("_", "\\", $mappedBy);
+    }
+
+    public function getMappedBy() {
+        return $this->mappedBy;
     }
 
     public function isLazy() {

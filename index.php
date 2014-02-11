@@ -20,6 +20,7 @@ $query = new PPA\sql\Query("select * from `user`");
 $res = $query->getResultList("\\PPA\\examples\\entity\\User");
 //
 \PPA\prettyDump($res);
+//\PPA\prettyDump(PPA\EntityMap::getInstance());
 //$res[0]->deny();
 
 //$x = new PPA\examples\entity\User();

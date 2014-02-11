@@ -2,13 +2,15 @@
 
 namespace PPA\examples\entity;
 
+use PPA\Entity;
+
 /**
  * @copyright copyright (c) by Simon Weiguny <s.weiguny@gmail.com>
  * @author Simon Weiguny - 10.02.2014
  * 
  * @table(name="user")
  */
-class User extends \PPA\Entity {
+class User extends Entity {
 
     /**
      * @id
@@ -23,7 +25,7 @@ class User extends \PPA\Entity {
     
     /**
      * @Column(name="role_id");
-     * @oneToOne(fetch="lazy", mappedby = "Role")
+     * @oneToOne(fetch="eager", mappedBy = "_PPA_examples_entity_Role")
      */
     private $role;
     

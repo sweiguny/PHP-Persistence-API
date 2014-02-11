@@ -32,6 +32,8 @@ class EntityAnalyzer {
      */
     private $reflector;
     
+    private $primaryProperty;
+    
     /**
      * All possible annotations and their available parameters.
      * 
@@ -40,6 +42,7 @@ class EntityAnalyzer {
     private $propertyAnnotations = array(
         "@id"       => array(),
         "@column"   => array("name"),
+        "@table"    => array("name"),
         "@oneToOne" => array("mappedBy", "fetch")
     );
 
@@ -58,15 +61,29 @@ class EntityAnalyzer {
     }
     
     public function getPersistenceClassAttributes() {
-        
+        $annotations = $this->extractAnnotations($this->reflector->getDocComment());
+//        prettyDump($annotations);
+        if (isset($annotations["@table"]) && isset($annotations["@table"]["name"])) {
+            return $annotations["@table"]["name"];
+        } else {
+            return strtolower($this->reflector->getShortName());
+        }
     }
 
+    public function getPersistencePropertiesByName() {
+        return $this->getPersistenceProperties("byName");
+    }
+    
+    public function getPersistencePropertiesByColumn() {
+        return $this->getPersistenceProperties("byColumn");
+    }
+    
     /**
      * Returns a list of properties of an entity.
      * 
      * @return array A List of \PPA\PersistenceProperty.
      */
-    public function getPersistenceProperties() {
+    private function getPersistenceProperties($by) {
         $reflectionProperties  = $this->reflector->getProperties();
         $persistenceProperties = array();
         
@@ -81,6 +98,7 @@ class EntityAnalyzer {
                 
                 if (isset($annotations["@id"])) {
                     $pprop->setAsId();
+                    $this->primaryProperty = $pprop;
                 }
                 
                 if (isset($annotations["@column"]["name"])) {
@@ -93,13 +111,25 @@ class EntityAnalyzer {
                     $pprop->setRelation(new Relation("oneToOne", $annotations["@oneToOne"]["fetch"], $annotations["@oneToOne"]["mappedBy"]));
                 }
                 
-                $persistenceProperties[$pprop->getColumn()] = $pprop;
+                if ($by == "byName") {
+                    $persistenceProperties[$pprop->getName()] = $pprop;
+                } else {
+                    $persistenceProperties[$pprop->getColumn()] = $pprop;
+                }
             }
         }
         
         return $persistenceProperties;
     }
     
+    /**
+     * @return \PPA\PersistenceProperty
+     */
+    public function getPrimaryPersistenceProperty() {
+        return $this->primaryProperty;
+    }
+
+
     /**
      * @param string $docComment The documentation of a property.
      * @return array The extracted Annotations.
@@ -140,7 +170,10 @@ class EntityAnalyzer {
                             // This requires a case-insensitive search.
                             $key = array_search(strtolower($matches[1]), array_map('strtolower', $propertyAnnoValue));
                             if ($key !== false) {
-                                $extracted[$propertyAnnoKey][$propertyAnnoValue[$key]] = strtolower($matches[2]);
+                                if ($propertyAnnoValue[$key] != "mappedBy") {
+                                    $matches[2] = strtolower($matches[2]);
+                                }
+                                $extracted[$propertyAnnoKey][$propertyAnnoValue[$key]] = $matches[2];
                             } else {
                                 trigger_error("Parameter '{$matches[1]}' of Annotation '{$propertyAnnoKey}' is not provided.", E_USER_NOTICE);
                             }
