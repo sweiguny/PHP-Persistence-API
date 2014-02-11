@@ -17,12 +17,12 @@ class User extends \PPA\Entity {
     private $id;
     
     /**
-     * @column(name="username")
+     * @Column(name="username")
      */
     private $username;
     
     /**
-     * @column(name="role_id");
+     * @Column(name="role_id");
      * @oneToOne(fetch="lazy", mappedby = "Role")
      */
     private $role;

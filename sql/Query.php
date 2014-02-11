@@ -77,17 +77,34 @@ class Query {
             $resultList = array();
             $analyzer   = new EntityAnalyzer($full_qualified_classname);
             $properties = $analyzer->getPersistenceProperties();
+//            \PPA\prettyDump($properties);
             
             // Fetch the row of the database as an associative array.
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
                 
                 // Instanciate an object of the given classname.
                 $$full_qualified_classname = EntityFactory::create($full_qualified_classname);
+//                echo "here";
+                
+//                echo "here";
                 
                 // Iterate through the columns and set the properties of the object.
                 foreach ($row as $key => $value) {
                     if (isset($properties[$key])) {
-                        $properties[$key]->setValue($$full_qualified_classname, $value);
+                        
+                        if ($properties[$key]->hasRelation()) {
+                            $relation = $properties[$key]->getRelation();
+                            if ($relation->isOneToOne()) {
+                                if ($relation->isLazy()) {
+
+                                } else {
+                                    // must know id of $relation->mappedby
+                                }
+                            }
+                        } else {
+                            // Standard
+                            $properties[$key]->setValue($$full_qualified_classname, $value);
+                        }
                     }
                 }
                 

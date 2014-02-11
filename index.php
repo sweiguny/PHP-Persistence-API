@@ -22,7 +22,8 @@ $res = $query->getResultList("\\PPA\\examples\\entity\\User");
 \PPA\prettyDump($res);
 //$res[0]->deny();
 
-
+//$x = new PPA\examples\entity\User();
+//\PPA\prettyDump($x->getProperties());
 
 
 $endTime = microtime(true);

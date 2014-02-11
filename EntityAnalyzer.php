@@ -38,7 +38,8 @@ class EntityAnalyzer {
      * @var array
      */
     private $propertyAnnotations = array(
-        "@column" => array("name"),
+        "@id"       => array(),
+        "@column"   => array("name"),
         "@oneToOne" => array("mappedBy", "fetch")
     );
 
@@ -72,16 +73,24 @@ class EntityAnalyzer {
         foreach ($reflectionProperties as $reflectionProperty) {
             
             $annotations = $this->extractAnnotations($reflectionProperty->getDocComment());
-            prettyDump($annotations);
+//            prettyDump($annotations);
             
             if (isset($annotations["@column"])) {
                 $pprop = new PersistenceProperty($this->className, $reflectionProperty->getName());
                 $pprop->setAccessible(true);
                 
+                if (isset($annotations["@id"])) {
+                    $pprop->setAsId();
+                }
+                
                 if (isset($annotations["@column"]["name"])) {
                     $pprop->setColumn($annotations["@column"]["name"]);
                 } else {
                     $pprop->setColumn($reflectionProperty->getName());
+                }
+                
+                if (isset($annotations["@oneToOne"])) {
+                    $pprop->setRelation(new Relation("oneToOne", $annotations["@oneToOne"]["fetch"], $annotations["@oneToOne"]["mappedBy"]));
                 }
                 
                 $persistenceProperties[$pprop->getColumn()] = $pprop;
@@ -109,6 +118,7 @@ class EntityAnalyzer {
                 // Pattern for getting lines, which contains the $propertyParamKey
                 // and to capture everything within the parenthesis.
                 $pattern = "#{$propertyAnnoKey}[\s]*\(?(.+)\)?#i";
+                $matches = array();
 
                 // If key exists, continue extraction.
                 if (preg_match($pattern, $annotation, $matches)) {
@@ -128,8 +138,9 @@ class EntityAnalyzer {
                             
                             // If param key is not in white-list, an error is triggered.
                             // This requires a case-insensitive search.
-                            if (in_array(strtolower($matches[1]), array_map('strtolower', $propertyAnnoValue))) {
-                                $extracted[$propertyAnnoKey][$matches[1]] = $matches[2];
+                            $key = array_search(strtolower($matches[1]), array_map('strtolower', $propertyAnnoValue));
+                            if ($key !== false) {
+                                $extracted[$propertyAnnoKey][$propertyAnnoValue[$key]] = strtolower($matches[2]);
                             } else {
                                 trigger_error("Parameter '{$matches[1]}' of Annotation '{$propertyAnnoKey}' is not provided.", E_USER_NOTICE);
                             }
