@@ -9,15 +9,15 @@ require_once './Bootstrap.php';
 
 //new \PPA\examples\entity\Right();
 
-//$analyuer = new PPA\Analyzer("\\PPA\\examples\\entity\\Right");
-//$analyuer->getPersistenceProperties();
+//$analyzer = new \PPA\EntityAnalyzer("\\PPA\\examples\\entity\\User");
+//\PPA\prettyDump($analyzer->getPersistenceProperties());
 
-$query = new PPA\sql\Query("select * from `right`");
+$query = new PPA\sql\Query("select * from `user`");
 ////$query = new PPA\sql\Query("select count(*) from `right`");
 //
 ////$res = $query->getSingeResult();
 ////$res = $query->getSingeResult("\\PPA\\examples\\entity\\Right");
-$res = $query->getResultList("\\PPA\\examples\\entity\\Right");
+$res = $query->getResultList("\\PPA\\examples\\entity\\User");
 //
 \PPA\prettyDump($res);
 //$res[0]->deny();

@@ -11,6 +11,14 @@ use ReflectionClass;
  */
 class EntityFactory {
 
+    /**
+     * Instantiates an instance of the given classname, but without calling the
+     * constructor. It is necessary, that the class is a subclass of \PPA\Entity.
+     * 
+     * @param string $classname
+     * @return object An instance of the classname.
+     * @throws InvalidArgumentException If the classname is not a subclass of \PPA\Entity.
+     */
     public static function create($classname) {
 
         if (!EntityAnalyzer::isEntity($classname)) {

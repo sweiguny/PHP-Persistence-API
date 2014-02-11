@@ -38,7 +38,7 @@ class Query {
      * @return array A list of objects.
      */
     public function getResultList($full_qualified_classname = null) {
-        $statement = $this->_pdo->query($this->_query);
+        $statement = $this->_pdo->query($this->_query); # TODO: Prepared statement
 
         return $this->getResultListInternal($statement, $full_qualified_classname);
     }
@@ -49,7 +49,7 @@ class Query {
      * @return object|scalar
      */
     public function getSingeResult($full_qualified_classname = null) {
-        $statement = $this->_pdo->query($this->_query);
+        $statement = $this->_pdo->query($this->_query); # TODO: Prepared statement
         
         if ($statement->columnCount() == 1 && $full_qualified_classname == null) {
             return $statement->fetchColumn();
@@ -67,22 +67,25 @@ class Query {
      * @return array The result list.
      */
     private function getResultListInternal($statement, $full_qualified_classname = null) {
+        
+        // Check if a classname to be returned is set.
         if ($full_qualified_classname == null) {
+            
+            // Return a Plain Old Php Object (POPO). ;)
             return $statement->fetchAll(PDO::FETCH_OBJ);
         } else {
             $resultList = array();
             $analyzer   = new EntityAnalyzer($full_qualified_classname);
             $properties = $analyzer->getPersistenceProperties();
             
-            foreach ($properties as $property) {
-                $property->setAccessible(true);
-            }
-            
+            // Fetch the row of the database as an associative array.
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                
+                // Instanciate an object of the given classname.
                 $$full_qualified_classname = EntityFactory::create($full_qualified_classname);
                 
+                // Iterate through the columns and set the properties of the object.
                 foreach ($row as $key => $value) {
-                    
                     if (isset($properties[$key])) {
                         $properties[$key]->setValue($$full_qualified_classname, $value);
                     }

@@ -11,6 +11,10 @@ use ReflectionClass;
  */
 class EntityAnalyzer {
 
+    /**
+     * @param string $classname
+     * @return boolean True, if class is a subclass of \PPA\Entity, false, if not.
+     */
     public static function isEntity($classname) {
         $reflector = new ReflectionClass($classname);
         return $reflector->isSubclassOf("\\PPA\\Entity");
@@ -22,21 +26,25 @@ class EntityAnalyzer {
     private $className;
     
     /**
-     * @var ReflectionClass The reflector.
+     * The reflector.
+     * 
+     * @var ReflectionClass 
      */
     private $reflector;
     
     /**
-     * @var array All possible annotations and their available parameters.
+     * All possible annotations and their available parameters.
+     * 
+     * @var array
      */
     private $propertyAnnotations = array(
-        "@column" => array("name")
+        "@column" => array("name"),
+        "@oneToOne" => array("mappedBy", "fetch")
     );
 
     /**
-     * 
      * @param string $className The classname to be analyzed.
-     * @throws InvalidArgumentException If class is not a subclass of \\PPA\\Entity.
+     * @throws InvalidArgumentException If class is not a subclass of \PPA\Entity.
      */
     public function __construct($className) {
         $this->reflector = new ReflectionClass($className);
@@ -52,18 +60,23 @@ class EntityAnalyzer {
         
     }
 
+    /**
+     * Returns a list of properties of an entity.
+     * 
+     * @return array A List of \PPA\PersistenceProperty.
+     */
     public function getPersistenceProperties() {
-        $reflectionProperties = $this->reflector->getProperties();
-        
-        $properties = array();
+        $reflectionProperties  = $this->reflector->getProperties();
+        $persistenceProperties = array();
         
         foreach ($reflectionProperties as $reflectionProperty) {
-            $reflectionProperty->setAccessible(true);
             
             $annotations = $this->extractAnnotations($reflectionProperty->getDocComment());
+            prettyDump($annotations);
             
             if (isset($annotations["@column"])) {
                 $pprop = new PersistenceProperty($this->className, $reflectionProperty->getName());
+                $pprop->setAccessible(true);
                 
                 if (isset($annotations["@column"]["name"])) {
                     $pprop->setColumn($annotations["@column"]["name"]);
@@ -71,18 +84,18 @@ class EntityAnalyzer {
                     $pprop->setColumn($reflectionProperty->getName());
                 }
                 
-                $properties[$pprop->getColumn()] = $pprop;
+                $persistenceProperties[$pprop->getColumn()] = $pprop;
             }
         }
         
-        return $properties;
+        return $persistenceProperties;
     }
     
     /**
      * @param string $docComment The documentation of a property.
      * @return array The extracted Annotations.
      */
-    public function extractAnnotations($docComment) {
+    private function extractAnnotations($docComment) {
         
         // The extracted annotations to be returned.
         $extracted = array();
@@ -114,7 +127,8 @@ class EntityAnalyzer {
                         if (preg_match($pattern, $parameter, $matches)) {
                             
                             // If param key is not in white-list, an error is triggered.
-                            if (in_array($matches[1], $propertyAnnoValue)) {
+                            // This requires a case-insensitive search.
+                            if (in_array(strtolower($matches[1]), array_map('strtolower', $propertyAnnoValue))) {
                                 $extracted[$propertyAnnoKey][$matches[1]] = $matches[2];
                             } else {
                                 trigger_error("Parameter '{$matches[1]}' of Annotation '{$propertyAnnoKey}' is not provided.", E_USER_NOTICE);
