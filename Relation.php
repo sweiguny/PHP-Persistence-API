@@ -2,13 +2,17 @@
 
 namespace PPA;
 
+use InvalidArgumentException;
+use PPA\exception\FetchException;
+
 class Relation {
 
     private $type;
     private $fetch;
     private $mappedBy;
+    private $joinTable;
     
-    public function __construct($type, $fetch, $mappedBy) {
+    public function __construct($type, $fetch, $mappedBy, array $joinTable = null) {
         if (!in_array($fetch, array("lazy", "eager"))) {
             throw new FetchException("Fetch-type can only be 'lazy' or 'eager'.");
         }
@@ -16,6 +20,14 @@ class Relation {
         $this->type     = $type;
         $this->fetch    = $fetch;
         $this->mappedBy = str_replace("_", "\\", $mappedBy);
+        
+        if ($this->isManyToMany()) {
+            if ($joinTable == null) {
+                throw new InvalidArgumentException('If relation is @manyToMany, \'$joinTable\' must be set.');
+            } else {
+                $this->joinTable = $joinTable;
+            }
+        }
     }
 
     public function getMappedBy() {
@@ -32,6 +44,10 @@ class Relation {
     
     public function isOneToOne() {
         return $this->type == "oneToOne";
+    }
+    
+    public function isManyToMany() {
+        return $this->type == "manyToMany";
     }
 }
 

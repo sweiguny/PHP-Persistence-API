@@ -61,8 +61,10 @@ class EntityMetaDataMap {
         if (!isset($this->data[$classname])) {
             $analyzer = new EntityAnalyzer($classname);
             
+            # TODO: avoid double call of $analyzer->getPersistenceProperties
             $this->data[$classname]["byName"]   = $analyzer->getPersistencePropertiesByName();
             $this->data[$classname]["byColumn"] = $analyzer->getPersistencePropertiesByColumn();
+            
             $this->data[$classname]["primary"]  = $analyzer->getPrimaryPersistenceProperty();
             $this->data[$classname]["table"]    = $analyzer->getPersistenceClassAttributes();
         }

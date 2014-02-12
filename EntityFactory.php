@@ -2,6 +2,7 @@
 
 namespace PPA;
 
+use PPA\exception\NoEntityException;
 use ReflectionClass;
 
 class EntityFactory {

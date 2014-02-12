@@ -73,6 +73,7 @@ class Query {
         } else {
             $resultList = array();
             $properties = EntityMetaDataMap::getInstance()->getPropertiesByColumn($full_qualified_classname);
+//            $properties = EntityMetaDataMap::getInstance()->getPropertiesByName($full_qualified_classname);
 //            \PPA\prettyDump($properties);
             
             // Fetch the row of the database as an associative array.
@@ -80,32 +81,27 @@ class Query {
                 
                 // Instanciate an object of the given classname.
                 $$full_qualified_classname = EntityFactory::create($full_qualified_classname);
-//                echo "here";
-                
-//                echo "here";
                 
                 // Iterate through the columns and set the properties of the object.
-                
-//                $relations = array();
                 foreach ($row as $key => $value) {
+//                    \PPA\prettyDump($row);
+//                    \PPA\prettyDump($properties[$key]);
                     if (isset($properties[$key])) {
                         
                         if ($properties[$key]->hasRelation()) {
                             $relation = $properties[$key]->getRelation();
+                            
+//                            \PPA\prettyDump($relation);
+                            
                             if ($relation->isOneToOne()) {
                                 if ($relation->isLazy()) {
-//                                    \PPA\prettyDump($properties[$key]);
                                     $properties[$key]->setValue($$full_qualified_classname, new MockEntity($relation->getMappedBy(), $value, $$full_qualified_classname, $properties[$key]));
-                                    
-//                                    $$full_qualified_classname->addRelation($properties[$key]->getName(), $relation);
                                 } else {
-                                    // must know id of $relation->mappedby
-//                                    var_dump($relation);
                                     $id    = EntityMetaDataMap::getInstance()->getPrimaryProperty($relation->getMappedBy());
                                     $table = EntityMetaDataMap::getInstance()->getTableName($relation->getMappedBy());
-//                                    \PPA\prettyDump($id);
-//                                    \PPA\prettyDump($table);
                                     
+                                    # TODO: Solve this somehow via prepared statements, to achieve better performance.
+                                    # As this kind of query will called often on eager loading, it may be feasible.
                                     $query = "SELECT * FROM `{$table}` WHERE {$id->getColumn()} = {$value}";
                                     $q = new Query($query);
                                     
@@ -118,6 +114,15 @@ class Query {
                         }
                     }
                 }
+                
+//                foreach ($properties as $property) {
+//                    \PPA\prettyDump($property);
+//                    if ($property->hasRelation()) {
+//                        if ($property->getRelation()->isManyToMany()) {
+//                            echo "here";
+//                        }
+//                    }
+//                }
                 
                 $resultList[] = $$full_qualified_classname;
             }
