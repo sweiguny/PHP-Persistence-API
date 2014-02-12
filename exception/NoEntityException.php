@@ -1,6 +1,6 @@
 <?php
 
-namespace PPA;
+namespace PPA\exception;
 
 class NoEntityException extends PPA_Exception {
     

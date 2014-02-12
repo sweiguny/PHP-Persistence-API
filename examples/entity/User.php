@@ -22,16 +22,19 @@ class User extends Entity {
     
     /**
      * @Column(name="role_id");
-     * @oneToOne(fetch="eager", mappedBy = "_PPA_examples_entity_Role")
+     * @oneToOne(fetch="lazy", mappedBy = "_PPA_examples_entity_Role")
      */
     private $role;
     
-    
+    public function getRole() {
+        return $this->role;
+    }
+
+        
     public function __construct() {
         
     }
     
-
 }
 
 ?>

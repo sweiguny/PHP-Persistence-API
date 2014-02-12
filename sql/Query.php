@@ -2,12 +2,12 @@
 
 namespace PPA\sql;
 
-use Exception;
 use PDO;
 use PDOStatement;
 use PPA\Bootstrap;
 use PPA\EntityFactory;
 use PPA\EntityMetaDataMap;
+use PPA\MockEntity;
 
 class Query {
 
@@ -85,6 +85,8 @@ class Query {
 //                echo "here";
                 
                 // Iterate through the columns and set the properties of the object.
+                
+//                $relations = array();
                 foreach ($row as $key => $value) {
                     if (isset($properties[$key])) {
                         
@@ -92,11 +94,14 @@ class Query {
                             $relation = $properties[$key]->getRelation();
                             if ($relation->isOneToOne()) {
                                 if ($relation->isLazy()) {
-throw new Exception();
+//                                    \PPA\prettyDump($properties[$key]);
+                                    $properties[$key]->setValue($$full_qualified_classname, new MockEntity($relation->getMappedBy(), $value, $$full_qualified_classname, $properties[$key]));
+                                    
+//                                    $$full_qualified_classname->addRelation($properties[$key]->getName(), $relation);
                                 } else {
                                     // must know id of $relation->mappedby
 //                                    var_dump($relation);
-                                    $id = EntityMetaDataMap::getInstance()->getPrimaryProperty($relation->getMappedBy());
+                                    $id    = EntityMetaDataMap::getInstance()->getPrimaryProperty($relation->getMappedBy());
                                     $table = EntityMetaDataMap::getInstance()->getTableName($relation->getMappedBy());
 //                                    \PPA\prettyDump($id);
 //                                    \PPA\prettyDump($table);

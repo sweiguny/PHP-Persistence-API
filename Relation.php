@@ -2,8 +2,6 @@
 
 namespace PPA;
 
-use DomainException;
-
 class Relation {
 
     private $type;
@@ -12,7 +10,7 @@ class Relation {
     
     public function __construct($type, $fetch, $mappedBy) {
         if (!in_array($fetch, array("lazy", "eager"))) {
-            throw new DomainException("Fetch-type can only be 'lazy' or 'eager'.");
+            throw new FetchException("Fetch-type can only be 'lazy' or 'eager'.");
         }
         
         $this->type     = $type;

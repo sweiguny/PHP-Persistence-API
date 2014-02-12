@@ -47,6 +47,11 @@ class EntityAnalyzer {
         $this->className = $className;
     }
     
+    public function getRelationProperty() {
+        return $this->reflector->getProperty("__relations");
+    }
+
+
     public function getPersistenceClassAttributes() {
         $annotations = $this->extractAnnotations($this->reflector->getDocComment());
 //        prettyDump($annotations);
@@ -73,7 +78,8 @@ class EntityAnalyzer {
     private function getPersistenceProperties($by) {
         $reflectionProperties  = $this->reflector->getProperties();
         $persistenceProperties = array();
-        
+//        prettyDump($reflectionProperties);
+//        prettyDump($this->getRelationProperty());
         foreach ($reflectionProperties as $reflectionProperty) {
             
             $annotations = $this->extractAnnotations($reflectionProperty->getDocComment());

@@ -16,10 +16,16 @@ $query = new PPA\sql\Query("select * from `user`");
 ////$query = new PPA\sql\Query("select count(*) from `right`");
 //
 ////$res = $query->getSingeResult();
-////$res = $query->getSingeResult("\\PPA\\examples\\entity\\Right");
-$res = $query->getResultList("\\PPA\\examples\\entity\\User");
+$res = $query->getSingeResult("\\PPA\\examples\\entity\\User");
+
+//$res = $query->getResultList("\\PPA\\examples\\entity\\User");
 //
 \PPA\prettyDump($res);
+\PPA\prettyDump($res->getRole());
+\PPA\prettyDump($res->getRole()->getName());
+\PPA\prettyDump($res);
+\PPA\prettyDump($res->getRole()->getName());
+
 //\PPA\prettyDump(PPA\EntityMap::getInstance());
 //$res[0]->deny();
 
