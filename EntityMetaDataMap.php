@@ -2,11 +2,7 @@
 
 namespace PPA;
 
-/**
- * @copyright copyright (c) by Simon Weiguny <s.weiguny@gmail.com>
- * @author Simon Weiguny - 11.02.2014
- */
-class EntityMap {
+class EntityMetaDataMap {
 
     private static $instance;
 

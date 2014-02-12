@@ -3,9 +3,6 @@
 namespace PPA\examples\entity;
 
 /**
- * @copyright copyright (c) by Simon Weiguny <s.weiguny@gmail.com>
- * @author Simon Weiguny - 10.02.2014
- * 
  * @table = "order_pos"
  */
 class OrderPosition {

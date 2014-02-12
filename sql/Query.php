@@ -2,17 +2,13 @@
 
 namespace PPA\sql;
 
+use Exception;
 use PDO;
 use PDOStatement;
 use PPA\Bootstrap;
-use PPA\EntityAnalyzer;
 use PPA\EntityFactory;
-use PPA\EntityMap;
+use PPA\EntityMetaDataMap;
 
-/**
- * @copyright copyright (c) by Simon Weiguny <s.weiguny@gmail.com>
- * @author Simon Weiguny - 10.02.2014
- */
 class Query {
 
     /**
@@ -76,7 +72,7 @@ class Query {
             return $statement->fetchAll(PDO::FETCH_OBJ);
         } else {
             $resultList = array();
-            $properties = EntityMap::getInstance()->getPropertiesByColumn($full_qualified_classname);
+            $properties = EntityMetaDataMap::getInstance()->getPropertiesByColumn($full_qualified_classname);
 //            \PPA\prettyDump($properties);
             
             // Fetch the row of the database as an associative array.
@@ -96,12 +92,12 @@ class Query {
                             $relation = $properties[$key]->getRelation();
                             if ($relation->isOneToOne()) {
                                 if ($relation->isLazy()) {
-throw new \Exception();
+throw new Exception();
                                 } else {
                                     // must know id of $relation->mappedby
 //                                    var_dump($relation);
-                                    $id = EntityMap::getInstance()->getPrimaryProperty($relation->getMappedBy());
-                                    $table = EntityMap::getInstance()->getTableName($relation->getMappedBy());
+                                    $id = EntityMetaDataMap::getInstance()->getPrimaryProperty($relation->getMappedBy());
+                                    $table = EntityMetaDataMap::getInstance()->getTableName($relation->getMappedBy());
 //                                    \PPA\prettyDump($id);
 //                                    \PPA\prettyDump($table);
                                     

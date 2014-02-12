@@ -4,10 +4,6 @@ namespace PPA;
 
 use DomainException;
 
-/**
- * @copyright copyright (c) by Simon Weiguny <s.weiguny@gmail.com>
- * @author Simon Weiguny - 11.02.2014
- */
 class Relation {
 
     private $type;
