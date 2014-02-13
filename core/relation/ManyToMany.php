@@ -2,7 +2,7 @@
 
 namespace PPA\core\relation;
 
-use PPA\core\PersistenceProperty;
+use PPA\core\EntityProperty;
 
 class ManyToMany extends Relation {
 
@@ -10,7 +10,7 @@ class ManyToMany extends Relation {
     private $column;
     private $x_column;
     
-    public function __construct(PersistenceProperty $property, $fetch, $mappedBy, $joinTable, $column, $x_column) {
+    public function __construct(EntityProperty $property, $fetch, $mappedBy, $joinTable, $column, $x_column) {
         parent::__construct($property, $fetch, $mappedBy);
         
         $this->joinTable = trim($joinTable);

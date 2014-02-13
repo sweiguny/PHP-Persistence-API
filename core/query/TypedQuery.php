@@ -48,8 +48,10 @@ class TypedQuery extends Query {
     }
 
     private function getResultListInternal(PDOStatement $statement) {
+        
+        // just needed for oneToOne-relations.
+        $foreigns   = array();
         $resultList = array();
-        $oneToOnes  = array();
         
         $properties = $this->metaDataMap->getPropertiesByColumn($this->classname);
         $relations  = $this->metaDataMap->getRelations($this->classname);
@@ -69,49 +71,64 @@ class TypedQuery extends Query {
                 if (!$properties[$column]->hasRelation()) {
                     $properties[$column]->setValue($entity, $value);
                 } else if ($properties[$column]->getRelation()->isOneToOne()) {
-                    $oneToOnes[$properties[$column]->getRelation()->getMappedBy()] = $value;
+                    $foreigns[$properties[$column]->getRelation()->getMappedBy()] = $value;
                 }
             }
             
             
             foreach ($relations as $relation) {
+                $table = $this->metaDataMap->getTableName($relation->getMappedBy());
+                
                 if ($relation instanceof OneToOne) {
-                    $primary = $this->metaDataMap->getPrimaryProperty($relation->getMappedBy());
-                    $table   = $this->metaDataMap->getTableName($relation->getMappedBy());
-
-                    # TODO: Solve this somehow via prepared statements, to achieve better performance.
-                    # As this kind of query will called often on eager loading, it may be feasible.
-                    $query = "SELECT * FROM `{$table}` WHERE {$primary->getColumn()} = {$oneToOnes[$relation->getMappedBy()]}";
-                    $q = new TypedQuery($query, $relation->getMappedBy());
-
-                    $relation->getProperty()->setValue($entity, $q->getSingeResult());
+                    $result = $this->handleOneToOne($relation, $table, $foreigns);
                 } else if ($relation instanceof OneToMany) {
-                    $primary  = $this->metaDataMap->getPrimaryProperty($relation->getMappedBy());
-                    $table    = $this->metaDataMap->getTableName($relation->getMappedBy());
-                    $x_column = $relation->getX_column();
-                    
-                    $query = "SELECT * FROM `{$table}` WHERE {$x_column} = {$primaryValue}";
-                    $q = new TypedQuery($query, $relation->getMappedBy());
-                    
-                    $relation->getProperty()->setValue($entity, $q->getResultList());
+                    $result = $this->handleOneToMany($relation, $table, $primaryValue);
                 } else if ($relation instanceof ManyToMany) {
-                    $primary   = $this->metaDataMap->getPrimaryProperty($this->classname);
-                    $table     = $this->metaDataMap->getTableName($relation->getMappedBy());
-                    $joinTable = $relation->getJoinTable();
-                    $column    = $relation->getColumn();
-                    $x_column  = $relation->getX_column();
-                    
-                    $query = "SELECT `{$table}`.* FROM `{$joinTable}` JOIN `{$table}` ON (`{$joinTable}`.{$x_column} = `{$table}`.{$primary->getColumn()}) WHERE `{$joinTable}`.{$column} = {$primaryValue}";
-                    $q = new TypedQuery($query, $relation->getMappedBy());
-                    
-                    $relation->getProperty()->setValue($entity, $q->getResultList());
+                    $result = $this->handleManyToMany($relation, $table, $primaryValue);
                 }
+                
+                $relation->getProperty()->setValue($entity, $result);
             }
             
             $resultList[] = $entity;
         }
         
         return $resultList;
+    }
+    
+    private function handleOneToOne(OneToOne $relation, $table, array $foreigns) {
+        $primary = $this->metaDataMap->getPrimaryProperty($relation->getMappedBy());
+
+        # TODO: Solve this somehow via prepared statements, to achieve better performance.
+        # As this kind of query will called often on eager loading, it may be feasible.
+        $query = "SELECT * FROM `{$table}` WHERE {$primary->getColumn()} = {$foreigns[$relation->getMappedBy()]}";
+        $q = new TypedQuery($query, $relation->getMappedBy());
+
+        return $q->getSingeResult();
+    }
+    
+    private function handleOneToMany(OneToMany $relation, $table, $primaryValue) {
+//        $primary  = $this->metaDataMap->getPrimaryProperty($relation->getMappedBy());
+                    
+        $x_column = $relation->getX_column();
+
+        $query = "SELECT * FROM `{$table}` WHERE {$x_column} = {$primaryValue}";
+        $q = new TypedQuery($query, $relation->getMappedBy());
+
+        return $q->getResultList();
+    }
+    
+    private function handleManyToMany(ManyToMany $relation, $table, $primaryValue) {
+        $primary   = $this->metaDataMap->getPrimaryProperty($this->classname);
+                    
+        $joinTable = $relation->getJoinTable();
+        $column    = $relation->getColumn();
+        $x_column  = $relation->getX_column();
+
+        $query = "SELECT `{$table}`.* FROM `{$joinTable}` JOIN `{$table}` ON (`{$joinTable}`.{$x_column} = `{$table}`.{$primary->getColumn()}) WHERE `{$joinTable}`.{$column} = {$primaryValue}";
+        $q = new TypedQuery($query, $relation->getMappedBy());
+
+        return $q->getResultList();
     }
     
 }

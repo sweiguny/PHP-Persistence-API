@@ -2,11 +2,11 @@
 
 namespace PPA\core\relation;
 
-use PPA\core\PersistenceProperty;
+use PPA\core\EntityProperty;
 
 class OneToOne extends Relation {
 
-    public function __construct(PersistenceProperty $property, $fetch, $mappedBy) {
+    public function __construct(EntityProperty $property, $fetch, $mappedBy) {
         parent::__construct($property, $fetch, $mappedBy);
     }
 

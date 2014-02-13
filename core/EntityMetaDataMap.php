@@ -36,7 +36,7 @@ class EntityMetaDataMap {
     /**
      * 
      * @param type $classname
-     * @return PersistenceProperty
+     * @return EntityProperty
      */
     public function getPrimaryProperty($fullyQualifiedClassname) {
         $this->prepare($fullyQualifiedClassname);
@@ -68,12 +68,10 @@ class EntityMetaDataMap {
             $analyzer = new EntityAnalyzer($fullyQualifiedClassname);
             $analyzer->doAnalysis();
             
-            # TODO: avoid double call of $analyzer->getPersistenceProperties
-            $this->data[$fullyQualifiedClassname]["byName"]   = $analyzer->getPropertiesByName();
-            $this->data[$fullyQualifiedClassname]["byColumn"] = $analyzer->getPropertiesByColumn();
-            
-            $this->data[$fullyQualifiedClassname]["primary"]  = $analyzer->getPrimaryProperty();
-            $this->data[$fullyQualifiedClassname]["table"]    = $analyzer->getTableName();
+            $this->data[$fullyQualifiedClassname]["byName"]    = $analyzer->getPropertiesByName();
+            $this->data[$fullyQualifiedClassname]["byColumn"]  = $analyzer->getPropertiesByColumn();
+            $this->data[$fullyQualifiedClassname]["primary"]   = $analyzer->getPrimaryProperty();
+            $this->data[$fullyQualifiedClassname]["table"]     = $analyzer->getTableName();
             $this->data[$fullyQualifiedClassname]["relations"] = $analyzer->getRelations();
         }
     }

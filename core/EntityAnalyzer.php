@@ -24,15 +24,19 @@ class EntityAnalyzer {
      */
     private $reflector;
     
+    /**
+     * The status of the analyzer.
+     * 
+     * @var bool
+     */
+    private $analyzed = false;
+    
     private $primaryProperty;
     private $tableName;
     private $propertiesByName;
     private $propertiesByColumn;
     private $relations;
     
-    private $analyzed = false;
-
-
     /**
      * All possible annotations and their available parameters.
      * 
@@ -62,6 +66,16 @@ class EntityAnalyzer {
         $this->classname = $fullyQualifiedClassname;
     }
     
+    /**
+     * Does the analysis:
+     * - prepares the table name
+     * - prepares the primary property of the entity
+     * - prepares all properties by column
+     * - prepares all properties by name
+     * - prepares all relations.
+     * 
+     * @throws AnnotationException
+     */
     public function doAnalysis() {
         if ($this->analyzed) {
             # TODO: trigger error and/or log message
@@ -88,11 +102,10 @@ class EntityAnalyzer {
             foreach ($properties as $property) {
                 $annotations = $this->extractAnnotations($property->getDocComment());
                 
-                $pprop = new PersistenceProperty($this->classname, $property->getName());
+                $pprop = new EntityProperty($this->classname, $property->getName());
                 $pprop->setAccessible(true);
 
                 if (isset($annotations["@column"])) {
-                    
                     if (isset($annotations["@id"])) {
                         $pprop->makePrimary();
                         $primaryProperty = $pprop;
@@ -105,17 +118,15 @@ class EntityAnalyzer {
                     }
 
                     if (isset($annotations["@oneToOne"])) {
-                        $relation = new OneToOne($pprop, $annotations["@oneToOne"]["fetch"], $annotations["@oneToOne"]["mappedBy"]);
+                        $relation    = new OneToOne($pprop, $annotations["@oneToOne"]["fetch"], $annotations["@oneToOne"]["mappedBy"]);
                         $relations[] = $relation;
-                        
                         $pprop->setRelation($relation);
                     }
                 
-                    $propertiesByName[$pprop->getName()] = $pprop;
+                    $propertiesByName[$pprop->getName()]     = $pprop;
                     $propertiesByColumn[$pprop->getColumn()] = $pprop;
-
                 } else if (isset($annotations["@oneToMany"]) && isset($annotations["@joinTable"])) {
-                    $relation = new OneToMany($pprop, $annotations["@oneToMany"]["fetch"], $annotations["@oneToMany"]["mappedBy"], $annotations["@joinTable"]["x_column"]);
+                    $relation    = new OneToMany($pprop, $annotations["@oneToMany"]["fetch"], $annotations["@oneToMany"]["mappedBy"], $annotations["@joinTable"]["x_column"]);
                     $relations[] = $relation;
                     $pprop->setRelation($relation);
 
@@ -143,6 +154,10 @@ class EntityAnalyzer {
         }
     }
     
+    /**
+     * @param array $annotations
+     * @throws AnnotationException when some annotations are not compliant.
+     */
     private function handleUncombinables(array $annotations) {
         if (isset($annotations["@joinTable"])) {
             if (!isset($annotations["@manyToMany"])) {
@@ -159,22 +174,37 @@ class EntityAnalyzer {
         throw new AnnotationException($message);
     }
 
+    /**
+     * @return EntityProperty The primary property of the entity.
+     */
     public function getPrimaryProperty() {
         return $this->primaryProperty;
     }
 
+    /**
+     * @return string The name of the table in which the entity is persisted.
+     */
     public function getTableName() {
         return $this->tableName;
     }
 
+    /**
+     * @return array A list of properties with the property name as index.
+     */
     public function getPropertiesByName() {
         return $this->propertiesByName;
     }
-
+    
+    /**
+     * @return array A list of properties with the column name as index.
+     */
     public function getPropertiesByColumn() {
         return $this->propertiesByColumn;
     }
-
+    
+    /**
+     * @return array A list of the entity's relations.
+     */
     public function getRelations() {
         return $this->relations;
     }

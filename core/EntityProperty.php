@@ -5,7 +5,7 @@ namespace PPA\core;
 use PPA\core\relation\Relation;
 use ReflectionProperty;
 
-class PersistenceProperty extends ReflectionProperty {
+class EntityProperty extends ReflectionProperty {
 
     protected $column;
     protected $relation;

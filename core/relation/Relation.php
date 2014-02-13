@@ -2,8 +2,8 @@
 
 namespace PPA\core\relation;
 
+use PPA\core\EntityProperty;
 use PPA\core\exception\FetchException;
-use PPA\core\PersistenceProperty;
 
 abstract class Relation {
 
@@ -11,7 +11,7 @@ abstract class Relation {
     private $fetch;
     private $mappedBy;
 
-    public function __construct(PersistenceProperty $property, $fetch, $mappedBy) {
+    public function __construct(EntityProperty $property, $fetch, $mappedBy) {
         $this->fetch = trim($fetch);
         
         if (!in_array($this->fetch, array("lazy", "eager"))) {
