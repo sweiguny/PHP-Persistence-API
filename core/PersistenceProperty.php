@@ -2,6 +2,7 @@
 
 namespace PPA\core;
 
+use PPA\core\relation\Relation;
 use ReflectionProperty;
 
 class PersistenceProperty extends ReflectionProperty {

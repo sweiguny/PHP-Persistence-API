@@ -4,6 +4,9 @@ namespace PPA\core;
 
 use InvalidArgumentException;
 use PPA\core\exception\AnnotationException;
+use PPA\core\relation\ManyToMany;
+use PPA\core\relation\OneToMany;
+use PPA\core\relation\OneToOne;
 use ReflectionClass;
 
 
@@ -53,7 +56,7 @@ class EntityAnalyzer {
         $this->reflector = new ReflectionClass($fullyQualifiedClassname);
         
         if (!$this->reflector->isSubclassOf("\\PPA\\core\\Entity")) {
-            throw new InvalidArgumentException("Class '{$fullyQualifiedClassname}' must be a subclass of \\PPA\\Entity.");
+            throw new InvalidArgumentException("Class '{$fullyQualifiedClassname}' must be a subclass of \\PPA\\core\\Entity.");
         }
         
         $this->classname = $fullyQualifiedClassname;
@@ -65,7 +68,7 @@ class EntityAnalyzer {
         } else {
             
             $annotations = $this->extractAnnotations($this->reflector->getDocComment());
-//        prettyDump($annotations);
+            
             if (isset($annotations["@table"]) && isset($annotations["@table"]["name"])) {
                 $this->tableName = $annotations["@table"]["name"];
             } else {
@@ -76,22 +79,20 @@ class EntityAnalyzer {
             # --------------------
             
             
-            $primaryProperty = null;
-            $propertiesByName = array();
+            $primaryProperty    = null;
+            $propertiesByName   = array();
             $propertiesByColumn = array();
-            $relations = array();
-            
-            $properties = $this->reflector->getProperties();
+            $relations          = array();
+            $properties         = $this->reflector->getProperties();
             
             foreach ($properties as $property) {
                 $annotations = $this->extractAnnotations($property->getDocComment());
-                
                 
                 $pprop = new PersistenceProperty($this->classname, $property->getName());
                 $pprop->setAccessible(true);
 
                 if (isset($annotations["@column"])) {
-
+                    
                     if (isset($annotations["@id"])) {
                         $pprop->makePrimary();
                         $primaryProperty = $pprop;
@@ -104,7 +105,7 @@ class EntityAnalyzer {
                     }
 
                     if (isset($annotations["@oneToOne"])) {
-                        $relation = new Relation($pprop, "oneToOne", $annotations["@oneToOne"]["fetch"], $annotations["@oneToOne"]["mappedBy"]);
+                        $relation = new OneToOne($pprop, $annotations["@oneToOne"]["fetch"], $annotations["@oneToOne"]["mappedBy"]);
                         $relations[] = $relation;
                         
                         $pprop->setRelation($relation);
@@ -113,51 +114,23 @@ class EntityAnalyzer {
                     $propertiesByName[$pprop->getName()] = $pprop;
                     $propertiesByColumn[$pprop->getColumn()] = $pprop;
 
+                } else if (isset($annotations["@oneToMany"]) && isset($annotations["@joinTable"])) {
+                    $relation = new OneToMany($pprop, $annotations["@oneToMany"]["fetch"], $annotations["@oneToMany"]["mappedBy"], $annotations["@joinTable"]["x_column"]);
+                    $relations[] = $relation;
+                    $pprop->setRelation($relation);
+
+                    $propertiesByName[$pprop->getName()] = $pprop;
+                } else if (isset($annotations["@manyToMany"]) && isset($annotations["@joinTable"])) {
+                    $relation = new ManyToMany($pprop, $annotations["@manyToMany"]["fetch"], $annotations["@manyToMany"]["mappedBy"], $annotations["@joinTable"]["name"], $annotations["@joinTable"]["column"], $annotations["@joinTable"]["x_column"]);
+                    $relations[] = $relation;
+                    $pprop->setRelation($relation);
+
+                    $propertiesByName[$pprop->getName()] = $pprop;
                 } else {
-                    if (isset($annotations["@oneToMany"]) && isset($annotations["@joinTable"])) {
-
-//                            print_r($annotations["@joinTable"]);
-
-                        $relation = new Relation($pprop, "oneToMany", $annotations["@oneToMany"]["fetch"], $annotations["@oneToMany"]["mappedBy"], $annotations["@joinTable"]);
-                        $relations[] = $relation;
-                        $pprop->setRelation($relation);
-
-                        $propertiesByName[$pprop->getName()] = $pprop;
-
-
-//                        $pprop->setColumn($property->getName());
-//                        $propertiesByColumn[$pprop->getColumn()] = $pprop;
-
-                    } else if (isset($annotations["@oneToMany"]) && !isset($annotations["@joinTable"])) {
-                        throw new AnnotationException("Entity '{$this->classname}' provides an @oneToMany annotation, but not an @joinTable.");
-                    } else if (isset($annotations["@joinTable"]) && !isset($annotations["@oneToMany"])) {
-                        throw new AnnotationException("Entity '{$this->classname}' provides an @joinTable annotation, but not an @oneToMany.");
-                    } else {
-                    
-                        if (isset($annotations["@manyToMany"]) && isset($annotations["@joinTable"])) {
-                        //                     echo "here";
-                            $relation = new Relation($pprop, "manyToMany", $annotations["@manyToMany"]["fetch"], $annotations["@manyToMany"]["mappedBy"], $annotations["@joinTable"]);
-                            $relations[] = $relation;
-                            $pprop->setRelation($relation);
-
-                            $propertiesByName[$pprop->getName()] = $pprop;
-
-
-    //                        $pprop->setColumn($property->getName());
-    //                        $propertiesByColumn[$pprop->getColumn()] = $pprop;
-
-                        } else if (isset($annotations["@manyToMany"]) && !isset($annotations["@joinTable"])) {
-                            throw new AnnotationException("Entity '{$this->classname}' provides an @manyToMany annotation, but not an @joinTable.");
-                        } else if (isset($annotations["@joinTable"]) && !isset($annotations["@manyToMany"])) {
-                            throw new AnnotationException("Entity '{$this->classname}' provides an @joinTable annotation, but not an @manyToMany.");
-                        }
-                    }
-    //                 prettyDump($pprop);
+                    $this->handleUncombinables($annotations);
                 }
-                
             }
             
-//            \PPA\prettyDump($relations);
             if ($primaryProperty == null) {
                 throw new AnnotationException("Entity '{$this->classname}' does not have an @id annotation.");
             }
@@ -168,6 +141,22 @@ class EntityAnalyzer {
             
             $this->analyzed = true;
         }
+    }
+    
+    private function handleUncombinables(array $annotations) {
+        if (isset($annotations["@joinTable"])) {
+            if (!isset($annotations["@manyToMany"])) {
+                $message = "Entity '{$this->classname}' provides an @joinTable annotation, but not an @manyToMany.";
+            } else if (!isset($annotations["@oneToMany"])) {
+                $message = "Entity '{$this->classname}' provides an @joinTable annotation, but not an @oneToMany.";
+            }
+        } else if (isset($annotations["@manyToMany"]) && !isset($annotations["@joinTable"])) {
+            $message = "Entity '{$this->classname}' provides an @manyToMany annotation, but not an @joinTable.";
+        } else if (isset($annotations["@oneToMany"]) && !isset($annotations["@joinTable"])) {
+            $message = "Entity '{$this->classname}' provides an @oneToMany annotation, but not an @joinTable.";
+        }
+        
+        throw new AnnotationException($message);
     }
 
     public function getPrimaryProperty() {
@@ -188,70 +177,6 @@ class EntityAnalyzer {
 
     public function getRelations() {
         return $this->relations;
-    }
-
-    /**
-     * Returns a list of properties of an entity.
-     * 
-     * @return array A List of \PPA\PersistenceProperty.
-     */
-    private function getPersistenceProperties($by) {
-        $reflectionProperties  = $this->reflector->getProperties();
-        $persistenceProperties = array();
-//        prettyDump($reflectionProperties);
-//        prettyDump($this->getRelationProperty());
-        foreach ($reflectionProperties as $reflectionProperty) {
-            
-            $annotations = $this->extractAnnotations($reflectionProperty->getDocComment());
-//            prettyDump($annotations);
-            
-            $pprop = new PersistenceProperty($this->className, $reflectionProperty->getName());
-            $pprop->setAccessible(true);
-            
-            if (isset($annotations["@column"])) {
-                
-                if (isset($annotations["@id"])) {
-                    $pprop->setAsId();
-                    $this->primaryProperty = $pprop;
-                }
-                
-                if (isset($annotations["@column"]["name"])) {
-                    $pprop->setColumn($annotations["@column"]["name"]);
-                } else {
-                    $pprop->setColumn($reflectionProperty->getName());
-                }
-                
-                if (isset($annotations["@oneToOne"])) {
-                    $pprop->setRelation(new Relation("oneToOne", $annotations["@oneToOne"]["fetch"], $annotations["@oneToOne"]["mappedBy"]));
-                }
-            } else {
-                 if (isset($annotations["@manyToMany"]) && isset($annotations["@joinTable"])) {
-//                     echo "here";
-                     $pprop->setRelation(new Relation("manyToMany", $annotations["@manyToMany"]["fetch"], $annotations["@manyToMany"]["mappedBy"], $annotations["@joinTable"]));
-                     $pprop->setColumn($reflectionProperty->getName());
-                     
-                     
-                     
-                 } else if (isset($annotations["@manyToMany"]) && !isset($annotations["@joinTable"])) {
-                     throw new AnnotationException("Entity '{$this->className}' provides an @manyToMany annotation, but not an @joinTable.");
-                 } else if (isset($annotations["@joinTable"]) && !isset($annotations["@manyToMany"])) {
-                     throw new AnnotationException("Entity '{$this->className}' provides an @joinTable annotation, but not an @manyToMany.");
-                 }
-//                 prettyDump($pprop);
-            }
-            
-            if ($by == "byName") {
-                $persistenceProperties[$pprop->getName()] = $pprop;
-            } else {
-                $persistenceProperties[$pprop->getColumn()] = $pprop;
-            }
-        }
-        
-        if ($this->primaryProperty == null) {
-            throw new AnnotationException("Entity '{$this->className}' does not have an @id annotation.");
-        }
-        
-        return $persistenceProperties;
     }
 
     /**

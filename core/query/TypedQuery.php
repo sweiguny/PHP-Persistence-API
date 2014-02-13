@@ -7,9 +7,12 @@ use PDO;
 use PDOStatement;
 use PPA\core\EntityFactory;
 use PPA\core\EntityMetaDataMap;
+use PPA\core\relation\ManyToMany;
+use PPA\core\relation\OneToMany;
+use PPA\core\relation\OneToOne;
 
 class TypedQuery extends Query {
-
+    
     protected $classname;
     protected $metaDataMap;
 
@@ -46,20 +49,14 @@ class TypedQuery extends Query {
 
     private function getResultListInternal(PDOStatement $statement) {
         $resultList = array();
+        $oneToOnes  = array();
+        
         $properties = $this->metaDataMap->getPropertiesByColumn($this->classname);
-        
-//        $relations  = array();
         $relations  = $this->metaDataMap->getRelations($this->classname);
-        $oneToOnes = array();
-//        \PPA\prettyDump($properties);
-//        \PPA\prettyDump($propertiesByName);
-//        \PPA\prettyDump($relations);
         
-        
-//        die("here");
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             
-            $entity = EntityFactory::create($this->classname);
+            $entity       = EntityFactory::create($this->classname);
             $primaryValue = null;
             
             foreach ($row as $column => $value) {
@@ -71,64 +68,43 @@ class TypedQuery extends Query {
                 // exclude oneToOne relations
                 if (!$properties[$column]->hasRelation()) {
                     $properties[$column]->setValue($entity, $value);
-                }
-                else if ($properties[$column]->getRelation()->isOneToOne()) {
+                } else if ($properties[$column]->getRelation()->isOneToOne()) {
                     $oneToOnes[$properties[$column]->getRelation()->getMappedBy()] = $value;
                 }
             }
             
             
             foreach ($relations as $relation) {
-                if ($relation->isOneToOne()) {
-//                    if ($relation->isLazy()) {
-//                        $properties[$key]->setValue($$full_qualified_classname, new MockEntity($relation->getMappedBy(), $value, $$full_qualified_classname, $properties[$key]));
-//                    } else {
-                        $primary = $this->metaDataMap->getPrimaryProperty($relation->getMappedBy());
-                        $table   = $this->metaDataMap->getTableName($relation->getMappedBy());
-                        
-                        
-                        # TODO: Solve this somehow via prepared statements, to achieve better performance.
-                        # As this kind of query will called often on eager loading, it may be feasible.
-                        $query = "SELECT * FROM `{$table}` WHERE {$primary->getColumn()} = {$oneToOnes[$relation->getMappedBy()]}";
-//                        echo $query;
-                        $q = new TypedQuery($query, $relation->getMappedBy());
-//                        \PPA\prettyDump($q);
-
-                        $relation->getProperty()->setValue($entity, $q->getSingeResult());
-//                        $properties[$primary->getColumn()]->setValue($entity, $q->getSingeResult());
-//                    }
-                } else if ($relation->isOneToMany()) {
-                    
-                    $primary  = $this->metaDataMap->getPrimaryProperty($relation->getMappedBy());
-
+                if ($relation instanceof OneToOne) {
+                    $primary = $this->metaDataMap->getPrimaryProperty($relation->getMappedBy());
                     $table   = $this->metaDataMap->getTableName($relation->getMappedBy());
-                    
-                    $x_column = $relation->getJoinTable()["x_column"];
-                    
-//                    select * from orderpos where order_id = 3;
-//                    \PPA\prettyDump($relation);
-//                    var_dump($x_column);
-                    $query = "SELECT * FROM `{$table}` WHERE {$x_column} = {$primaryValue}";
-                    echo $query;
+
+                    # TODO: Solve this somehow via prepared statements, to achieve better performance.
+                    # As this kind of query will called often on eager loading, it may be feasible.
+                    $query = "SELECT * FROM `{$table}` WHERE {$primary->getColumn()} = {$oneToOnes[$relation->getMappedBy()]}";
                     $q = new TypedQuery($query, $relation->getMappedBy());
-//                    \PPA\prettyDump($q->getResultList());
-                    $relation->getProperty()->setValue($entity, $q->getResultList());
-                    
-                    
-                } else if ($relation->isManyToMany()) {
-                    $primary  = $this->metaDataMap->getPrimaryProperty($this->classname);
 
-                    $table   = $this->metaDataMap->getTableName($relation->getMappedBy());
-                    $joinTable = $relation->getJoinTable()["name"];
-                    $column = $relation->getJoinTable()["column"];
-                    $x_column = $relation->getJoinTable()["x_column"];
+                    $relation->getProperty()->setValue($entity, $q->getSingeResult());
+                } else if ($relation instanceof OneToMany) {
+                    $primary  = $this->metaDataMap->getPrimaryProperty($relation->getMappedBy());
+                    $table    = $this->metaDataMap->getTableName($relation->getMappedBy());
+                    $x_column = $relation->getX_column();
+                    
+                    $query = "SELECT * FROM `{$table}` WHERE {$x_column} = {$primaryValue}";
+                    $q = new TypedQuery($query, $relation->getMappedBy());
+                    
+                    $relation->getProperty()->setValue($entity, $q->getResultList());
+                } else if ($relation instanceof ManyToMany) {
+                    $primary   = $this->metaDataMap->getPrimaryProperty($this->classname);
+                    $table     = $this->metaDataMap->getTableName($relation->getMappedBy());
+                    $joinTable = $relation->getJoinTable();
+                    $column    = $relation->getColumn();
+                    $x_column  = $relation->getX_column();
                     
                     $query = "SELECT `{$table}`.* FROM `{$joinTable}` JOIN `{$table}` ON (`{$joinTable}`.{$x_column} = `{$table}`.{$primary->getColumn()}) WHERE `{$joinTable}`.{$column} = {$primaryValue}";
-//                    echo $query;
                     $q = new TypedQuery($query, $relation->getMappedBy());
-//                    \PPA\prettyDump($q->getResultList());
+                    
                     $relation->getProperty()->setValue($entity, $q->getResultList());
-//                    $propertiesByName[$primary->getColumn()]->setValue($entity, $q->getSingeResult());
                 }
             }
             
