@@ -1,6 +1,6 @@
 <?php
 
-namespace PPA\exception;
+namespace PPA\core\exception;
 
 class FetchException extends PPA_Exception {
     

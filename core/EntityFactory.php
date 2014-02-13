@@ -1,8 +1,8 @@
 <?php
 
-namespace PPA;
+namespace PPA\core;
 
-use PPA\exception\NoEntityException;
+use PPA\core\exception\NoEntityException;
 use ReflectionClass;
 
 class EntityFactory {

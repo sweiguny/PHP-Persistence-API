@@ -2,10 +2,12 @@
 
 namespace PPA\examples\entity;
 
+use PPA\core\Entity;
+
 /**
- * @table = "order_pos"
+ * @table(name = "orderpos")
  */
-class OrderPosition {
+class OrderPosition extends Entity {
 
     /**
      * @id
@@ -14,9 +16,9 @@ class OrderPosition {
     private $id;
     
     /**
-     * @oneToMany(fetch = "lazy", mappedBy = "OrderPosition")
+     * @column(name = "order_id")
      */
-    private $orderId;
+      private $orderId;
     
     public function __construct() {
         

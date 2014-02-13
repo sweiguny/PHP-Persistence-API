@@ -2,10 +2,12 @@
 
 namespace PPA\examples\entity;
 
+use PPA\core\Entity;
+
 /**
  * @table = 'right'
  */
-class Right extends \PPA\Entity {
+class Right extends Entity {
     
     /**
      * @id = generatedValue

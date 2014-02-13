@@ -2,7 +2,7 @@
 
 namespace PPA\examples\entity;
 
-use PPA\Entity;
+use PPA\core\Entity;
 
 class Role extends Entity {
 
@@ -21,7 +21,7 @@ class Role extends Entity {
      * @manyToMany(fetch = "lazy", mappedBy = "_PPA_examples_entity_Right")
      * @joinTable(name = "role2right", column = "role_id", x_column = "right_id")
      */
-//    private $rights = array();
+    private $rights = array();
     
     /**
      * @manyToMany(fetch = "lazy", mappedBy = "_PPA_examples_entity_Right")

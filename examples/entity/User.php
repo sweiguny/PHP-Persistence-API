@@ -2,7 +2,7 @@
 
 namespace PPA\examples\entity;
 
-use PPA\Entity;
+use PPA\core\Entity;
 
 /**
  * @table(name="user")

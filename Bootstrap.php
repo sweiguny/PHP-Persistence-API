@@ -9,7 +9,7 @@ class Bootstrap {
     private static $pdo;
 
     public static function boot($dsn, $username, $password) {
-        require_once './Util.php';;
+        require_once __DIR__ . '/Util.php';;
         
         spl_autoload_register(array('self', 'classload'));
         
@@ -20,8 +20,8 @@ class Bootstrap {
     private static function classload($class_name) {
 
         $path = null;
-        $root = realpath(isset($path) ? $path : '.');
-
+        $root = realpath(isset($path) ? $path : __DIR__);
+        
         if (($namespaces = Util::getNamespaces($class_name))) {
             $class_name = array_pop($namespaces);
             array_shift($namespaces);
