@@ -23,17 +23,16 @@ class Role extends Entity {
      */
     private $rights = array();
     
-    /**
-     * @manyToMany(fetch = "lazy", mappedBy = "_PPA_examples_entity_Right")
-     * @joinTable(name = "group2role", column = "role_id", x_column = "group_id")
-     */
-//    private $group = array();
     
     public function getName() {
         return $this->name;
     }
 
-        
+    public function getRights() {
+        return $this->rights;
+    }
+
+            
     public function __construct() {
         
     }

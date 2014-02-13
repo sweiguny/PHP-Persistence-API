@@ -41,6 +41,9 @@ class Bootstrap {
         }
     }
 
+    /**
+     * @return PDO
+     */
     public static function getPDO() {
         return self::$pdo;
     }
