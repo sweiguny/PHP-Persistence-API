@@ -5,12 +5,15 @@ namespace PPA\core\mock;
 use ArrayAccess;
 use BadMethodCallException;
 use Countable;
+use Iterator;
 use PPA\core\Entity;
 use PPA\core\EntityProperty;
 use PPA\core\query\TypedQuery;
 
 
-class MockEntityList extends MockEntity implements ArrayAccess, Countable {
+class MockEntityList extends MockEntity implements ArrayAccess, Countable, Iterator {
+
+    private $entities;
 
     /**
      * The MockEntity serves as replacement for a real Entity. On method calls
@@ -27,37 +30,38 @@ class MockEntityList extends MockEntity implements ArrayAccess, Countable {
     }
 
     /**
-     * It is necessary to find out, if this method is needed!!
+     * This method will be called, when no other method applies to $this.
      * 
      * @param string $name
      * @param array $arguments
-     * @return mixed The value, the entity method should return.
+     * @return mixed The value, the function of the internal array should return.
      * @throws BadMethodCallException If method does not exist.
      */
     public function __call($name, $arguments) {
-        $entities = $this->exchange();
+        $this->exchange();
         
-        if (method_exists($entities, $name)) {
-            return call_user_func(array($entities, $name), $arguments);
+        if (method_exists($this->entities, $name)) {
+            return call_user_func(array($this->entities, $name), $arguments);
         } else {
-            throw new BadMethodCallException("Method '{$name}()' does not exist in class '" . get_class($entities) . "'.");
+            throw new BadMethodCallException("Method '{$name}()' cannot be called on an Array.");
         }
     }
 
     protected function exchange() {
-        $entities = $this->query->getResultList();
-        $this->property->setValue($this->owner, $entities);
-        
-        return $entities;
+        if ($this->entities == null) {
+            $this->entities = $this->query->getResultList();
+            $this->property->setValue($this->owner, $this->entities);
+        }
     }
 
-
     public function offsetExists($offset) {
-        return isset($this->exchange()[$offset]);
+        $this->exchange();
+        return isset($this->entities[$offset]);
     }
 
     public function offsetGet($offset) {
-        return $this->exchange()[$offset];
+        $this->exchange();
+        return $this->entities[$offset];
     }
 
     public function offsetSet($offset, $value) {
@@ -69,7 +73,34 @@ class MockEntityList extends MockEntity implements ArrayAccess, Countable {
     }
 
     public function count() {
-        return count($this->exchange());
+        $this->exchange();
+        return count($this->entities);
+    }
+
+    public function current() {
+        $this->exchange();
+        return current($this->entities);
+    }
+
+    public function key() {
+        $this->exchange();
+        return key($this->entities);
+    }
+
+    public function next() {
+        $this->exchange();
+        return next($this->entities);
+    }
+
+    public function rewind() {
+        $this->exchange();
+        reset($this->entities);
+    }
+
+    public function valid() {
+        $key = $this->key();
+        $var = ($key !== null && $key !== false);
+        return $var;
     }
 
 }

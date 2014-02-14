@@ -12,16 +12,20 @@ $result = $query->getResultList();
 echo $result[0]->getRole()->getName();
 $result = $result[0]->getRole();
 
-//echo count($result->getRights());
 
-var_dump(isset($result->getRights()[0]));
+echo $result->getRights()->func();
 
-\PPA\prettyDump($result->getRights()[0]);
+foreach ($result->getRights() as $right) {
+    PPA\prettyDump($result->getRights());
+    \PPA\prettyDump($right);
+}
+
+//\PPA\prettyDump($result->getRights()[0]);
 
 
 //echo $result;
 //
-\PPA\prettyDump($result);
+//\PPA\prettyDump($result);
 
 //$query = new PPA\core\query\TypedQuery("select * from `role` ", "\\PPA\\examples\\entity\\Role");
 //\PPA\prettyDump($query->getResultList());
