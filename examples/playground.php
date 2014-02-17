@@ -22,7 +22,7 @@ $query = new \PPA\core\query\TypedQuery("SELECT * FROM `user` WHERE role_id = 2"
 /**
  * Getting just the first result.
  */
-$result = $query->getSingeResult();
+$result = $query->getSingleResult();
 
 /**
  * The role is represented with a MockEntity. Because it is loaded lazily

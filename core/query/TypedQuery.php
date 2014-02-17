@@ -37,7 +37,7 @@ class TypedQuery extends Query {
         return $this->getResultListInternal($statement);
     }
     
-    public function getSingeResult() {
+    public function getSingleResult() {
         $statement = $this->pdo->query($this->query);
         
         if ($statement->columnCount() == 1) {

@@ -5,7 +5,7 @@ namespace PPA\core\query;
 interface iQuery {
 
     public function getResultList();
-    public function getSingeResult();
+    public function getSingleResult();
     
 }
 

@@ -13,6 +13,6 @@ include './playground.php';
 
 $endTime = microtime(true);
 
-echo '<pre>' . ($endTime - $startTime) . '</pre>';
+echo '<pre>Execution time: ' . ($endTime - $startTime) . ' ms</pre>';
 
 ?>

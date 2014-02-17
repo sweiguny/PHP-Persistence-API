@@ -39,7 +39,7 @@ class Query implements iQuery {
         if ($this->type == "select") {
             return $this->getResultListInternal($this->pdo->query($this->query));
         } else {
-            return $this->getSingeResult();
+            return $this->getSingleResult();
         }
     }
 
@@ -48,7 +48,7 @@ class Query implements iQuery {
      * @param string $full_qualified_classname
      * @return object|scalar
      */
-    public function getSingeResult() {
+    public function getSingleResult() {
         $statement = $this->pdo->query($this->query); # TODO: Prepared statement
 
         switch ($this->type) {
