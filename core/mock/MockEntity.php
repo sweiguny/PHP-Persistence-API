@@ -52,7 +52,7 @@ class MockEntity extends Entity {
     }
 
     protected function exchange() {
-        $entity = $this->query->getSingeResult();
+        $entity = $this->query->getSingleResult();
         $this->property->setValue($this->owner, $entity);
         
         return $entity;

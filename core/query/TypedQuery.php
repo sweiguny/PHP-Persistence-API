@@ -23,8 +23,8 @@ class TypedQuery extends Query {
         parent::__construct($query);
         
         # TODO: exclude also DDLs
-        if (in_array($this->type, array("update", "insert", "delete"))) {
-            throw new DomainException("Cannot be an UPDATE- or INSERT- or DELETE-statement.");
+        if ($this->type != "select") {
+            throw new DomainException("Can only be a SELECT-statement.");
         }
         
         $this->classname   = trim($fullyQualifiedClassname);
@@ -40,11 +40,7 @@ class TypedQuery extends Query {
     public function getSingleResult() {
         $statement = $this->pdo->query($this->query);
         
-        if ($statement->columnCount() == 1) {
-            return $statement->fetchColumn();
-        } else {
-            return $this->getResultListInternal($statement)[0];
-        }
+        return $this->getResultListInternal($statement)[0];
     }
 
     private function getResultListInternal(PDOStatement $statement) {

@@ -3,6 +3,12 @@ PHP Persistence API
 
 The PHP Persistence API (`PPA`) is an Interface for PHP-Applications to access Object-Relational data.
 
+***
+
+## [v1.0.0 released!](https://github.com/sweiguny/PHP-Persistence-API/releases/tag/v1.0.0)
+
+***
+
 **Features:**
 - Easy to embed in your project
 - Configure entities via [annotations](https://github.com/sweiguny/PHP-Persistence-API/wiki/Annotations-&-Parameters)
@@ -11,7 +17,8 @@ The PHP Persistence API (`PPA`) is an Interface for PHP-Applications to access O
     - OneToMany
     - ManyToMany
 - [TypedQueries](https://github.com/sweiguny/PHP-Persistence-API/wiki/TypedQuery)
-- Eager- & Lazy-loading
+- Good performance
+  - Eager- & Lazy-loading
 - A neat [WIKI](https://github.com/sweiguny/PHP-Persistence-API/wiki)
 
 **Features in spe:**
@@ -21,7 +28,7 @@ The PHP Persistence API (`PPA`) is an Interface for PHP-Applications to access O
 
 ***
 
-##Examples:
+## Examples:
 
 **Configuring your entities:**
 
@@ -70,39 +77,39 @@ The PHP Persistence API (`PPA`) is an Interface for PHP-Applications to access O
     $query->getSingleResult();
 
     Returns:
-    [0] => PPA\examples\entity\Role Object
-        (
-            [id:PPA\examples\entity\Role:private] => 1
-            [name:PPA\examples\entity\Role:private] => admin
-            [rights:PPA\examples\entity\Role:private] => Array
-                (
-                    [0] => PPA\examples\entity\Right Object
-                        (
-                            [id:PPA\examples\entity\Right:private] => 3
-                            [desc:PPA\examples\entity\Right:private] => ch-pw
-                        )
-                    [1] => PPA\examples\entity\Right Object
-                        (
-                            [id:PPA\examples\entity\Right:private] => 1
-                            [desc:PPA\examples\entity\Right:private] => login
-                        )
-                    [2] => PPA\examples\entity\Right Object
-                        (
-                            [id:PPA\examples\entity\Right:private] => 2
-                            [desc:PPA\examples\entity\Right:private] => logout
-                        )
-                    [3] => PPA\examples\entity\Right Object
-                        (
-                            [id:PPA\examples\entity\Right:private] => 5
-                            [desc:PPA\examples\entity\Right:private] => create_order
-                        )
-                    [4] => PPA\examples\entity\Right Object
-                        (
-                            [id:PPA\examples\entity\Right:private] => 4
-                            [desc:PPA\examples\entity\Right:private] => delete_order
-                        )
-                )
-        )
+    PPA\examples\entity\Role Object
+    (
+        [id:PPA\examples\entity\Role:private] => 1
+        [name:PPA\examples\entity\Role:private] => admin
+        [rights:PPA\examples\entity\Role:private] => Array
+            (
+                [0] => PPA\examples\entity\Right Object
+                    (
+                        [id:PPA\examples\entity\Right:private] => 3
+                        [desc:PPA\examples\entity\Right:private] => ch-pw
+                    )
+                [1] => PPA\examples\entity\Right Object
+                    (
+                        [id:PPA\examples\entity\Right:private] => 1
+                        [desc:PPA\examples\entity\Right:private] => login
+                    )
+                [2] => PPA\examples\entity\Right Object
+                    (
+                        [id:PPA\examples\entity\Right:private] => 2
+                        [desc:PPA\examples\entity\Right:private] => logout
+                    )
+                [3] => PPA\examples\entity\Right Object
+                    (
+                        [id:PPA\examples\entity\Right:private] => 5
+                        [desc:PPA\examples\entity\Right:private] => create_order
+                    )
+                [4] => PPA\examples\entity\Right Object
+                    (
+                        [id:PPA\examples\entity\Right:private] => 4
+                        [desc:PPA\examples\entity\Right:private] => delete_order
+                    )
+            )
+    )
 
 ***
 
