@@ -19,11 +19,10 @@ class Order extends Entity {
     protected $orderPos;
     
     
-    
-    
-    public function __construct() {
-        
-    }
+    /**
+     * @column
+     */
+    private $customer;
 
 }
 

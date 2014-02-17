@@ -21,6 +21,11 @@ class User extends Entity {
     private $username;
     
     /**
+     * @Column(name="password")
+     */
+    private $password;
+    
+    /**
      * @Column(name="role_id");
      * @oneToOne(fetch="lazy", mappedBy = "_PPA_examples_entity_Role")
      */
@@ -28,11 +33,6 @@ class User extends Entity {
     
     public function getRole() {
         return $this->role;
-    }
-
-        
-    public function __construct() {
-        
     }
     
 }

@@ -18,7 +18,17 @@ class OrderPosition extends Entity {
     /**
      * @column(name = "order_id")
      */
-      private $orderId;
+    private $orderId;
+    
+    /**
+     * @column
+     */
+    private $article;
+    
+    /**
+     * @column
+     */
+    private $price;
     
     public function __construct() {
         

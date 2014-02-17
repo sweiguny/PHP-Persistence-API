@@ -20,15 +20,6 @@ class Right extends Entity {
      */
     private $desc;
     
-    public function __construct() {
-        parent::__construct();
-//        echo get_class($this) . "<br>";
-    }
-    
-    public function deny() {
-        echo "perm denied!";
-    }
-
 }
 
 ?>

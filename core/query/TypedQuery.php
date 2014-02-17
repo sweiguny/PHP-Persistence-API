@@ -20,15 +20,12 @@ class TypedQuery extends Query {
     protected $metaDataMap;
 
     public function __construct($query, $fullyQualifiedClassname) {
-        $firstWord = explode(" ", trim($query));
-        $firstWord = strtolower($firstWord[0]);
+        parent::__construct($query);
         
         # TODO: exclude also DDLs
-        if (in_array($firstWord, array("update", "insert", "delete"))) {
+        if (in_array($this->type, array("update", "insert", "delete"))) {
             throw new DomainException("Cannot be an UPDATE- or INSERT- or DELETE-statement.");
         }
-        
-        parent::__construct($query);
         
         $this->classname   = trim($fullyQualifiedClassname);
         $this->metaDataMap = EntityMetaDataMap::getInstance();

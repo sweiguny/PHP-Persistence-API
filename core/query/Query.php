@@ -13,6 +13,7 @@ class Query implements iQuery {
      * @var string the query
      */
     protected $query;
+    protected $type;
 
     /**
      * @var PDO the connection
@@ -22,6 +23,9 @@ class Query implements iQuery {
     public function __construct($query) {
         $this->pdo   = Bootstrap::getPDO();
         $this->query = trim($query);
+
+        $firstWord  = explode(" ", $this->query);
+        $this->type = strtolower($firstWord[0]);
     }
 
     /**
@@ -32,9 +36,11 @@ class Query implements iQuery {
      * @return array A list of objects.
      */
     public function getResultList() {
-        $statement = $this->pdo->query($this->query);
-        
-        return $this->getResultListInternal($statement);
+        if ($this->type == "select") {
+            return $this->getResultListInternal($this->pdo->query($this->query));
+        } else {
+            return $this->getSingeResult();
+        }
     }
 
     /**
@@ -44,14 +50,30 @@ class Query implements iQuery {
      */
     public function getSingeResult() {
         $statement = $this->pdo->query($this->query); # TODO: Prepared statement
-        
-        if ($statement->columnCount() == 1) {
-            return $statement->fetchColumn();
-        } else {
-            return $this->getResultListInternal($statement)[0];
+
+        switch ($this->type) {
+            case 'select': {
+                    if ($statement->columnCount() == 1) {
+                        $result = $statement->fetchColumn();
+                    } else {
+                        $result = $this->getResultListInternal($statement)[0];
+                    }
+                    break;
+                }
+            case 'update':
+            case 'delete':
+                $result = $statement->rowCount();
+                break;
+            case 'insert':
+                $result = $this->pdo->lastInsertId();
+                break;
+            default:
+                break;
         }
+
+        return $result;
     }
-    
+
     /**
      * Returns a list of objects. The kind of object depends on the $full_qualified_classname
      * parameter.
