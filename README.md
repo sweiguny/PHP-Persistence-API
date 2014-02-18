@@ -11,7 +11,7 @@ The PHP Persistence API (`PPA`) is an Interface for PHP-Applications to access O
 
 **Features:**
 - Easy to embed in your project
-- Configure entities via [annotations](https://github.com/sweiguny/PHP-Persistence-API/wiki/Annotations-&-Parameters)
+- Configure entities via [annotations](https://github.com/sweiguny/PHP-Persistence-API/wiki/Annotations-&-Parameters) (no xml!)
   - Relations
     - OneToOne
     - OneToMany

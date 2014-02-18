@@ -35,10 +35,13 @@ class Role extends Entity {
         return $this->rights;
     }
 
-    public function __construct() {
-        
+    public function __construct($name) {
+        $this->name = $name;
     }
 
+    public function addRight(Right $right) {
+        $this->rights[] = $right;
+    }
 }
 
 ?>

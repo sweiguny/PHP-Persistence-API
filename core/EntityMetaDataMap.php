@@ -7,7 +7,7 @@ class EntityMetaDataMap {
     private static $instance;
 
     /**
-     * @return EntityMap
+     * @return EntityMetaDataMap
      */
     public static function getInstance() {
         if (self::$instance == null) {
@@ -26,7 +26,11 @@ class EntityMetaDataMap {
     private function __construct() {
         $this->data = array();
     }
-
+    
+    /**
+     * @param string $fullyQualifiedClassname
+     * @return string The name of the table corresponding to the class.
+     */
     public function getTableName($fullyQualifiedClassname) {
         $this->prepare($fullyQualifiedClassname);
         
@@ -34,7 +38,6 @@ class EntityMetaDataMap {
     }
     
     /**
-     * 
      * @param type $classname
      * @return EntityProperty
      */
@@ -44,25 +47,41 @@ class EntityMetaDataMap {
         return $this->data[$fullyQualifiedClassname]["primary"];
     }
 
-
+    /**
+     * @param string $fullyQualifiedClassname
+     * @return array Array with all properties - indices are the property names.
+     */
     public function getPropertiesByName($fullyQualifiedClassname) {
         $this->prepare($fullyQualifiedClassname);
         
         return $this->data[$fullyQualifiedClassname]["byName"];
     }
-
+    
+    /**
+     * @param string $fullyQualifiedClassname
+     * @return array Array with all properties - indices are the column names.
+     */
     public function getPropertiesByColumn($fullyQualifiedClassname) {
         $this->prepare($fullyQualifiedClassname);
         
         return $this->data[$fullyQualifiedClassname]["byColumn"];
     }
-
+    
+    /**
+     * @param string $fullyQualifiedClassname
+     * @return array All relations of the class
+     */
     public function getRelations($fullyQualifiedClassname) {
         $this->prepare($fullyQualifiedClassname);
         
         return $this->data[$fullyQualifiedClassname]["relations"];
     }
-
+    
+    /**
+     * Gets all data from the analyzer and pushes it to the map.
+     * 
+     * @param string $fullyQualifiedClassname
+     */
     private function prepare($fullyQualifiedClassname) {
         if (!isset($this->data[$fullyQualifiedClassname])) {
             $analyzer = new EntityAnalyzer($fullyQualifiedClassname);

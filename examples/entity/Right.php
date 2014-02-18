@@ -20,6 +20,10 @@ class Right extends Entity {
      */
     private $desc;
     
+    public function __construct($desc) {
+        $this->desc = $desc;
+    }
+
 }
 
 ?>

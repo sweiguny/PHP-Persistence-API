@@ -104,7 +104,7 @@ class TypedQuery extends Query {
         if ($relation->isLazy()) {
             return new MockEntity($q, $entity, $relation->getProperty());
         } else {
-            return $q->getSingeResult();
+            return $q->getSingleResult();
         }
     }
     
