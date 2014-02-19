@@ -8,7 +8,7 @@ use Countable;
 use Iterator;
 use PPA\core\Entity;
 use PPA\core\EntityProperty;
-use PPA\core\query\TypedQuery;
+use PPA\core\query\PreparedTypedQuery;
 
 
 class MockEntityList extends MockEntity implements ArrayAccess, Countable, Iterator {
@@ -25,8 +25,8 @@ class MockEntityList extends MockEntity implements ArrayAccess, Countable, Itera
      * @param Entity $owner
      * @param EntityProperty $property
      */
-    public function __construct(TypedQuery $query, Entity $owner, EntityProperty $property) {
-        parent::__construct($query, $owner, $property);
+    public function __construct(PreparedTypedQuery $query, Entity $owner, EntityProperty $property, array $values) {
+        parent::__construct($query, $owner, $property, $values);
     }
 
     /**
@@ -49,7 +49,7 @@ class MockEntityList extends MockEntity implements ArrayAccess, Countable, Itera
 
     protected function exchange() {
         if ($this->entities == null) {
-            $this->entities = $this->query->getResultList();
+            $this->entities = $this->query->getResultList($this->values);
             $this->property->setValue($this->owner, $this->entities);
         }
     }

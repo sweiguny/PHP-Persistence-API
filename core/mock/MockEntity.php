@@ -5,7 +5,7 @@ namespace PPA\core\mock;
 use BadMethodCallException;
 use PPA\core\Entity;
 use PPA\core\EntityProperty;
-use PPA\core\query\TypedQuery;
+use PPA\core\query\PreparedTypedQuery;
 
 
 class MockEntity extends Entity {
@@ -13,6 +13,7 @@ class MockEntity extends Entity {
     protected $owner;
     protected $property;
     protected $query;
+    protected $values;
 
     /**
      * The MockEntity serves as replacement for a real Entity. On method calls
@@ -24,10 +25,11 @@ class MockEntity extends Entity {
      * @param Entity $owner
      * @param EntityProperty $property
      */
-    public function __construct(TypedQuery $query, Entity $owner, EntityProperty $property) {
-        $this->query     = $query;
-        $this->owner     = $owner;
-        $this->property  = $property;
+    public function __construct(PreparedTypedQuery $query, Entity $owner, EntityProperty $property, array $values) {
+        $this->query    = $query;
+        $this->owner    = $owner;
+        $this->property = $property;
+        $this->values   = $values;
     }
 
     /**
@@ -52,7 +54,7 @@ class MockEntity extends Entity {
     }
 
     protected function exchange() {
-        $entity = $this->query->getSingleResult();
+        $entity = $this->query->getSingleResult($this->values);
         $this->property->setValue($this->owner, $entity);
         
         return $entity;

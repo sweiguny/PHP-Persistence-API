@@ -17,22 +17,27 @@ $em = PPA\core\EntityManager::getInstance();
 //$role = $query->getSingleResult();
 
 
-//$role = new PPA\examples\entity\Role("neu");
-//
-//$role->addRight(new \PPA\examples\entity\Right("test"));
-//$role->addRight(new \PPA\examples\entity\Right("test"));
-//$em->persist($role);
+$role = new PPA\examples\entity\Role("neu");
+
+$role->addRight(new \PPA\examples\entity\Right("test"));
+$role->addRight(new \PPA\examples\entity\Right("test"));
+$em->persist($role);
 
 //throw new \PPA\core\exception\TransactionException("test");
 
-$em->begin();
-$order = new \PPA\examples\entity\Order('simon');
-$order->addOrderpos(new PPA\examples\entity\OrderPosition("oida", 10));
-$order->addOrderpos(new PPA\examples\entity\OrderPosition("yunga", 20));
-
-$em->persist($order);
-
-$em->commit();
+//$em->begin();
+////$q = new PPA\core\query\TypedQuery("select * from `right` where id = 119", "\\PPA\\examples\\entity\\Right");
+////$order = $q->getSingleResult();
+//$order = new PPA\examples\entity\Right('simon');
+////$order->addOrderpos(new PPA\examples\entity\OrderPosition("oida", 10));
+////$order->addOrderpos(new PPA\examples\entity\OrderPosition("yunga", 20));
+//
+//$em->persist($order);
+//$em->commit();
+////
+//$em->begin();
+//$em->remove($order);
+//$em->commit();
 //PPA\prettyDump($role);
 
 ?>

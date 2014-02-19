@@ -4,7 +4,6 @@ namespace PPA\core\query;
 
 use DomainException;
 use PDO;
-use PDOStatement;
 use PPA\core\Entity;
 use PPA\core\EntityFactory;
 use PPA\core\EntityMetaDataMap;
@@ -14,16 +13,9 @@ use PPA\core\relation\ManyToMany;
 use PPA\core\relation\OneToMany;
 use PPA\core\relation\OneToOne;
 
-class TypedQuery extends Query {
+class PreparedTypedQuery extends PreparedQuery {
     
-    /**
-     * @var string
-     */
     protected $classname;
-    
-    /**
-     * @var EntityMetaDataMap
-     */
     protected $metaDataMap;
 
     public function __construct($query, $fullyQualifiedClassname) {
@@ -36,29 +28,22 @@ class TypedQuery extends Query {
         
         $this->classname   = trim($fullyQualifiedClassname);
         $this->metaDataMap = EntityMetaDataMap::getInstance();
+        $this->statement   = $this->conn->prepare($this->query);
     }
     
-    /**
-     * @return array A list of entities corresponding to the classname specified
-     * in the constructor.
-     */
-    public function getResultList() {
-        $statement = $this->conn->query($this->query);
+    public function getResultList(array $values) {
+        $this->statement->execute($values);
         
-        return $this->getResultListInternal($statement);
+        return $this->getResultListInternal();
     }
     
-    /**
-     * @return Entity An entity corresponding to the classname specified in the
-     * constructor.
-     */
-    public function getSingleResult() {
-        $statement = $this->conn->query($this->query);
+    public function getSingleResult(array $values) {
+        $this->statement->execute($values);
         
-        return $this->getResultListInternal($statement)[0];
+        return $this->getResultListInternal()[0];
     }
 
-    private function getResultListInternal(PDOStatement $statement) {
+    private function getResultListInternal() {
         
         // just needed for oneToOne-relations.
         $foreigns   = array();
@@ -67,7 +52,7 @@ class TypedQuery extends Query {
         $properties = $this->metaDataMap->getPropertiesByColumn($this->classname);
         $relations  = $this->metaDataMap->getRelations($this->classname);
         
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $this->statement->fetch(PDO::FETCH_ASSOC)) {
             
             $entity       = EntityFactory::create($this->classname);
             $primaryValue = null;

@@ -6,7 +6,7 @@ use PDO;
 use PPA\core\exception\TransactionException;
 use PPA\core\mock\MockEntity;
 use PPA\core\mock\MockEntityList;
-use PPA\core\query\Query;
+use PPA\core\query\PreparedQuery;
 use PPA\core\relation\ManyToMany;
 use PPA\core\relation\OneToMany;
 use PPA\core\relation\OneToOne;
@@ -61,6 +61,7 @@ class EntityManager {
         $properties      = $this->emdm->getPropertiesByColumn($classname);
         $relations       = $this->emdm->getRelations($classname);
         $isInsertion     = $primaryProperty->getValue($entity) === null;
+        $values          = array();
         
         // Create query string.
         if ($isInsertion) {
@@ -79,15 +80,17 @@ class EntityManager {
                 if ($property->getRelation() instanceof OneToOne && !($value instanceof MockEntity)) {
                     $this->persist($value);
                     
-                    $foreign = $this->emdm->getPrimaryProperty($property->getRelation()->getMappedBy())->getValue($value);
-                    $query  .= " `{$property->getColumn()}` = '{$foreign}',";
+                    $foreign  = $this->emdm->getPrimaryProperty($property->getRelation()->getMappedBy())->getValue($value);
+                    $values[] = $foreign;
+                    $query   .= " `{$property->getColumn()}` = ?,";
                 }
             } else if ($property->isPrimary() && $isInsertion) {
                 // Primaries should be set automatically on insertions.
                 // This can be omitted, but it brings more clarity.
                 $query .= " `{$property->getColumn()}` = NULL,";
             } else {
-                $query .= " `{$property->getColumn()}` = '{$property->getValue($entity)}',";
+                $query   .= " `{$property->getColumn()}` = ?,";
+                $values[] = $property->getValue($entity);
             }
         }
         $query = substr($query, 0, -1); // Remove last comma.
@@ -95,12 +98,13 @@ class EntityManager {
         
         // Restrict update to specific row.
         if (!$isInsertion) {
-            $query .= " WHERE `{$primaryProperty->getColumn()}` = {$primaryProperty->getValue($entity)}";
+            $query   .= " WHERE `{$primaryProperty->getColumn()}` = ?";
+            $values[] = $primaryProperty->getValue($entity);
         }
         
         
-        $q      = new Query($query);
-        $result = $q->getSingleResult(); // Execute query
+        $q      = new PreparedQuery($query);
+        $result = $q->getSingleResult($values); // Execute query
         
         // Set primary after instertion.
         if ($isInsertion) {
@@ -124,7 +128,6 @@ class EntityManager {
                         
                         $this->persist($value);
                     }
-//                    throw new \Exception();
                 }
             } else if ($relation instanceof ManyToMany) {
                 $values = $relation->getProperty()->getValue($entity);
@@ -139,19 +142,17 @@ class EntityManager {
                     }
                     
                     # TODO: log query and prepared statements
-                    $query = "DELETE FROM `{$relation->getJoinTable()}` WHERE `{$relation->getColumn()}` = '{$primaryProperty->getValue($entity)}'";
-//                    \PPA\prettyDump($query);
-                    $q = new Query($query);
-                    $q->getSingleResult();
+                    $query = "DELETE FROM `{$relation->getJoinTable()}` WHERE `{$relation->getColumn()}` = ?";
+                    $q     = new PreparedQuery($query);
+                    $q->getSingleResult(array($primaryProperty->getValue($entity)));
                     
                     
-                    # TODO: solve this with prepared statements
+                    $query = "INSERT INTO `{$relation->getJoinTable()}` SET `{$relation->getColumn()}` = ?, `{$relation->getX_column()}` = ?";
+                    $q     = new PreparedQuery($query);
+                    
                     foreach ($primaries as $primary) {
                         # TODO: log query
-                        $query = "INSERT INTO `{$relation->getJoinTable()}` SET `{$relation->getColumn()}` = '{$primaryProperty->getValue($entity)}', `{$relation->getX_column()}` = '{$primary}'";
-//                        \PPA\prettyDump($query);
-                        $q = new Query($query);
-                        $q->getSingleResult();
+                        $q->getSingleResult(array($primaryProperty->getValue($entity), $primary));
                     }
                 }
             }
@@ -159,7 +160,14 @@ class EntityManager {
     }
     
     public function remove(Entity $entity) {
+        $classname       = get_class($entity);
+        $tablename       = $this->emdm->getTableName($classname);
+        $primaryProperty = $this->emdm->getPrimaryProperty($classname);
         
+        $query = "DELETE FROM `{$tablename}` WHERE `{$primaryProperty->getColumn()}` = ?";
+        $q     = new PreparedQuery($query);
+        # TODO: make sort of cascading options.
+        return $q->getSingleResult(array($primaryProperty->getValue($entity)));
     }
     
     public function begin() {

@@ -2,7 +2,7 @@
 
 namespace PPA\core\query;
 
-interface iQuery {
+interface iQuery extends iRetrieval {
 
     public function getResultList();
     public function getSingleResult();

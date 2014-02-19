@@ -9,7 +9,6 @@ use PPA\PPA;
 class Query implements iQuery {
 
     /**
-     *
      * @var string the query
      */
     protected $query;
@@ -20,6 +19,11 @@ class Query implements iQuery {
      */
     protected $conn;
 
+    /**
+     * 
+     * 
+     * @param string $query
+     */
     public function __construct($query) {
         $this->conn  = PPA::getInstance()->getConnection();
         $this->query = trim($query);
@@ -29,11 +33,14 @@ class Query implements iQuery {
     }
 
     /**
-     * Depending on the $full_qualified_classname parameter, a list of objects
-     * is returned.
+     * The query is executed.
      * 
-     * @param string $full_qualified_classname The full qualified classname.
-     * @return array A list of objects.
+     * If the query string is a select, then a list of POPOs is returned.
+     * 
+     * If the query string is not a select, this function behaves like
+     * <b>getSingleResult()</b>.
+     * 
+     * @return array A list of POPOs.
      */
     public function getResultList() {
         if ($this->type == "select") {
@@ -44,9 +51,19 @@ class Query implements iQuery {
     }
 
     /**
+     * The query is executed.
+     * This method has some return values, depending on the query and the result
+     * set.
      * 
-     * @param string $full_qualified_classname
-     * @return object|int
+     * On <b>select</b> the first value of the result set is returned as an POPO.
+     * If there is just one column in the result set, only the value of this
+     * column is returnd.
+     * 
+     * On <b>insert</b> the last inserted primary value is returned.
+     * 
+     * On <b>update</b> or <b>delete</b> the number of affected rows is returned.
+     * 
+     * @return mixed
      */
     public function getSingleResult() {
         $statement = $this->conn->query($this->query); # TODO: Prepared statement
