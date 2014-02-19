@@ -32,13 +32,13 @@ class TypedQuery extends Query {
     }
     
     public function getResultList() {
-        $statement = $this->pdo->query($this->query);
+        $statement = $this->conn->query($this->query);
         
         return $this->getResultListInternal($statement);
     }
     
     public function getSingleResult() {
-        $statement = $this->pdo->query($this->query);
+        $statement = $this->conn->query($this->query);
         
         return $this->getResultListInternal($statement)[0];
     }

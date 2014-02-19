@@ -23,13 +23,16 @@ $em = PPA\core\EntityManager::getInstance();
 //$role->addRight(new \PPA\examples\entity\Right("test"));
 //$em->persist($role);
 
+//throw new \PPA\core\exception\TransactionException("test");
+
+$em->begin();
 $order = new \PPA\examples\entity\Order('simon');
 $order->addOrderpos(new PPA\examples\entity\OrderPosition("oida", 10));
 $order->addOrderpos(new PPA\examples\entity\OrderPosition("yunga", 20));
 
 $em->persist($order);
 
-
+$em->commit();
 //PPA\prettyDump($role);
 
 ?>

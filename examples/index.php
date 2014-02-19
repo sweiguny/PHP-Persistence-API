@@ -3,9 +3,9 @@
 $startTime = microtime(true);
 
 
-require_once __DIR__ . '/../Bootstrap.php';
+require_once __DIR__ . '/../PPA.php';
 
-\PPA\Bootstrap::boot("mysql:dbname=ppa;host=127.0.0.1;charset=utf8", "ppa", "ppa");
+\PPA\PPA::init("mysql:dbname=ppa;host=127.0.0.1;charset=utf8", "ppa", "ppa");
 
 
 //include './playground.php';

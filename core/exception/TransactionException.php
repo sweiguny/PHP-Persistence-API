@@ -2,9 +2,7 @@
 
 namespace PPA\core\exception;
 
-use Exception;
-
-class PPA_Exception extends Exception {
+class TransactionException extends PPA_Exception {
 
     public function __construct($message, $code = null) {
         parent::__construct($message, $code);

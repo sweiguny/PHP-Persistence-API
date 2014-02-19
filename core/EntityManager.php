@@ -3,20 +3,20 @@
 namespace PPA\core;
 
 use PDO;
-use PPA\Bootstrap;
+use PPA\core\exception\TransactionException;
 use PPA\core\mock\MockEntity;
 use PPA\core\mock\MockEntityList;
 use PPA\core\query\Query;
 use PPA\core\relation\ManyToMany;
 use PPA\core\relation\OneToMany;
 use PPA\core\relation\OneToOne;
+use PPA\PPA;
 
 class EntityManager {
 
     private static $instance;
 
     /**
-     * 
      * @return EntityManager
      */
     public static function getInstance() {
@@ -29,15 +29,15 @@ class EntityManager {
     /**
      * @var PDO the connection
      */
-    private $pdo;
+    private $conn;
     
     /**
      * @var EntityMetaDataMap
      */
     private $emdm;
-
+    
     private function __construct() {
-        $this->pdo  = Bootstrap::getPDO();
+        $this->conn = PPA::getInstance()->getConnection();
         $this->emdm = EntityMetaDataMap::getInstance();
     }
     
@@ -124,6 +124,7 @@ class EntityManager {
                         
                         $this->persist($value);
                     }
+//                    throw new \Exception();
                 }
             } else if ($relation instanceof ManyToMany) {
                 $values = $relation->getProperty()->getValue($entity);
@@ -161,6 +162,33 @@ class EntityManager {
         
     }
     
+    public function begin() {
+        if ($this->inTransaction()) {
+            throw new TransactionException("Already in an transaction.");
+        }
+        $this->conn->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
+        $this->conn->beginTransaction();
+    }
+    
+    public function commit() {
+        if (!$this->inTransaction()) {
+            throw new TransactionException("Not in an transaction.");
+        }
+        $this->conn->commit();
+        $this->conn->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
+    }
+    
+    public function rollback() {
+        if (!$this->inTransaction()) {
+            throw new TransactionException("Not in an transaction.");
+        }
+        $this->conn->rollBack();
+        $this->conn->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
+    }
+    
+    public function inTransaction() {
+        return $this->conn->inTransaction();
+    }
 }
 
 ?>

@@ -4,7 +4,7 @@ namespace PPA\core\query;
 
 use PDO;
 use PDOStatement;
-use PPA\Bootstrap;
+use PPA\PPA;
 
 class Query implements iQuery {
 
@@ -18,10 +18,10 @@ class Query implements iQuery {
     /**
      * @var PDO the connection
      */
-    protected $pdo;
+    protected $conn;
 
     public function __construct($query) {
-        $this->pdo   = Bootstrap::getPDO();
+        $this->conn  = PPA::getInstance()->getConnection();
         $this->query = trim($query);
 
         $firstWord  = explode(" ", $this->query);
@@ -37,7 +37,7 @@ class Query implements iQuery {
      */
     public function getResultList() {
         if ($this->type == "select") {
-            return $this->getResultListInternal($this->pdo->query($this->query));
+            return $this->getResultListInternal($this->conn->query($this->query));
         } else {
             return $this->getSingleResult();
         }
@@ -46,10 +46,10 @@ class Query implements iQuery {
     /**
      * 
      * @param string $full_qualified_classname
-     * @return object|scalar
+     * @return object|int
      */
     public function getSingleResult() {
-        $statement = $this->pdo->query($this->query); # TODO: Prepared statement
+        $statement = $this->conn->query($this->query); # TODO: Prepared statement
 
         switch ($this->type) {
             case 'select': {
@@ -65,7 +65,7 @@ class Query implements iQuery {
                 $result = $statement->rowCount();
                 break;
             case 'insert':
-                $result = $this->pdo->lastInsertId();
+                $result = $this->conn->lastInsertId();
                 break;
             default:
                 break;
