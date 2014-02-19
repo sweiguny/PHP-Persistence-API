@@ -3,6 +3,8 @@ PHP Persistence API
 
 The PHP Persistence API (`PPA`) is an Interface for PHP-Applications to access Object-Relational data.
 
+##### NOTE: The WIKI is not the latest state of the art.
+
 ***
 
 ## [v1.0.0 released!](https://github.com/sweiguny/PHP-Persistence-API/releases/tag/v1.0.0)
@@ -16,14 +18,14 @@ The PHP Persistence API (`PPA`) is an Interface for PHP-Applications to access O
     - OneToOne
     - OneToMany
     - ManyToMany
-- [TypedQueries](https://github.com/sweiguny/PHP-Persistence-API/wiki/TypedQuery)
+- [TypedQueries](https://github.com/sweiguny/PHP-Persistence-API/wiki/TypedQuery) and PreparedQueries.
+- Transactions
+- CRUD
 - Good performance
   - Eager- & Lazy-loading
 - A neat [WIKI](https://github.com/sweiguny/PHP-Persistence-API/wiki)
 
 **Features in spe:**
-- Transactions
-- CRUD
 - Inheritance
 
 ***
