@@ -145,12 +145,11 @@ class EntityAnalyzer {
             if ($primaryProperty == null) {
                 throw new AnnotationException("Entity '{$this->classname}' does not have an @id annotation.");
             }
-            $this->primaryProperty = $primaryProperty;
-            $this->propertiesByName = $propertiesByName;
+            $this->primaryProperty    = $primaryProperty;
+            $this->propertiesByName   = $propertiesByName;
             $this->propertiesByColumn = $propertiesByColumn;
-            $this->relations = $relations;
-            
-            $this->analyzed = true;
+            $this->relations          = $relations;
+            $this->analyzed           = true;
         }
     }
     

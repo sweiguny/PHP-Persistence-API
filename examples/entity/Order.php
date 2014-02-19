@@ -24,6 +24,14 @@ class Order extends Entity {
      */
     private $customer;
 
+    public function __construct($customer) {
+        $this->customer = $customer;
+        $this->orderPos = array();
+    }
+
+    public function addOrderpos(OrderPosition $orderpos) {
+        $this->orderPos[] = $orderpos;
+    }
 }
 
 ?>

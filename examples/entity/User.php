@@ -31,6 +31,11 @@ class User extends Entity {
      */
     private $role;
     
+    public function __construct($username, $password) {
+        $this->username = $username;
+        $this->password = $password;
+    }
+
     public function getRole() {
         return $this->role;
     }

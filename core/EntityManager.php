@@ -5,6 +5,7 @@ namespace PPA\core;
 use PDO;
 use PPA\Bootstrap;
 use PPA\core\mock\MockEntity;
+use PPA\core\mock\MockEntityList;
 use PPA\core\query\Query;
 use PPA\core\relation\ManyToMany;
 use PPA\core\relation\OneToMany;
@@ -40,8 +41,19 @@ class EntityManager {
         $this->emdm = EntityMetaDataMap::getInstance();
     }
     
-
-
+    /**
+     * This method persists an entity. This means, that all changes of the
+     * specified entity are written to the database.
+     * 
+     * Already mapped entities are updated. Others are inserted. Wheter an entity
+     * is mapped is indicated by a set primary value.
+     * 
+     * All relations are processed as well, unless they're not presented by a
+     * mock. Because a mock indicates, that the relation hasn't been touched nor
+     * changed - so there is no persistence activity required.
+     * 
+     * @param Entity $entity The entity to persist
+     */
     public function persist(Entity $entity) {
         $classname       = get_class($entity);
         $tablename       = $this->emdm->getTableName($classname);
@@ -50,18 +62,20 @@ class EntityManager {
         $relations       = $this->emdm->getRelations($classname);
         $isInsertion     = $primaryProperty->getValue($entity) === null;
         
-        
+        // Create query string.
         if ($isInsertion) {
             $query = "INSERT INTO `{$tablename}` SET";
         } else {
             $query = "UPDATE `{$tablename}` SET";
         }
         
-        
+        // Iterare over properties, to map each to its dedicated column.
         foreach ($properties as $property) {
             if ($property->hasRelation()) {
                 $value = $property->getValue($entity);
                 
+                // Only one-to-one-relations are processed, because they are
+                // mapped by a column in the origin entity table.
                 if ($property->getRelation() instanceof OneToOne && !($value instanceof MockEntity)) {
                     $this->persist($value);
                     
@@ -69,60 +83,78 @@ class EntityManager {
                     $query  .= " `{$property->getColumn()}` = '{$foreign}',";
                 }
             } else if ($property->isPrimary() && $isInsertion) {
+                // Primaries should be set automatically on insertions.
+                // This can be omitted, but it brings more clarity.
                 $query .= " `{$property->getColumn()}` = NULL,";
             } else {
                 $query .= " `{$property->getColumn()}` = '{$property->getValue($entity)}',";
             }
         }
+        $query = substr($query, 0, -1); // Remove last comma.
         
-        $query = substr($query, 0, -1);
+        
+        // Restrict update to specific row.
         if (!$isInsertion) {
             $query .= " WHERE `{$primaryProperty->getColumn()}` = {$primaryProperty->getValue($entity)}";
         }
-        \PPA\prettyDump($query); # TODO: Log queries
-        $q = new Query($query);
         
-        $result = $q->getSingleResult();
+        
+        $q      = new Query($query);
+        $result = $q->getSingleResult(); // Execute query
+        
+        // Set primary after instertion.
         if ($isInsertion) {
             $primaryProperty->setValue($entity, $result);
         }
-        \PPA\prettyDump($primaryProperty->getValue($entity));
         
         
+        // Process relations exception one-to-one.
         foreach ($relations as $relation) {
-//            \PPA\prettyDump($relation);
             if ($relation instanceof OneToMany) {
-                
-                
-                
-            } else if ($relation instanceof ManyToMany) {
-                
                 $values = $relation->getProperty()->getValue($entity);
-                if (!($values instanceof mock\MockEntityList)) {
-                    
-                    \PPA\prettyDump($values);
-                    
+                
+                // Omit processing mock, because a mock indicates no changes.
+                if (!($values instanceof MockEntityList)) {
+                    foreach ($values as $value) {
+                        $propertiesOfRelation = $this->emdm->getPropertiesByColumn($relation->getMappedBy());
+                        
+                        if ($propertiesOfRelation[$relation->getX_column()]->getValue($value) === null) {
+                            $propertiesOfRelation[$relation->getX_column()]->setValue($value, $primaryProperty->getValue($entity));
+                        }
+                        
+                        $this->persist($value);
+                    }
+                }
+            } else if ($relation instanceof ManyToMany) {
+                $values = $relation->getProperty()->getValue($entity);
+                
+                // Omit processing mock, because a mock indicates no changes.
+                if (!($values instanceof MockEntityList)) {
                     $primaries = array();
                     
                     foreach ($values as $value) {
                         $this->persist($value);
-                        
-                        $primaryProperty = $this->emdm->getPrimaryProperty($relation->getMappedBy());
-                        $primaryValue    = $primaryProperty->getValue($value);
-                        $primaries[]     = $primaryValue;
+                        $primaries[] = $this->emdm->getPrimaryProperty($relation->getMappedBy())->getValue($value);
                     }
                     
-                    \PPA\prettyDump($values);
-                    \PPA\prettyDump($primaries);
+                    # TODO: log query and prepared statements
+                    $query = "DELETE FROM `{$relation->getJoinTable()}` WHERE `{$relation->getColumn()}` = '{$primaryProperty->getValue($entity)}'";
+//                    \PPA\prettyDump($query);
+                    $q = new Query($query);
+                    $q->getSingleResult();
                     
-                    // delete from jointable where column = primaryvalue and x_column not in $primaries
                     
+                    # TODO: solve this with prepared statements
+                    foreach ($primaries as $primary) {
+                        # TODO: log query
+                        $query = "INSERT INTO `{$relation->getJoinTable()}` SET `{$relation->getColumn()}` = '{$primaryProperty->getValue($entity)}', `{$relation->getX_column()}` = '{$primary}'";
+//                        \PPA\prettyDump($query);
+                        $q = new Query($query);
+                        $q->getSingleResult();
+                    }
                 }
             }
         }
-        
-//        \PPA\prettyDump($result);
-//        return $result;
     }
     
     public function remove(Entity $entity) {

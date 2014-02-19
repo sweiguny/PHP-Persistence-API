@@ -30,10 +30,15 @@ class OrderPosition extends Entity {
      */
     private $price;
     
-    public function __construct() {
-        
+    public function __construct($article, $price) {
+        $this->article = $article;
+        $this->price   = $price;
     }
 
+    public function setOrderId($orderId) {
+        $this->orderId = $orderId;
+    }
+    
 }
 
 ?>

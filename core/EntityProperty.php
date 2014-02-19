@@ -54,7 +54,7 @@ class EntityProperty extends ReflectionProperty {
     public function makePrimary($primary = true) {
         $this->isPrimary = (bool)$primary;
     }
-
+    
 
 }
 
