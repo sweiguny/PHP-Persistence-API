@@ -36,6 +36,7 @@ class EntityManager {
      */
     private $emdm;
     
+    private function __clone() { }
     private function __construct() {
         $this->conn = PPA::getInstance()->getConnection();
         $this->emdm = EntityMetaDataMap::getInstance();
@@ -159,6 +160,12 @@ class EntityManager {
         }
     }
     
+    /**
+     * Removes an entity from the database.
+     * 
+     * @param Entity $entity The entity to remove from database.
+     * @return int The number of affected rows.
+     */
     public function remove(Entity $entity) {
         $classname       = get_class($entity);
         $tablename       = $this->emdm->getTableName($classname);
@@ -169,6 +176,8 @@ class EntityManager {
         # TODO: make sort of cascading options.
         return $q->getSingleResult(array($primaryProperty->getValue($entity)));
     }
+    
+    # TODO: outsource the following methods.
     
     public function begin() {
         if ($this->inTransaction()) {

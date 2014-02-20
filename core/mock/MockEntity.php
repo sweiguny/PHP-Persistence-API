@@ -53,6 +53,9 @@ class MockEntity extends Entity {
         }
     }
 
+    /**
+     * @return Entity The true entity instead of the mock.
+     */
     protected function exchange() {
         $entity = $this->query->getSingleResult($this->values);
         $this->property->setValue($this->owner, $entity);

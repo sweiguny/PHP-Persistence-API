@@ -9,11 +9,11 @@ class EntityFactory {
 
     /**
      * Instantiates an instance of the given classname, but without calling the
-     * constructor. It is necessary, that the class is a subclass of \PPA\Entity.
+     * constructor. It is necessary, that the class is a subclass of \PPA\core\Entity.
      * 
      * @param string $classname
      * @return Entity An instance of the classname.
-     * @throws NoEntityException If the classname is not a subclass of \PPA\Entity.
+     * @throws NoEntityException
      */
     public static function create($classname) {
         $reflection = new ReflectionClass($classname);

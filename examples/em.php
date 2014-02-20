@@ -13,11 +13,8 @@ $em = PPA\core\EntityManager::getInstance();
 
 //$em->persist(new PPA\examples\entity\User());
 
-//$query = new PPA\core\query\TypedQuery("select * from `role` where id=1", "\\PPA\\examples\\entity\\Role");
-//$role = $query->getSingleResult();
-
-
-$role = new PPA\examples\entity\Role("neu");
+$query = new PPA\core\query\TypedQuery("select * from `role` where id=1", "\\PPA\\examples\\entity\\Role");
+$role = $query->getSingleResult();
 
 $role->addRight(new \PPA\examples\entity\Right("test"));
 $role->addRight(new \PPA\examples\entity\Right("test"));

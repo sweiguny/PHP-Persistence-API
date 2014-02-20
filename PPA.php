@@ -107,8 +107,7 @@ class PPA {
 }
 
 /**
- * This function is provided by PPA to show variables in a more human readable
- * way.
+ * This function is provided by PPA to show variables in a more human readable way.
  * 
  * @param mixed $param
  */

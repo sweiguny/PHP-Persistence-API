@@ -23,12 +23,14 @@ class EntityProperty extends ReflectionProperty {
         $this->column = $column;
     }
     
+    /**
+     * @param Relation $relation
+     */
     public function setRelation(Relation $relation) {
         $this->relation = $relation;
     }
     
     /**
-     * 
      * @return Relation
      */
     public function getRelation() {
@@ -36,6 +38,7 @@ class EntityProperty extends ReflectionProperty {
     }
 
     /**
+     * Checks if the property represents a relation to another entity.
      * 
      * @return bool
      */
@@ -44,6 +47,7 @@ class EntityProperty extends ReflectionProperty {
     }
     
     /**
+     * Checks if the property is the primary.
      * 
      * @return bool
      */
@@ -51,10 +55,14 @@ class EntityProperty extends ReflectionProperty {
         return $this->isPrimary;
     }
 
+    /**
+     * Defines the property as primary.
+     * 
+     * @param bool $primary 
+     */
     public function makePrimary($primary = true) {
         $this->isPrimary = (bool)$primary;
     }
-    
 
 }
 

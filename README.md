@@ -7,20 +7,20 @@ The PHP Persistence API (`PPA`) is an Interface for PHP-Applications to access O
 
 ***
 
-## [v1.0.0 released!](https://github.com/sweiguny/PHP-Persistence-API/releases/tag/v1.0.0)
+### [v1.0.0 released!](https://github.com/sweiguny/PHP-Persistence-API/releases/tag/v1.0.0)
 
 ***
 
-**Features:**
-- Easy to embed in your project
+#### Features:
+- [Easy to embed in your project](https://github.com/sweiguny/PHP-Persistence-API/wiki/Embedding-PPA)
 - Configure entities via [annotations](https://github.com/sweiguny/PHP-Persistence-API/wiki/Annotations-&-Parameters) (no xml!)
   - Relations
     - OneToOne
     - OneToMany
     - ManyToMany
 - [TypedQueries](https://github.com/sweiguny/PHP-Persistence-API/wiki/TypedQuery) and PreparedQueries.
-- Transactions
 - CRUD
+  - Transactions
 - Good performance
   - Eager- & Lazy-loading
 - A neat [WIKI](https://github.com/sweiguny/PHP-Persistence-API/wiki)
@@ -30,16 +30,17 @@ The PHP Persistence API (`PPA`) is an Interface for PHP-Applications to access O
 
 ***
 
-## Examples:
+### Examples:
 
 **Configuring your entities:**
 
+    namespace PPA\examples\entity;
     use PPA\core\Entity;
 
     /**
-     * @table(name="user")
+     * @table(name="role")
      */
-    class User extends Entity {
+    class Role extends Entity {
 
         /**
          * @id
@@ -47,35 +48,23 @@ The PHP Persistence API (`PPA`) is an Interface for PHP-Applications to access O
          */
         private $id;
 
-        /**
-         * @Column(name="username")
-         */
-        private $username;
+        /** @column(name="name") */
+        private $name;
 
         /**
-         * @Column(name="password")
+         * @manyToMany(fetch = "eager", mappedBy = "_PPA_examples_entity_Right")
+         * @joinTable(name = "role2right", column = "role_id", x_column = "right_id")
          */
-        private $password;
-
-        /**
-         * @Column(name="role_id");
-         * @oneToOne(fetch="lazy", mappedBy = "_PPA_examples_entity_Role")
-         */
-        private $role;
-
-        public function getRole() {
-            return $this->role;
-        }
+        private $rights = array();
     }
 
 ***
 
 **Retrieving data:**
 
-    use PPA\core\query\TypedQuery;
-    
-    // A TypedQuery can automatically resolve all the relations and give an appropriate output.
-    $query = new TypedQuery("SELECT * FROM `role` WHERE id = 2", "\\PPA\\examples\\entity\\Role");
+A TypedQuery can automatically resolve all the relations and give an appropriate output.
+
+    $query = new \PPA\core\query\TypedQuery("SELECT * FROM `role` WHERE id = 2", "\\PPA\\examples\\entity\\Role");
     $query->getSingleResult();
 
     Returns:
@@ -95,24 +84,5 @@ The PHP Persistence API (`PPA`) is an Interface for PHP-Applications to access O
                         [id:PPA\examples\entity\Right:private] => 1
                         [desc:PPA\examples\entity\Right:private] => login
                     )
-                [2] => PPA\examples\entity\Right Object
-                    (
-                        [id:PPA\examples\entity\Right:private] => 2
-                        [desc:PPA\examples\entity\Right:private] => logout
-                    )
-                [3] => PPA\examples\entity\Right Object
-                    (
-                        [id:PPA\examples\entity\Right:private] => 5
-                        [desc:PPA\examples\entity\Right:private] => create_order
-                    )
-                [4] => PPA\examples\entity\Right Object
-                    (
-                        [id:PPA\examples\entity\Right:private] => 4
-                        [desc:PPA\examples\entity\Right:private] => delete_order
-                    )
             )
     )
-
-***
-
-For more examples, please see the [WIKI](https://github.com/sweiguny/PHP-Persistence-API/wiki).

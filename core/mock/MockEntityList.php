@@ -47,6 +47,9 @@ class MockEntityList extends MockEntity implements ArrayAccess, Countable, Itera
         }
     }
 
+    /**
+     * Exchanges the mock list with an array that contains true entities.
+     */
     protected function exchange() {
         if ($this->entities == null) {
             $this->entities = $this->query->getResultList($this->values);
@@ -65,11 +68,13 @@ class MockEntityList extends MockEntity implements ArrayAccess, Countable, Itera
     }
 
     public function offsetSet($offset, $value) {
-        throw new BadMethodCallException("Not possible.");
+        $this->exchange();
+        return $this->entities[$offset] = $value;
     }
 
     public function offsetUnset($offset) {
-        throw new BadMethodCallException("Not possible.");
+        $this->exchange();
+        unset($this->entities[$offset]);
     }
 
     public function count() {

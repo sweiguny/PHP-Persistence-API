@@ -31,10 +31,39 @@ class EntityAnalyzer {
      */
     private $analyzed = false;
     
+    /**
+     * The property that represents the primary key in the table.
+     * 
+     * @var EntityProperty
+     */
     private $primaryProperty;
+    
+    /**
+     * The name of the table to which the entity is mapped.
+     * 
+     * @var string
+     */
     private $tableName;
+    
+    /**
+     * An array filled with properties indexed by the property name.
+     * 
+     * @var array
+     */
     private $propertiesByName;
+    
+    /**
+     * An array filled with properties indexed by the column name.
+     * 
+     * @var array
+     */
     private $propertiesByColumn;
+    
+    /**
+     * An array filled with all relations of the entity.
+     * 
+     * @var array
+     */
     private $relations;
     
     /**
@@ -80,8 +109,12 @@ class EntityAnalyzer {
         if ($this->analyzed) {
             # TODO: trigger error and/or log message
         } else {
-            
-            $annotations = $this->extractAnnotations($this->reflector->getDocComment());
+            $primaryProperty    = null;
+            $propertiesByName   = array();
+            $propertiesByColumn = array();
+            $relations          = array();
+            $properties         = $this->reflector->getProperties();
+            $annotations        = $this->extractAnnotations($this->reflector->getDocComment());
             
             if (isset($annotations["@table"]) && isset($annotations["@table"]["name"])) {
                 $this->tableName = $annotations["@table"]["name"];
@@ -89,15 +122,6 @@ class EntityAnalyzer {
                 $this->tableName = strtolower($this->reflector->getShortName());
             }
             
-            
-            # --------------------
-            
-            
-            $primaryProperty    = null;
-            $propertiesByName   = array();
-            $propertiesByColumn = array();
-            $relations          = array();
-            $properties         = $this->reflector->getProperties();
             
             foreach ($properties as $property) {
                 $annotations = $this->extractAnnotations($property->getDocComment());
@@ -145,6 +169,7 @@ class EntityAnalyzer {
             if ($primaryProperty == null) {
                 throw new AnnotationException("Entity '{$this->classname}' does not have an @id annotation.");
             }
+            
             $this->primaryProperty    = $primaryProperty;
             $this->propertiesByName   = $propertiesByName;
             $this->propertiesByColumn = $propertiesByColumn;
@@ -154,8 +179,10 @@ class EntityAnalyzer {
     }
     
     /**
-     * @param array $annotations
-     * @throws AnnotationException when some annotations are not compliant.
+     * Gives an appropriate output of which combination is not proper.
+     * 
+     * @param array $annotations The annotations of the properties.
+     * @throws AnnotationException
      */
     private function handleUncombinables(array $annotations) {
         if (isset($annotations["@joinTable"])) {
