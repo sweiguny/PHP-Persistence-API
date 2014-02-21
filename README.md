@@ -7,10 +7,6 @@ The PHP Persistence API (`PPA`) is an Interface for PHP-Applications to access O
 
 ***
 
-### [v1.0.0 released!](https://github.com/sweiguny/PHP-Persistence-API/releases/tag/v1.0.0)
-
-***
-
 #### Features:
 - [Easy to embed in your project](https://github.com/sweiguny/PHP-Persistence-API/wiki/Embedding-PPA)
 - Configure entities via [annotations](https://github.com/sweiguny/PHP-Persistence-API/wiki/Annotations-&-Parameters) (no xml!)
@@ -33,56 +29,57 @@ The PHP Persistence API (`PPA`) is an Interface for PHP-Applications to access O
 ### Examples:
 
 **Configuring your entities:**
+```php
+namespace PPA\examples\entity;
+use PPA\core\Entity;
 
-    namespace PPA\examples\entity;
-    use PPA\core\Entity;
+/**
+ * @table(name="role")
+ */
+class Role extends Entity {
 
     /**
-     * @table(name="role")
+     * @id
+     * @column(name="id")
      */
-    class Role extends Entity {
+    private $id;
 
-        /**
-         * @id
-         * @column(name="id")
-         */
-        private $id;
+    /** @column(name="name") */
+    private $name;
 
-        /** @column(name="name") */
-        private $name;
-
-        /**
-         * @manyToMany(fetch = "eager", mappedBy = "_PPA_examples_entity_Right")
-         * @joinTable(name = "role2right", column = "role_id", x_column = "right_id")
-         */
-        private $rights = array();
-    }
-
+    /**
+     * @manyToMany(fetch = "eager", mappedBy = "_PPA_examples_entity_Right")
+     * @joinTable(name = "role2right", column = "role_id", x_column = "right_id")
+     */
+    private $rights = array();
+}
+```
 ***
 
 **Retrieving data:**
 
 A TypedQuery can automatically resolve all the relations and give an appropriate output.
+```php
+$query = new \PPA\core\query\TypedQuery("SELECT * FROM `role` WHERE id = 2", "\\PPA\\examples\\entity\\Role");
+$query->getSingleResult();
 
-    $query = new \PPA\core\query\TypedQuery("SELECT * FROM `role` WHERE id = 2", "\\PPA\\examples\\entity\\Role");
-    $query->getSingleResult();
-
-    Returns:
-    PPA\examples\entity\Role Object
-    (
-        [id:PPA\examples\entity\Role:private] => 1
-        [name:PPA\examples\entity\Role:private] => admin
-        [rights:PPA\examples\entity\Role:private] => Array
-            (
-                [0] => PPA\examples\entity\Right Object
-                    (
-                        [id:PPA\examples\entity\Right:private] => 3
-                        [desc:PPA\examples\entity\Right:private] => ch-pw
-                    )
-                [1] => PPA\examples\entity\Right Object
-                    (
-                        [id:PPA\examples\entity\Right:private] => 1
-                        [desc:PPA\examples\entity\Right:private] => login
-                    )
-            )
-    )
+Returns:
+PPA\examples\entity\Role Object
+(
+    [id:PPA\examples\entity\Role:private] => 1
+    [name:PPA\examples\entity\Role:private] => admin
+    [rights:PPA\examples\entity\Role:private] => Array
+        (
+            [0] => PPA\examples\entity\Right Object
+                (
+                    [id:PPA\examples\entity\Right:private] => 3
+                    [desc:PPA\examples\entity\Right:private] => ch-pw
+                )
+            [1] => PPA\examples\entity\Right Object
+                (
+                    [id:PPA\examples\entity\Right:private] => 1
+                    [desc:PPA\examples\entity\Right:private] => login
+                )
+        )
+)
+```
