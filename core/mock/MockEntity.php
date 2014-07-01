@@ -10,26 +10,60 @@ use PPA\core\query\PreparedTypedQuery;
 
 class MockEntity extends Entity {
 
-    protected $owner;
-    protected $property;
+    /**
+     * The query for retrieving the true data.
+     * 
+     * @var string
+     */
     protected $query;
+    
+    /**
+     * The classname of the real object.
+     * 
+     * @var string
+     */
+    protected $classname;
+    
+    /**
+     * The owner is the parent Entity on which the relationchips are hanging.
+     * 
+     * @var Entity
+     */
+    protected $owner;
+    
+    /**
+     * This object gives the capability to set a certain value to the real
+     * Entity.
+     * 
+     * @var EntityProperty
+     */
+    protected $property;
+    
+    /**
+     * The values for the prepared query.
+     * 
+     * @var array
+     */
     protected $values;
 
+    
     /**
      * The MockEntity serves as replacement for a real Entity. On method calls
      * to an instantiated MockEntity, it will replace itself with a real entity,
      * regarding the properties that are set.
      * 
+     * @param string $query
      * @param string $classname
-     * @param mixed $value
      * @param Entity $owner
      * @param EntityProperty $property
+     * @param array $values
      */
-    public function __construct(PreparedTypedQuery $query, Entity $owner, EntityProperty $property, array $values) {
-        $this->query    = $query;
-        $this->owner    = $owner;
-        $this->property = $property;
-        $this->values   = $values;
+    public function __construct($query, $classname, Entity $owner, EntityProperty $property, array $values) {
+        $this->query     = $query;
+        $this->classname = $classname;
+        $this->owner     = $owner;
+        $this->property  = $property;
+        $this->values    = $values;
     }
 
     /**
@@ -57,7 +91,9 @@ class MockEntity extends Entity {
      * @return Entity The true entity instead of the mock.
      */
     protected function exchange() {
-        $entity = $this->query->getSingleResult($this->values);
+        $query  = new PreparedTypedQuery($this->query, $this->classname);
+        $entity = $query->getSingleResult($this->values);
+        
         $this->property->setValue($this->owner, $entity);
         
         return $entity;

@@ -106,6 +106,8 @@ class EntityManager {
         
         $q      = new PreparedQuery($query);
         $result = $q->getSingleResult($values); // Execute query
+//        \PPA\prettyDump($query);
+//        \PPA\prettyDump($values);
         
         // Set primary after instertion.
         if ($isInsertion) {
@@ -177,6 +179,10 @@ class EntityManager {
         return $q->getSingleResult(array($primaryProperty->getValue($entity)));
     }
     
+    public function find($fullyQualifiedClassname, $primaryValue) {
+        
+    }
+
     # TODO: outsource the following methods.
     
     public function begin() {

@@ -116,11 +116,11 @@ class TypedQuery extends Query {
 
         $query  = "SELECT * FROM `{$table}` WHERE {$primary->getColumn()} = ?";
         $values = array($foreigns[$relation->getMappedBy()]);
-        $q      = new PreparedTypedQuery($query, $relation->getMappedBy());
         
         if ($relation->isLazy()) {
-            return new MockEntity($q, $entity, $relation->getProperty(), $values);
+            return new MockEntity($query, $relation->getMappedBy(), $entity, $relation->getProperty(), $values);
         } else {
+            $q = new PreparedTypedQuery($query, $relation->getMappedBy());
             return $q->getSingleResult($values);
         }
     }
@@ -130,29 +130,29 @@ class TypedQuery extends Query {
 
         $query  = "SELECT * FROM `{$table}` WHERE {$x_column} = ?";
         $values = array($primaryValue);
-        $q      = new PreparedTypedQuery($query, $relation->getMappedBy());
 
         if ($relation->isLazy()) {
-            return new MockEntityList($q, $entity, $relation->getProperty(), $values);
+            return new MockEntityList($query, $relation->getMappedBy(), $entity, $relation->getProperty(), $values);
         } else {
+            $q = new PreparedTypedQuery($query, $relation->getMappedBy());
             return $q->getResultList($values);
         }
     }
     
     private function handleManyToMany(Entity $entity, ManyToMany $relation, $table, $primaryValue) {
-            $primary   = $this->metaDataMap->getPrimaryProperty($this->classname);
+        $primary   = $this->metaDataMap->getPrimaryProperty($this->classname);
 
-            $joinTable = $relation->getJoinTable();
-            $column    = $relation->getColumn();
-            $x_column  = $relation->getX_column();
+        $joinTable = $relation->getJoinTable();
+        $column    = $relation->getColumn();
+        $x_column  = $relation->getX_column();
 
-            $query  = "SELECT `{$table}`.* FROM `{$joinTable}` JOIN `{$table}` ON (`{$joinTable}`.{$x_column} = `{$table}`.{$primary->getColumn()}) WHERE `{$joinTable}`.{$column} = ?";
-            $values = array($primaryValue);
-            $q      = new PreparedTypedQuery($query, $relation->getMappedBy());
+        $query  = "SELECT `{$table}`.* FROM `{$joinTable}` JOIN `{$table}` ON (`{$joinTable}`.{$x_column} = `{$table}`.{$primary->getColumn()}) WHERE `{$joinTable}`.{$column} = ?";
+        $values = array($primaryValue);
 
         if ($relation->isLazy()) {
-            return new MockEntityList($q, $entity, $relation->getProperty(), $values);
+            return new MockEntityList($query, $relation->getMappedBy(), $entity, $relation->getProperty(), $values);
         } else {
+            $q = new PreparedTypedQuery($query, $relation->getMappedBy());
             return $q->getResultList($values);
         }
     }

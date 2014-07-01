@@ -13,6 +13,10 @@ use PPA\core\query\PreparedTypedQuery;
 
 class MockEntityList extends MockEntity implements ArrayAccess, Countable, Iterator {
 
+    /**
+     *
+     * @var array
+     */
     private $entities;
 
     /**
@@ -20,13 +24,14 @@ class MockEntityList extends MockEntity implements ArrayAccess, Countable, Itera
      * to an instantiated MockEntity, it will replace itself with a real entity,
      * regarding the properties that are set.
      * 
+     * @param string $query
      * @param string $classname
-     * @param mixed $value
      * @param Entity $owner
      * @param EntityProperty $property
+     * @param array $values
      */
-    public function __construct(PreparedTypedQuery $query, Entity $owner, EntityProperty $property, array $values) {
-        parent::__construct($query, $owner, $property, $values);
+    public function __construct($query, $classname, Entity $owner, EntityProperty $property, array $values) {
+        parent::__construct($query, $classname, $owner, $property, $values);
     }
 
     /**
@@ -52,7 +57,9 @@ class MockEntityList extends MockEntity implements ArrayAccess, Countable, Itera
      */
     protected function exchange() {
         if ($this->entities == null) {
-            $this->entities = $this->query->getResultList($this->values);
+            $query          = new PreparedTypedQuery($this->query, $this->classname);
+            $this->entities = $query->getResultList($this->values);
+            
             $this->property->setValue($this->owner, $this->entities);
         }
     }
@@ -69,7 +76,19 @@ class MockEntityList extends MockEntity implements ArrayAccess, Countable, Itera
 
     public function offsetSet($offset, $value) {
         $this->exchange();
-        return $this->entities[$offset] = $value;
+        
+        if ($offset == null) {
+            $this->entities[] = $value;
+        } else {
+            $this->entities[$offset] = $value;
+        }
+        
+        // Must be done twice (first time is in method 'exchange()'), because to
+        // '$this->property->setValue(...)' the parameters are passed by value
+        // and not by reference. As the entities are changed after the first
+        // time, they must be set a second time.
+        // Maybe some genius can increase the quality of this explanation. ;)
+        $this->property->setValue($this->owner, $this->entities);
     }
 
     public function offsetUnset($offset) {
