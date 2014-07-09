@@ -44,7 +44,11 @@ class Query implements iQuery {
      */
     public function getResultList() {
         if ($this->type == "select") {
-            return $this->getResultListInternal($this->conn->query($this->query));
+            PPA::log(2500, "Executing query for resultlist: {$this->query}");
+            $result = $this->getResultListInternal($this->conn->query($this->query));
+            
+            PPA::log(2510, "Retrieved " . count($result) . " rows");
+            return $result;
         } else {
             return $this->getSingleResult();
         }
@@ -66,23 +70,30 @@ class Query implements iQuery {
      * @return mixed
      */
     public function getSingleResult() {
-        $statement = $this->conn->query($this->query); # TODO: Prepared statement
+        PPA::log(2000, "Executing query for single result: {$this->query}");
+        
+        $statement = $this->conn->query($this->query);
+        $result    = null;
 
         switch ($this->type) {
             case 'select': {
                     if ($statement->columnCount() == 1) {
                         $result = $statement->fetchColumn();
+                        PPA::log(2015, "Retrieved scalar: {$result}");
                     } else {
                         $result = $this->getResultListInternal($statement)[0];
+                        PPA::log(2010, "Retrieved one row");
                     }
                     break;
                 }
             case 'update':
             case 'delete':
                 $result = $statement->rowCount();
+                PPA::log(2020, "{$result} rows affected");
                 break;
             case 'insert':
                 $result = $this->conn->lastInsertId();
+                PPA::log(2030, "Last inserted primary key: {$result}");
                 break;
             default:
                 break;

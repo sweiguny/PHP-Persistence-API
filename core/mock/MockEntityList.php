@@ -9,6 +9,7 @@ use Iterator;
 use PPA\core\Entity;
 use PPA\core\EntityProperty;
 use PPA\core\query\PreparedTypedQuery;
+use PPA\PPA;
 
 
 class MockEntityList extends MockEntity implements ArrayAccess, Countable, Iterator {
@@ -57,6 +58,7 @@ class MockEntityList extends MockEntity implements ArrayAccess, Countable, Itera
      */
     protected function exchange() {
         if ($this->entities == null) {
+            PPA::log(1011, "MockEntityList exchanges itself with a list of real Entities ('{$this->classname}')");
             $query          = new PreparedTypedQuery($this->query, $this->classname);
             $this->entities = $query->getResultList($this->values);
             

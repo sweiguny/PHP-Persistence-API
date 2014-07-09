@@ -12,6 +12,7 @@ use PPA\core\mock\MockEntityList;
 use PPA\core\relation\ManyToMany;
 use PPA\core\relation\OneToMany;
 use PPA\core\relation\OneToOne;
+use PPA\PPA;
 
 class PreparedTypedQuery extends PreparedQuery {
     
@@ -19,27 +20,32 @@ class PreparedTypedQuery extends PreparedQuery {
     protected $metaDataMap;
 
     public function __construct($query, $fullyQualifiedClassname) {
+        $this->classname   = trim($fullyQualifiedClassname);
+        $this->metaDataMap = EntityMetaDataMap::getInstance();
+        
         parent::__construct($query);
         
         if ($this->type != "select") {
             throw new DomainException("Can only be a SELECT-statement.");
         }
-        
-        $this->classname   = trim($fullyQualifiedClassname);
-        $this->metaDataMap = EntityMetaDataMap::getInstance();
-        $this->statement   = $this->conn->prepare($this->query);
-    }
-    
-    public function getResultList(array $values) {
-        $this->statement->execute($values);
-        
-        return $this->getResultListInternal();
     }
     
     public function getSingleResult(array $values) {
+        PPA::log(5001, "Executing query for single result for class '" . $this->classname . "': {$this->query}");
         $this->statement->execute($values);
         
-        return $this->getResultListInternal()[0];
+        $result = $this->getResultListInternal()[0];
+        PPA::log(5010, "Retrieved one Entity ('\\" . get_class($result) . "') " . $result->getShortInfo());
+        return $result;
+    }
+    
+    public function getResultList(array $values) {
+        PPA::log(5501, "Executing query for resultlist for class '" . $this->classname . "': {$this->query}");
+        $this->statement->execute($values);
+        
+        $result = $this->getResultListInternal();
+        PPA::log(5510, "Retrieved " . count($result) . " Entities");
+        return $result;
     }
 
     private function getResultListInternal() {
@@ -92,7 +98,7 @@ class PreparedTypedQuery extends PreparedQuery {
     }
     
     # ==========================================================================
-    # The following methods must be equal to the same in TypedQuery
+    # The following methods must be similar to the same in TypedQuery
     # ==========================================================================
     
     private function handleOneToOne(Entity $entity, OneToOne $relation, $table, array $foreigns) {
@@ -102,8 +108,10 @@ class PreparedTypedQuery extends PreparedQuery {
         $values = array($foreigns[$relation->getMappedBy()]);
         
         if ($relation->isLazy()) {
+            PPA::log(1001, "Lazy OneToOne-Relation - MockEntity will be created");
             return new MockEntity($query, $relation->getMappedBy(), $entity, $relation->getProperty(), $values);
         } else {
+            PPA::log(1002, "Eager OneToOne-Relation - Query will be created");
             $q = new PreparedTypedQuery($query, $relation->getMappedBy());
             return $q->getSingleResult($values);
         }
@@ -116,8 +124,10 @@ class PreparedTypedQuery extends PreparedQuery {
         $values = array($primaryValue);
 
         if ($relation->isLazy()) {
+            PPA::log(1003, "Lazy OneToMany-Relation - MockEntityList will be created");
             return new MockEntityList($query, $relation->getMappedBy(), $entity, $relation->getProperty(), $values);
         } else {
+            PPA::log(1004, "Eager OneToMany-Relation - Query will be created");
             $q = new PreparedTypedQuery($query, $relation->getMappedBy());
             return $q->getResultList($values);
         }
@@ -134,8 +144,10 @@ class PreparedTypedQuery extends PreparedQuery {
         $values = array($primaryValue);
 
         if ($relation->isLazy()) {
+            PPA::log(1005, "Lazy ManyToMany-Relation - MockEntityList will be created");
             return new MockEntityList($query, $relation->getMappedBy(), $entity, $relation->getProperty(), $values);
         } else {
+            PPA::log(1006, "Eager ManyToMany-Relation - Query will be created");
             $q = new PreparedTypedQuery($query, $relation->getMappedBy());
             return $q->getResultList($values);
         }

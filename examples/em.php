@@ -1,5 +1,7 @@
 <?php
 
+PPA\PPA::getInstance()->setLogger(new \PPA\examples\Logger());
+PPA\PPA::getInstance()->setLogger(new \PPA\examples\Logger());
 $em = PPA\core\EntityManager::getInstance();
 
 
@@ -17,8 +19,8 @@ $query = new PPA\core\query\TypedQuery("select * from `role` where id=1", "\\PPA
 $role = $query->getSingleResult();
 
 $role->addRight(new \PPA\examples\entity\Right("test"));
-$role->addRight(new \PPA\examples\entity\Right("test"));
-$em->persist($role);
+//$role->addRight(new \PPA\examples\entity\Right("test"));
+//$em->persist($role);
 
 //throw new \PPA\core\exception\TransactionException("test");
 

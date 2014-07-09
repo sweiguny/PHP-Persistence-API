@@ -175,19 +175,19 @@ class EntityManager {
         
         $query = "DELETE FROM `{$tablename}` WHERE `{$primaryProperty->getColumn()}` = ?";
         $q     = new PreparedQuery($query);
+        
         # TODO: make sort of cascading options.
+        
         return $q->getSingleResult(array($primaryProperty->getValue($entity)));
     }
     
     public function find($fullyQualifiedClassname, $primaryValue) {
         
     }
-
-    # TODO: outsource the following methods.
     
     public function begin() {
         if ($this->inTransaction()) {
-            throw new TransactionException("Already in an transaction.");
+            throw new TransactionException("Already in a transaction.");
         }
         $this->conn->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
         $this->conn->beginTransaction();
@@ -195,7 +195,7 @@ class EntityManager {
     
     public function commit() {
         if (!$this->inTransaction()) {
-            throw new TransactionException("Not in an transaction.");
+            throw new TransactionException("Not in a transaction.");
         }
         $this->conn->commit();
         $this->conn->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
@@ -203,7 +203,7 @@ class EntityManager {
     
     public function rollback() {
         if (!$this->inTransaction()) {
-            throw new TransactionException("Not in an transaction.");
+            throw new TransactionException("Not in a transaction.");
         }
         $this->conn->rollBack();
         $this->conn->setAttribute(PDO::ATTR_AUTOCOMMIT, true);

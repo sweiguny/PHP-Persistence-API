@@ -2,9 +2,12 @@
 
 namespace PPA;
 
+use Exception;
 use PDO;
 use PPA\core\EntityManager;
 use PPA\core\exception\PPA_Exception;
+use PPA\core\iPPA_Logger;
+use PPA\core\PPA_DummyLogger;
 
 class PPA {
     
@@ -21,10 +24,23 @@ class PPA {
         return self::$instance;
     }
 
+    private static $OPTIONS = array(
+        "LOG_INSERTS"               => true,
+        "LOG_UPDATES"               => true,
+        "LOG_DELETES"               => true,
+        "LOG_NOTIFICATIONS"         => true,
+    );
+
     /**
      * @var PDO The database connection
      */
     private $conn;
+    
+    /**
+     *
+     * @var iPPA_Logger
+     */
+    private $logger;
 
     /**
      * This function in essence connects to the database using PDO, hence the
@@ -40,8 +56,9 @@ class PPA {
      * @param string $dsn The <b>d</b>ata <b>s</b>ource <b>n</b>ame - see PDO-doc
      * @param string $username The database username - see PDO-doc
      * @param string $password The database password - see PDO-doc
+     * @param array $options Options for PPA. Mainly logging options.
      */
-    public static function init($dsn, $username, $password) {
+    public static function init($dsn, $username, $password, array $options = array()) {
         if (self::$instance != null) {
             throw new PPA_Exception("PHP Persitence API already inited.");
         }
@@ -49,6 +66,26 @@ class PPA {
         require_once __DIR__ . '/Util.php';
         
         self::$instance = new self($dsn, $username, $password);
+        
+        self::$OPTIONS = array_merge(self::$OPTIONS, $options);
+    }
+    
+    /**
+     * Sends a certain message to the assigned logger. This message will mainly
+     * be used by PPA internally. Because the logging options need to be
+     * checked, all messages that come from outside may be "absorbed".
+     * 
+     * You can assign a logger by means of PPA::init() or 
+     * via PPA::getInstance()->setLogger();
+     * Every custom logger must implement the iPPA_Logger interface.
+     * If no custom logger was explicitly assigned, all messages will fall into
+     * the nirvana.
+     * 
+     * @param int $logCode
+     * @param string $message
+     */
+    public static function log($logCode, $message) {
+        self::getInstance()->getLogger()->log($logCode, $message);
     }
 
     private function __clone() { }
@@ -61,6 +98,8 @@ class PPA {
             PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_AUTOCOMMIT => true
         ));
+        
+        $this->logger = new PPA_DummyLogger();
     }
     
     /**
@@ -85,7 +124,8 @@ class PPA {
         }
     }
     
-    public function handleException(\Exception $exception) {
+    public function handleException(Exception $exception) {
+        $this->logger->log(1300, get_class($exception) . " occured with message: " . $exception->getMessage());
         $this->rollbackActiveTransaction();
         throw $exception;
     }
@@ -93,7 +133,8 @@ class PPA {
     public function rollbackActiveTransaction() {
         if (EntityManager::getInstance()->inTransaction()) {
             EntityManager::getInstance()->rollback();
-            # TODO: log: running transaction rolled back on shutdown.
+            
+            $this->logger->log(1100, "Transaction was rolled back, during shutdown.");
         }
     }
 
@@ -104,6 +145,24 @@ class PPA {
         return $this->conn;
     }
 
+    /**
+     * Set a logger to enable logging of queries and specific PPA actions.
+     * If there was already a logger set through the PPA::init() function, then
+     * the current logger will be overwritten.
+     * 
+     * @param iPPA_Logger $logger
+     */
+    public function setLogger(iPPA_Logger $logger) {
+        self::log(1200, "Current logger ('\\" . get_class(self::getInstance()->getLogger()) . "') will be changed to '\\" . get_class($logger) . "'");
+        $this->logger = $logger;
+    }
+    
+    /**
+     * @return iPPA_Logger
+     */
+    public function getLogger() {
+        return $this->logger;
+    }
 }
 
 /**

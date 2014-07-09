@@ -6,6 +6,7 @@ use BadMethodCallException;
 use PPA\core\Entity;
 use PPA\core\EntityProperty;
 use PPA\core\query\PreparedTypedQuery;
+use PPA\PPA;
 
 
 class MockEntity extends Entity {
@@ -83,7 +84,7 @@ class MockEntity extends Entity {
         if (method_exists($entity, $name)) {
             return call_user_func(array($entity, $name), $arguments);
         } else {
-            throw new BadMethodCallException("Method '{$name}()' does not exist in class '" . get_class($entity) . "'.");
+            throw new BadMethodCallException("Method '{$name}()' does not exist in class '\\" . get_class($entity) . "'.");
         }
     }
 
@@ -91,6 +92,7 @@ class MockEntity extends Entity {
      * @return Entity The true entity instead of the mock.
      */
     protected function exchange() {
+        PPA::log(1010, "MockEntity exchanges itself with a real Entity ('\\{$this->classname}')");
         $query  = new PreparedTypedQuery($this->query, $this->classname);
         $entity = $query->getSingleResult($this->values);
         
