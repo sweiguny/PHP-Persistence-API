@@ -43,11 +43,11 @@ class TypedQuery extends Query {
      * constructor.
      */
     public function getSingleResult() {
-        PPA::log(4000, "Executing query for single result for class '" . $this->classname . "': {$this->query}");
+        PPA::log(4000, array($this->classname, $this->query));
         $statement = $this->conn->query($this->query);
         
         $result = $this->getResultListInternal($statement)[0];
-        PPA::log(4010, "Retrieved one Entity ('\\" . get_class($result) . "') " . $result->getShortInfo());
+        PPA::log(4010, array(get_class($result), $result->getShortInfo()));
         return $result;
     }
     
@@ -56,11 +56,11 @@ class TypedQuery extends Query {
      * in the constructor.
      */
     public function getResultList() {
-        PPA::log(4500, "Executing query for resultlist for class '" . $this->classname . "': {$this->query}");
+        PPA::log(4500, array($this->classname, $this->query));
         $statement = $this->conn->query($this->query);
         
         $result = $this->getResultListInternal($statement);
-        PPA::log(4510, "Retrieved " . count($result) . " Entities");
+        PPA::log(4510, array(count($result)));
         return $result;
     }
 
@@ -124,10 +124,10 @@ class TypedQuery extends Query {
         $values = array($foreigns[$relation->getMappedBy()]);
         
         if ($relation->isLazy()) {
-            PPA::log(1001, "Lazy OneToOne-Relation - MockEntity will be created");
+            PPA::log(1001);
             return new MockEntity($query, $relation->getMappedBy(), $entity, $relation->getProperty(), $values);
         } else {
-            PPA::log(1002, "Eager OneToOne-Relation - Query will be created");
+            PPA::log(1002);
             $q = new PreparedTypedQuery($query, $relation->getMappedBy());
             return $q->getSingleResult($values);
         }
@@ -140,10 +140,10 @@ class TypedQuery extends Query {
         $values = array($primaryValue);
 
         if ($relation->isLazy()) {
-            PPA::log(1003, "Lazy OneToMany-Relation - MockEntityList will be created");
+            PPA::log(1003);
             return new MockEntityList($query, $relation->getMappedBy(), $entity, $relation->getProperty(), $values);
         } else {
-            PPA::log(1004, "Eager OneToMany-Relation - Query will be created");
+            PPA::log(1004);
             $q = new PreparedTypedQuery($query, $relation->getMappedBy());
             return $q->getResultList($values);
         }
@@ -160,10 +160,10 @@ class TypedQuery extends Query {
         $values = array($primaryValue);
 
         if ($relation->isLazy()) {
-            PPA::log(1005, "Lazy ManyToMany-Relation - MockEntityList will be created");
+            PPA::log(1005);
             return new MockEntityList($query, $relation->getMappedBy(), $entity, $relation->getProperty(), $values);
         } else {
-            PPA::log(1006, "Eager ManyToMany-Relation - Query will be created");
+            PPA::log(1006);
             $q = new PreparedTypedQuery($query, $relation->getMappedBy());
             return $q->getResultList($values);
         }

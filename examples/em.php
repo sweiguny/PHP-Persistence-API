@@ -1,8 +1,7 @@
 <?php
 
 PPA\PPA::getInstance()->setLogger(new \PPA\examples\Logger());
-PPA\PPA::getInstance()->setLogger(new \PPA\examples\Logger());
-$em = PPA\core\EntityManager::getInstance();
+//$em = PPA\core\EntityManager::getInstance();
 
 
 //$query = new PPA\core\query\TypedQuery("select * from `user` where id=1", "\\PPA\\examples\\entity\\User");

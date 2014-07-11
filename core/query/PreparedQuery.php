@@ -35,9 +35,9 @@ class PreparedQuery implements iPreparedQuery {
         // To discern, if constructor was called by
         // class-inheritor or the class itself
         if (get_class() == get_class($this)) {
-            PPA::log(3000, "Preparing query: {$this->query}");
+            PPA::log(3000, array($this->query));
         } else {
-            PPA::log(5000, "Preparing query for class '" . $this->classname . "': {$this->query}");
+            PPA::log(5000, array($this->classname, $this->query));
         }
         
         
@@ -46,11 +46,11 @@ class PreparedQuery implements iPreparedQuery {
 
     public function getResultList(array $values) {
         if ($this->type == "select") {
-            PPA::log(3501, "Executing query for resultlist with values: " . print_r($values, true));
+            PPA::log(3501, array(print_r($values, true)));
             $this->statement->execute($values);
             
             $result = $this->getResultListInternal();
-            PPA::log(3510, "Retrieved " . count($result) . " rows");
+            PPA::log(3510, array(count($result)));
             return $result;
         } else {
             return $this->getSingleResult($values);
@@ -58,28 +58,28 @@ class PreparedQuery implements iPreparedQuery {
     }
 
     public function getSingleResult(array $values) {
-        PPA::log(3001, "Executing query for single result with values: " . print_r($values, true));
+        PPA::log(3001, array(print_r($values, true)));
         $this->statement->execute($values);
 
         switch ($this->type) {
             case 'select': {
                     if ($this->statement->columnCount() == 1) {
                         $result = $this->statement->fetchColumn();
-                        PPA::log(3015, "Retrieved scalar: {$result}");
+                        PPA::log(3015, array($result));
                     } else {
                         $result = $this->getResultListInternal()[0];
-                        PPA::log(3010, "Retrieved one row");
+                        PPA::log(3010);
                     }
                     break;
                 }
             case 'update':
             case 'delete':
                 $result = $this->statement->rowCount();
-                PPA::log(3020, "{$result} rows affected");
+                PPA::log(3020, array($result));
                 break;
             case 'insert':
                 $result = $this->conn->lastInsertId();
-                PPA::log(3030, "Last inserted primary key: {$result}");
+                PPA::log(3030, array($result));
                 break;
             default:
                 break;

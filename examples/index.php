@@ -5,7 +5,10 @@ $startTime = microtime(true);
 
 require_once __DIR__ . '/../PPA.php';
 
-\PPA\PPA::init("mysql:dbname=ppa;host=127.0.0.1;charset=utf8", "ppa", "ppa");
+\PPA\PPA::init("mysql:dbname=ppa;host=127.0.0.1;charset=utf8", "ppa", "ppa", array(
+    \PPA\PPA::OPTION_LOG_RETRIEVES => true,
+    \PPA\PPA::OPTION_LOG_NOTIFICATIONS => true
+));
 
 
 //include './playground.php';

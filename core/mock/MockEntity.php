@@ -92,7 +92,7 @@ class MockEntity extends Entity {
      * @return Entity The true entity instead of the mock.
      */
     protected function exchange() {
-        PPA::log(1010, "MockEntity exchanges itself with a real Entity ('\\{$this->classname}')");
+        PPA::log(1010, array($this->classname));
         $query  = new PreparedTypedQuery($this->query, $this->classname);
         $entity = $query->getSingleResult($this->values);
         
