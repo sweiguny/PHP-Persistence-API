@@ -60,7 +60,7 @@ class Role extends Entity {
 
 A TypedQuery can automatically resolve all the relations and give an appropriate output.
 ```php
-$query = new \PPA\core\query\TypedQuery("SELECT * FROM `role` WHERE id = 2", "\\PPA\\examples\\entity\\Role");
+$query = new \PPA\core\query\TypedQuery("SELECT * FROM `role` WHERE id = 1", "\\PPA\\examples\\entity\\Role");
 $query->getSingleResult();
 
 Returns:
