@@ -2,6 +2,7 @@
 
 namespace PPA\core;
 
+use DomainException;
 use PDO;
 use PPA\core\exception\TransactionException;
 use PPA\core\mock\MockEntity;
@@ -76,14 +77,18 @@ class EntityManager {
             if ($property->hasRelation()) {
                 $value = $property->getValue($entity);
                 
-                // Only one-to-one-relations are processed, because they are
+                // Only one-to-one-relations are processed here, because they are
                 // mapped by a column in the origin entity table.
                 if ($property->getRelation() instanceof OneToOne && !($value instanceof MockEntity)) {
-                    $this->persist($value);
-                    
-                    $foreign  = $this->emdm->getPrimaryProperty($property->getRelation()->getMappedBy())->getValue($value);
-                    $values[] = $foreign;
-                    $query   .= " `{$property->getColumn()}` = ?,";
+                    if ($value instanceof Entity) {
+                        $this->persist($value);
+
+                        $foreign  = $this->emdm->getPrimaryProperty($property->getRelation()->getMappedBy())->getValue($value);
+                        $values[] = $foreign;
+                        $query   .= " `{$property->getColumn()}` = ?,";
+                    } else {
+                        throw new DomainException("The value of {$classname}({$property->getName()}) is expected to be an instance of Entity (due to a one-to-one-Relation), but is " . gettype($value));
+                    }
                 }
             } else if ($property->isPrimary() && $isInsertion) {
                 // Primaries should be set automatically on insertions.
@@ -115,7 +120,7 @@ class EntityManager {
         }
         
         
-        // Process relations exception one-to-one.
+        // Process relations except one-to-one.
         foreach ($relations as $relation) {
             if ($relation instanceof OneToMany) {
                 $values = $relation->getProperty()->getValue($entity);
@@ -144,7 +149,6 @@ class EntityManager {
                         $primaries[] = $this->emdm->getPrimaryProperty($relation->getMappedBy())->getValue($value);
                     }
                     
-                    # TODO: log query and prepared statements
                     $query = "DELETE FROM `{$relation->getJoinTable()}` WHERE `{$relation->getColumn()}` = ?";
                     $q     = new PreparedQuery($query);
                     $q->getSingleResult(array($primaryProperty->getValue($entity)));
@@ -154,11 +158,14 @@ class EntityManager {
                     $q     = new PreparedQuery($query);
                     
                     foreach ($primaries as $primary) {
-                        # TODO: log query
                         $q->getSingleResult(array($primaryProperty->getValue($entity), $primary));
                     }
                 }
             }
+        }
+        
+        if ($isInsertion) {
+            return $result;
         }
     }
     
@@ -172,6 +179,8 @@ class EntityManager {
         $classname       = get_class($entity);
         $tablename       = $this->emdm->getTableName($classname);
         $primaryProperty = $this->emdm->getPrimaryProperty($classname);
+//        $this->emdm->
+        # TODO: Maybe should be checked, if the entity was ever persisted
         
         $query = "DELETE FROM `{$tablename}` WHERE `{$primaryProperty->getColumn()}` = ?";
         $q     = new PreparedQuery($query);

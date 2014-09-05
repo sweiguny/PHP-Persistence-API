@@ -16,7 +16,7 @@ class Order extends Entity {
      * @oneToMany(fetch = "lazy", mappedBy = "_PPA_examples_entity_OrderPosition")
      * @joinTable(x_column = "order_id")
      */
-    protected $orderPos;
+    protected $orderPos = array();
     
     
     /**
@@ -26,11 +26,14 @@ class Order extends Entity {
 
     public function __construct($customer) {
         $this->customer = $customer;
-        $this->orderPos = array();
     }
 
     public function addOrderpos(OrderPosition $orderpos) {
         $this->orderPos[] = $orderpos;
+    }
+    
+    public function getOrderPos() {
+        return $this->orderPos;
     }
 }
 

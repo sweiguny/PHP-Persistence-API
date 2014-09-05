@@ -39,6 +39,7 @@ class PPA {
     private static $OPTIONS = array(
         self::OPTION_LOG_PREPARES               => true,
         self::OPTION_LOG_EXECUTES               => true,
+        self::OPTION_LOG_AFFECTIONS             => true,
         self::OPTION_LOG_RETRIEVES              => true,
         self::OPTION_LOG_NOTIFICATIONS          => true
     );

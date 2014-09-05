@@ -70,7 +70,7 @@ class Query implements iQuery {
      * @return mixed
      */
     public function getSingleResult() {
-        PPA::log(2000, "Executing query for single result: {$this->query}");
+        PPA::log(2000, array($this->query));
         
         $statement = $this->conn->query($this->query);
         $result    = null;
@@ -88,7 +88,7 @@ class Query implements iQuery {
                 }
             case 'update':
             case 'delete':
-                $result = $statement->rowCount();
+                $result = (int)$statement->rowCount();
                 PPA::log(2020, array($result));
                 break;
             case 'insert':

@@ -74,7 +74,7 @@ class PreparedQuery implements iPreparedQuery {
                 }
             case 'update':
             case 'delete':
-                $result = $this->statement->rowCount();
+                $result = (int)$this->statement->rowCount();
                 PPA::log(3020, array($result));
                 break;
             case 'insert':

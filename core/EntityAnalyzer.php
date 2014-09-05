@@ -142,6 +142,10 @@ class EntityAnalyzer {
                     }
 
                     if (isset($annotations["@oneToOne"])) {
+                        if (!isset($annotations["@oneToOne"]["fetch"])) {
+                            $annotations["@oneToOne"]["fetch"] = "lazy";
+                        }
+                        
                         $relation    = new OneToOne($pprop, $annotations["@oneToOne"]["fetch"], $annotations["@oneToOne"]["mappedBy"]);
                         $relations[] = $relation;
                         $pprop->setRelation($relation);
@@ -150,19 +154,32 @@ class EntityAnalyzer {
                     $propertiesByName[$pprop->getName()]     = $pprop;
                     $propertiesByColumn[$pprop->getColumn()] = $pprop;
                 } else if (isset($annotations["@oneToMany"]) && isset($annotations["@joinTable"])) {
+                    if (!isset($annotations["@oneToMany"]["fetch"])) {
+                        $annotations["@oneToMany"]["fetch"] = "lazy";
+                    }
+
                     $relation    = new OneToMany($pprop, $annotations["@oneToMany"]["fetch"], $annotations["@oneToMany"]["mappedBy"], $annotations["@joinTable"]["x_column"]);
                     $relations[] = $relation;
                     $pprop->setRelation($relation);
 
                     $propertiesByName[$pprop->getName()] = $pprop;
                 } else if (isset($annotations["@manyToMany"]) && isset($annotations["@joinTable"])) {
+                    if (!isset($annotations["@manyToMany"]["fetch"])) {
+                        $annotations["@manyToMany"]["fetch"] = "lazy";
+                    }
+
                     $relation = new ManyToMany($pprop, $annotations["@manyToMany"]["fetch"], $annotations["@manyToMany"]["mappedBy"], $annotations["@joinTable"]["name"], $annotations["@joinTable"]["column"], $annotations["@joinTable"]["x_column"]);
                     $relations[] = $relation;
                     $pprop->setRelation($relation);
 
                     $propertiesByName[$pprop->getName()] = $pprop;
                 } else {
-                    $this->handleUncombinables($annotations);
+                    $message = $this->handleUncombinables($annotations);
+                    // A null message indicates, that the current property is
+                    // not to be processed by PPA
+                    if ($message != null) {
+                        throw new AnnotationException($message);
+                    }
                 }
             }
             
@@ -185,6 +202,8 @@ class EntityAnalyzer {
      * @throws AnnotationException
      */
     private function handleUncombinables(array $annotations) {
+        $message = null;
+        
         if (isset($annotations["@joinTable"])) {
             if (!isset($annotations["@manyToMany"])) {
                 $message = "Entity '{$this->classname}' provides an @joinTable annotation, but not an @manyToMany.";
@@ -197,7 +216,7 @@ class EntityAnalyzer {
             $message = "Entity '{$this->classname}' provides an @oneToMany annotation, but not an @joinTable.";
         }
         
-        throw new AnnotationException($message);
+        return $message;
     }
 
     /**

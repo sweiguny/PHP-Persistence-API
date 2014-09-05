@@ -21,11 +21,14 @@ class Role extends Entity {
     private $name;
     
     /**
-     * @manyToMany(fetch = "lazy", mappedBy = "_PPA_examples_entity_Right")
+     * @manyToMany(fetch = "eager", mappedBy = "_PPA_examples_entity_Right")
      * @joinTable(name = "role2right", column = "role_id", x_column = "right_id")
      */
     private $rights = array();
     
+    public function __construct($name) {
+        $this->name = $name;
+    }
     
     public function getName() {
         return $this->name;
@@ -34,11 +37,7 @@ class Role extends Entity {
     public function getRights() {
         return $this->rights;
     }
-
-    public function __construct($name) {
-        $this->name = $name;
-    }
-
+    
     public function addRight(Right $right) {
         $this->rights[] = $right;
     }
