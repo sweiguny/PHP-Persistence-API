@@ -81,7 +81,12 @@ class Query implements iQuery {
                         $result = $statement->fetchColumn();
                         PPA::log(2015, array($result));
                     } else {
-                        $result = $this->getResultListInternal($statement)[0];
+                        $result = $this->getResultListInternal($statement);
+                        if (empty($result)) {
+                            $result = null;
+                        } else {
+                            $result = $result[0];
+                        }
                         PPA::log(2010);
                     }
                     break;

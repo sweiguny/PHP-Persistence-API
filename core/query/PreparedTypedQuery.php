@@ -34,8 +34,14 @@ class PreparedTypedQuery extends PreparedQuery {
         PPA::log(5001, array(print_r($values, true)));
         $this->statement->execute($values);
         
-        $result = $this->getResultListInternal()[0];
-        PPA::log(5010, array(get_class($result), $result->getShortInfo()));
+        $result = $this->getResultListInternal();
+        if (empty($result)) {
+            $result = null;
+            PPA::log(5010, array(get_class($result), "NULL"));
+        } else {
+            $result = $result[0];
+            PPA::log(5010, array(get_class($result), $result->getShortInfo()));
+        }
         return $result;
     }
     

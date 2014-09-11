@@ -46,8 +46,14 @@ class TypedQuery extends Query {
         PPA::log(4000, array($this->classname, $this->query));
         $statement = $this->conn->query($this->query);
         
-        $result = $this->getResultListInternal($statement)[0];
-        PPA::log(4010, array(get_class($result), $result->getShortInfo()));
+        $result = $this->getResultListInternal($statement);
+        if (empty($result)) {
+            $result = null;
+            PPA::log(4010, array(get_class($result), "NULL"));
+        } else {
+            $result = $result[0];
+            PPA::log(4010, array(get_class($result), $result->getShortInfo()));
+        }
         return $result;
     }
     

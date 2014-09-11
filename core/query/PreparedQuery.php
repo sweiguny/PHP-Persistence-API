@@ -67,7 +67,12 @@ class PreparedQuery implements iPreparedQuery {
                         $result = $this->statement->fetchColumn();
                         PPA::log(3015, array($result));
                     } else {
-                        $result = $this->getResultListInternal()[0];
+                        $result = $this->getResultListInternal();
+                        if (empty($result)) {
+                            $result = null;
+                        } else {
+                            $result = $result[0];
+                        }
                         PPA::log(3010);
                     }
                     break;
