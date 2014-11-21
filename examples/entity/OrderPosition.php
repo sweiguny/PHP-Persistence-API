@@ -39,6 +39,22 @@ class OrderPosition extends Entity {
         $this->orderId = $orderId;
     }
     
+    public function getArticle() {
+        return $this->article;
+    }
+
+    public function setArticle($article) {
+        $this->article = $article;
+    }
+
+    public function getPrice() {
+        return $this->price;
+    }
+
+    public function setPrice($price) {
+        $this->price = $price;
+    }
+
 }
 
 ?>

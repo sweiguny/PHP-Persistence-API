@@ -3,6 +3,7 @@
 namespace PPA;
 
 use Exception;
+use InvalidArgumentException;
 use PDO;
 use PPA\core\EntityManager;
 use PPA\core\exception\PPA_Exception;
@@ -11,19 +12,24 @@ use PPA\core\PPA_DummyLogger;
 
 class PPA {
     
+    # Cascade type
+    const OPTION_DEFAULT_CASCADE_TYPE       = "DEFAULT_CASCADE_TYPE";
+    const DEFAULT_CASCADE_TYPE              = "none";
+    static $LEGAL_CASCADING_TYPES           = ["all", "none", "persist", "remove"]; // static, because arrays are not allowed as constant
+    
     # Options for logging
-    const OPTION_LOG_PREPARES       = "LOG_PREPARES";
-    const OPTION_LOG_EXECUTES       = "LOG_EXECUTES";
-    const OPTION_LOG_AFFECTIONS     = "LOG_AFFECTIONS";
-    const OPTION_LOG_RETRIEVES      = "LOG_RETRIEVES";
-    const OPTION_LOG_NOTIFICATIONS  = "LOG_NOTIFICATIONS";
+    const OPTION_LOG_PREPARES               = "LOG_PREPARES";
+    const OPTION_LOG_EXECUTES               = "LOG_EXECUTES";
+    const OPTION_LOG_AFFECTIONS             = "LOG_AFFECTIONS";
+    const OPTION_LOG_RETRIEVES              = "LOG_RETRIEVES";
+    const OPTION_LOG_NOTIFICATIONS          = "LOG_NOTIFICATIONS";
     
     # Message classes for logging
-    const MSG_CLASS_PREPARE         = "PREPARE";
-    const MSG_CLASS_EXECUTE         = "EXECUTE";
-    const MSG_CLASS_AFFECTION       = "AFFECTION";
-    const MSG_CLASS_RETRIEVE        = "RETRIEVE";
-    const MSG_CLASS_NOTIFICATION    = "NOTIFICATION";
+    const MSG_CLASS_PREPARE                 = "PREPARE";
+    const MSG_CLASS_EXECUTE                 = "EXECUTE";
+    const MSG_CLASS_AFFECTION               = "AFFECTION";
+    const MSG_CLASS_RETRIEVE                = "RETRIEVE";
+    const MSG_CLASS_NOTIFICATION            = "NOTIFICATION";
     
     /**
      * @var PPA The Instance
@@ -36,29 +42,30 @@ class PPA {
      * 
      * @var array The logging options.
      */
-    private static $OPTIONS = array(
+    private static $OPTIONS = [
         self::OPTION_LOG_PREPARES               => true,
         self::OPTION_LOG_EXECUTES               => true,
         self::OPTION_LOG_AFFECTIONS             => true,
         self::OPTION_LOG_RETRIEVES              => true,
-        self::OPTION_LOG_NOTIFICATIONS          => true
-    );
+        self::OPTION_LOG_NOTIFICATIONS          => true,
+        self::OPTION_DEFAULT_CASCADE_TYPE       => self::DEFAULT_CASCADE_TYPE
+    ];
     
     /**
      * @var array The existing message classes
      */
-    private static $MSG_CLASSES = array(
+    private static $MSG_CLASSES = [
         self::MSG_CLASS_PREPARE                 => array(3000, 5000),
         self::MSG_CLASS_EXECUTE                 => array(2000, 2500, 3001, 3501, 4000, 4500, 5001, 5501),
         self::MSG_CLASS_AFFECTION               => array(2020, 3020),
         self::MSG_CLASS_RETRIEVE                => array(2010, 2015, 2030, 2510, 3010, 3015, 3030, 3510, 4010, 4510, 5010, 5510),
-        self::MSG_CLASS_NOTIFICATION            => array(1001, 1002, 1003, 1004, 1005, 1006, 1010, 1011, 1200)
-    );
+        self::MSG_CLASS_NOTIFICATION            => array(1001, 1002, 1003, 1004, 1005, 1006, 1010, 1011, 1100, 1200, 1300)
+    ];
     
     /**
      * @var array The messages that can be logged
      */
-    private static $messages = array(
+    private static $messages = [
         
         # Notifications
         1001 => "Lazy OneToOne-Relation - MockEntity will be created",
@@ -69,7 +76,9 @@ class PPA {
         1006 => "Eager ManyToMany-Relation - Query will be created",
         1010 => "MockEntity exchanges itself with a real Entity ('\\%s')",
         1011 => "MockEntityList exchanges itself with a list of real Entities ('%s')",
+        1100 => "Transaction was rolled back, during shutdown.",
         1200 => "Current logger ('\\%s') will be changed to '\\%s'",
+        1300 => "%s occured with message: %s",
         
         # Query
         2000 => "Executing query for single result: %s",
@@ -102,7 +111,7 @@ class PPA {
         5010 => "Retrieved one Entity ('\\%s') %s",
         5501 => "Executing query for resultlist with values: %s",
         5510 => "Retrieved %u Entities"
-    );
+    ];
 
     /**
      * @return PPA
@@ -140,9 +149,9 @@ class PPA {
      * @param string $dsn The <b>d</b>ata <b>s</b>ource <b>n</b>ame - see PDO-doc
      * @param string $username The database username - see PDO-doc
      * @param string $password The database password - see PDO-doc
-     * @param array $options Options for PPA. Mainly logging options.
+     * @param array $options Options for PPA.
      */
-    public static function init($dsn, $username, $password, array $options = array()) {
+    public static function init($dsn, $username, $password, array $options = []) {
         if (self::$instance != null) {
             throw new PPA_Exception("PHP Persitence API already inited.");
         }
@@ -150,6 +159,14 @@ class PPA {
         require_once __DIR__ . '/Util.php';
         
         self::$instance = new self($dsn, $username, $password);
+        
+        # Check options against validity
+        if (isset($options[self::OPTION_DEFAULT_CASCADE_TYPE])) {
+            $options[self::OPTION_DEFAULT_CASCADE_TYPE] = strtolower(trim($options[self::OPTION_DEFAULT_CASCADE_TYPE]));
+            if (!in_array($options[self::OPTION_DEFAULT_CASCADE_TYPE], self::$LEGAL_CASCADING_TYPES)) {
+                throw new InvalidArgumentException("The " . self::OPTION_DEFAULT_CASCADE_TYPE . " was set to '" . $options[self::OPTION_DEFAULT_CASCADE_TYPE] . "'. But the only legal values are '" . implode("', '", self::$LEGAL_CASCADING_TYPES) . "'.");
+            }
+        }
         self::$OPTIONS  = array_merge(self::$OPTIONS, $options);
     }
     
@@ -167,7 +184,7 @@ class PPA {
      * @param int $logCode
      * @param array $params
      */
-    public static function log($logCode, array $params = array()) {
+    public static function log($logCode, array $params = []) {
         $message = null;
         
         if (in_array($logCode, self::$MSG_CLASSES[self::MSG_CLASS_PREPARE])) {
@@ -253,6 +270,7 @@ class PPA {
                     case 1004:
                     case 1005:
                     case 1006:
+                    case 1100:
                         $message = self::$messages[$logCode];
                         break;
                     case 1010:
@@ -260,6 +278,7 @@ class PPA {
                         $message = sprintf(self::$messages[$logCode], $params[0]);
                         break;
                     case 1200:
+                    case 1300:
                         $message = sprintf(self::$messages[$logCode], $params[0], $params[1]);
                         break;
                     default:
@@ -275,6 +294,14 @@ class PPA {
             self::getInstance()->getLogger()->log($logCode, $message);
         }
     }
+    
+    public static function getOption($key) {
+        return self::$OPTIONS[$key];
+    }
+
+    public static function printOptions() {
+        prettyDump(self::$OPTIONS);
+    }
 
     private function __clone() { }
     private function __construct($dsn, $username, $password) {
@@ -282,10 +309,14 @@ class PPA {
         set_exception_handler(array($this, 'handleException'));
         spl_autoload_register(array($this, 'classload'), true, true);
         
-        $this->conn = new PDO($dsn, $username, $password, array(
-            PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_AUTOCOMMIT => true
-        ));
+        try {
+            $this->conn = new PDO($dsn, $username, $password, array(
+                PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_AUTOCOMMIT => true
+            ));
+        } catch (Exception $e) {
+            prettyDump("Connection failed: {$e->getMessage()}");
+        }
         
         $this->logger = new PPA_DummyLogger();
     }
@@ -313,7 +344,8 @@ class PPA {
     }
     
     public function handleException(Exception $exception) {
-        $this->logger->log(1300, get_class($exception) . " occured with message: " . $exception->getMessage());
+        self::log(1300, [get_class($exception), $exception->getMessage()]);
+//        $this->logger->log(1300, get_class($exception) . " occured with message: " . $exception->getMessage());
         $this->rollbackActiveTransaction();
         throw $exception;
     }
@@ -322,7 +354,8 @@ class PPA {
         if (EntityManager::getInstance()->inTransaction()) {
             EntityManager::getInstance()->rollback();
             
-            $this->logger->log(1100, "Transaction was rolled back, during shutdown.");
+            self::log(1100);
+//            $this->logger->log(1100, "Transaction was rolled back, during shutdown.");
         }
     }
 

@@ -13,7 +13,7 @@ class Order extends Entity {
     private $id;
     
     /**
-     * @oneToMany(fetch = "lazy", mappedBy = "_PPA_examples_entity_OrderPosition")
+     * @oneToMany(fetch = "lazy", mappedBy = "_PPA_examples_entity_OrderPosition", cascade="all")
      * @joinTable(x_column = "order_id")
      */
     protected $orderPos = array();

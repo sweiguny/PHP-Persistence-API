@@ -6,8 +6,8 @@ use PPA\core\EntityProperty;
 
 class OneToOne extends Relation {
 
-    public function __construct(EntityProperty $property, $fetch, $mappedBy) {
-        parent::__construct($property, $fetch, $mappedBy);
+    public function __construct(EntityProperty $property, $fetch, $cascade, $mappedBy) {
+        parent::__construct($property, $fetch, $cascade, $mappedBy);
     }
 
 }

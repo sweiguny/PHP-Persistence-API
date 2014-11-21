@@ -14,6 +14,10 @@ class EntityProperty extends ReflectionProperty {
     public function __construct($class, $name) {
         parent::__construct($class, $name);
     }
+    
+    public function getClass() {
+        return $this->class;
+    }
 
     public function getColumn() {
         return $this->column;

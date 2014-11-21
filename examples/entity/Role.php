@@ -21,7 +21,7 @@ class Role extends Entity {
     private $name;
     
     /**
-     * @manyToMany(fetch = "eager", mappedBy = "_PPA_examples_entity_Right")
+     * @manyToMany(fetch = "eager", mappedBy = "_PPA_examples_entity_Right", cascade="all")
      * @joinTable(name = "role2right", column = "role_id", x_column = "right_id")
      */
     private $rights = array();
@@ -32,6 +32,10 @@ class Role extends Entity {
     
     public function getName() {
         return $this->name;
+    }
+    
+    public function setName($name) {
+        $this->name = $name;
     }
 
     public function getRights() {

@@ -10,8 +10,8 @@ class ManyToMany extends Relation {
     private $column;
     private $x_column;
     
-    public function __construct(EntityProperty $property, $fetch, $mappedBy, $joinTable, $column, $x_column) {
-        parent::__construct($property, $fetch, $mappedBy);
+    public function __construct(EntityProperty $property, $fetch, $cascade, $mappedBy, $joinTable, $column, $x_column) {
+        parent::__construct($property, $fetch, $cascade, $mappedBy);
         
         $this->joinTable = trim($joinTable);
         $this->column    = trim($column);

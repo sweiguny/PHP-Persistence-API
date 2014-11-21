@@ -7,6 +7,7 @@ use PPA\core\exception\AnnotationException;
 use PPA\core\relation\ManyToMany;
 use PPA\core\relation\OneToMany;
 use PPA\core\relation\OneToOne;
+use PPA\PPA;
 use ReflectionClass;
 
 
@@ -75,9 +76,9 @@ class EntityAnalyzer {
         "@id"         => array(),
         "@column"     => array("name"),
         "@table"      => array("name"),
-        "@oneToOne"   => array("mappedBy", "fetch"),
-        "@oneToMany"  => array("mappedBy", "fetch"),
-        "@manyToMany" => array("mappedBy", "fetch"),
+        "@oneToOne"   => array("mappedBy", "fetch", "cascade"),
+        "@oneToMany"  => array("mappedBy", "fetch", "cascade"),
+        "@manyToMany" => array("mappedBy", "fetch", "cascade"),
         "@joinTable"  => array("name", "column", "x_column")
     );
 
@@ -101,7 +102,9 @@ class EntityAnalyzer {
      * - prepares the primary property of the entity
      * - prepares all properties by column
      * - prepares all properties by name
-     * - prepares all relations.
+     * - prepares all relations
+     *          - fetch type (eager or lazy)
+     *          - cascade type
      * 
      * @throws AnnotationException
      */
@@ -145,8 +148,11 @@ class EntityAnalyzer {
                         if (!isset($annotations["@oneToOne"]["fetch"])) {
                             $annotations["@oneToOne"]["fetch"] = "lazy";
                         }
+                        if (!isset($annotations["@oneToOne"]["cascade"])) {
+                            $annotations["@oneToOne"]["cascade"] = PPA::getOption(PPA::OPTION_DEFAULT_CASCADE_TYPE);
+                        }
                         
-                        $relation    = new OneToOne($pprop, $annotations["@oneToOne"]["fetch"], $annotations["@oneToOne"]["mappedBy"]);
+                        $relation    = new OneToOne($pprop, $annotations["@oneToOne"]["fetch"], $annotations["@oneToOne"]["cascade"], $annotations["@oneToOne"]["mappedBy"]);
                         $relations[] = $relation;
                         $pprop->setRelation($relation);
                     }
@@ -157,8 +163,11 @@ class EntityAnalyzer {
                     if (!isset($annotations["@oneToMany"]["fetch"])) {
                         $annotations["@oneToMany"]["fetch"] = "lazy";
                     }
+                    if (!isset($annotations["@oneToMany"]["cascade"])) {
+                        $annotations["@oneToMany"]["cascade"] = PPA::getOption(PPA::OPTION_DEFAULT_CASCADE_TYPE);
+                    }
 
-                    $relation    = new OneToMany($pprop, $annotations["@oneToMany"]["fetch"], $annotations["@oneToMany"]["mappedBy"], $annotations["@joinTable"]["x_column"]);
+                    $relation    = new OneToMany($pprop, $annotations["@oneToMany"]["fetch"], $annotations["@oneToMany"]["cascade"], $annotations["@oneToMany"]["mappedBy"], $annotations["@joinTable"]["x_column"]);
                     $relations[] = $relation;
                     $pprop->setRelation($relation);
 
@@ -167,16 +176,18 @@ class EntityAnalyzer {
                     if (!isset($annotations["@manyToMany"]["fetch"])) {
                         $annotations["@manyToMany"]["fetch"] = "lazy";
                     }
+                    if (!isset($annotations["@manyToMany"]["cascade"])) {
+                        $annotations["@manyToMany"]["cascade"] = PPA::getOption(PPA::OPTION_DEFAULT_CASCADE_TYPE);
+                    }
 
-                    $relation = new ManyToMany($pprop, $annotations["@manyToMany"]["fetch"], $annotations["@manyToMany"]["mappedBy"], $annotations["@joinTable"]["name"], $annotations["@joinTable"]["column"], $annotations["@joinTable"]["x_column"]);
+                    $relation = new ManyToMany($pprop, $annotations["@manyToMany"]["fetch"], $annotations["@manyToMany"]["cascade"], $annotations["@manyToMany"]["mappedBy"], $annotations["@joinTable"]["name"], $annotations["@joinTable"]["column"], $annotations["@joinTable"]["x_column"]);
                     $relations[] = $relation;
                     $pprop->setRelation($relation);
 
                     $propertiesByName[$pprop->getName()] = $pprop;
                 } else {
                     $message = $this->handleUncombinables($annotations);
-                    // A null message indicates, that the current property is
-                    // not to be processed by PPA
+                    // A null message indicates, that the current property is not to be processed by PPA
                     if ($message != null) {
                         throw new AnnotationException($message);
                     }

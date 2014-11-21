@@ -39,7 +39,7 @@ class PreparedTypedQuery extends PreparedQuery {
             $result = null;
             PPA::log(5010, array(get_class($result), "NULL"));
         } else {
-            $result = $result[0];
+            $result = array_pop($result);
             PPA::log(5010, array(get_class($result), $result->getShortInfo()));
         }
         return $result;
@@ -97,7 +97,7 @@ class PreparedTypedQuery extends PreparedQuery {
                 $relation->getProperty()->setValue($entity, $result);
             }
             
-            $resultList[] = $entity;
+            $resultList[$primaryValue] = $entity;
         }
         
         return $resultList;
@@ -110,16 +110,21 @@ class PreparedTypedQuery extends PreparedQuery {
     private function handleOneToOne(Entity $entity, OneToOne $relation, $table, array $foreigns) {
         $primary = $this->metaDataMap->getPrimaryProperty($relation->getMappedBy());
 
-        $query  = "SELECT * FROM `{$table}` WHERE {$primary->getColumn()} = ?";
-        $values = array($foreigns[$relation->getMappedBy()]);
+        $query = "SELECT * FROM `{$table}` WHERE {$primary->getColumn()} = ?";
+        $value = $foreigns[$relation->getMappedBy()];
         
         if ($relation->isLazy()) {
             PPA::log(1001);
-            return new MockEntity($query, $relation->getMappedBy(), $entity, $relation->getProperty(), $values);
+            
+            if ($value == null) {
+                return null;
+            } else {
+                return new MockEntity($query, $relation->getMappedBy(), $entity, $relation->getProperty(), [$value]);
+            }
         } else {
             PPA::log(1002);
             $q = new PreparedTypedQuery($query, $relation->getMappedBy());
-            return $q->getSingleResult($values);
+            return $q->getSingleResult([$value]);
         }
     }
     

@@ -4,6 +4,7 @@ namespace PPA\core;
 
 use DomainException;
 use PDO;
+use PPA\core\exception\RelationException;
 use PPA\core\exception\TransactionException;
 use PPA\core\mock\MockEntity;
 use PPA\core\mock\MockEntityList;
@@ -63,7 +64,7 @@ class EntityManager {
         $properties      = $this->emdm->getPropertiesByColumn($classname);
         $relations       = $this->emdm->getRelations($classname);
         $isInsertion     = $primaryProperty->getValue($entity) === null;
-        $values          = array();
+        $values          = [];
         
         // Create query string.
         if ($isInsertion) {
@@ -80,14 +81,22 @@ class EntityManager {
                 // Only one-to-one-relations are processed here, because they are
                 // mapped by a column in the origin entity table.
                 if ($property->getRelation() instanceof OneToOne && !($value instanceof MockEntity)) {
-                    if ($value instanceof Entity) {
-                        $this->persist($value);
+                    
+                    // Check cascade type, if persisting of related object is necessary.
+                    if ($property->getRelation()->isCascadeTypePersist()) {
+                        if ($value instanceof Entity) {
+                            $this->persist($value);
 
-                        $foreign  = $this->emdm->getPrimaryProperty($property->getRelation()->getMappedBy())->getValue($value);
-                        $values[] = $foreign;
-                        $query   .= " `{$property->getColumn()}` = ?,";
-                    } else {
-                        throw new DomainException("The value of {$classname}({$property->getName()}) is expected to be an instance of Entity (due to a one-to-one-Relation), but is " . gettype($value));
+                            $values[] = $this->emdm->getPrimaryProperty($property->getRelation()->getMappedBy())->getValue($value);
+                            $query   .= " `{$property->getColumn()}` = ?,";
+                        } else {
+                            throw new DomainException("The value of {$classname}({$property->getName()}) is expected to be an instance of Entity (due to a one-to-one-Relation), but is " . gettype($value));
+                        }
+                    
+                    // For the related object is not to persist, check its primary value,
+                    // because the referencing property needs a value and cannot be null.
+                    } else if ($this->emdm->getPrimaryProperty($property->getRelation()->getMappedBy())->getValue($value) == null) {
+                        throw new RelationException("Cannot persist object of '{$property->getRelation()->getMappedBy()}', because primary property ('{$this->emdm->getPrimaryProperty($property->getRelation()->getMappedBy())->getName()}') of related object is null. Please check cascade type of property '{$property->getName()}' of class '{$classname}'");
                     }
                 }
             } else if ($property->isPrimary() && $isInsertion) {
@@ -126,39 +135,52 @@ class EntityManager {
                 $values = $relation->getProperty()->getValue($entity);
                 
                 // Omit processing mock, because a mock indicates no changes.
-                if (!($values instanceof MockEntityList)) {
+                // If cascade type is unfittingly, prossecing is omitted, too.
+                if (!($values instanceof MockEntityList) && $relation->isCascadeTypePersist()) {
+                    $difference                = [];
+                    $relationTableName         = $this->emdm->getTableName($relation->getMappedBy());
+                    $primaryPropertyOfRelation = $this->emdm->getPrimaryProperty($relation->getMappedBy());
+
                     foreach ($values as $value) {
                         $propertiesOfRelation = $this->emdm->getPropertiesByColumn($relation->getMappedBy());
-                        
+
                         if ($propertiesOfRelation[$relation->getX_column()]->getValue($value) === null) {
                             $propertiesOfRelation[$relation->getX_column()]->setValue($value, $primaryProperty->getValue($entity));
                         }
-                        
+
                         $this->persist($value);
+                        $difference[] = $primaryPropertyOfRelation->getValue($value);
+                    }
+
+                    // remove all entries from table, that were not to persist
+                    if (!empty($difference)) {
+                        $query2 = new PreparedQuery("DELETE FROM `{$relationTableName}` WHERE `{$relation->getX_column()}` = ? AND `{$primaryPropertyOfRelation->getName()}` NOT IN(" . implode(',', array_fill(0, count($difference), '?')) . ")");
+                        $query2->getSingleResult(array_merge([$primaryProperty->getValue($entity)], $difference));
                     }
                 }
             } else if ($relation instanceof ManyToMany) {
                 $values = $relation->getProperty()->getValue($entity);
                 
                 // Omit processing mock, because a mock indicates no changes.
-                if (!($values instanceof MockEntityList)) {
+                // If cascade type is unfittingly, prossecing is omitted, too.
+                if (!($values instanceof MockEntityList) && $relation->isCascadeTypePersist()) {
                     $primaries = array();
-                    
+
                     foreach ($values as $value) {
                         $this->persist($value);
                         $primaries[] = $this->emdm->getPrimaryProperty($relation->getMappedBy())->getValue($value);
                     }
-                    
+
                     $query = "DELETE FROM `{$relation->getJoinTable()}` WHERE `{$relation->getColumn()}` = ?";
                     $q     = new PreparedQuery($query);
-                    $q->getSingleResult(array($primaryProperty->getValue($entity)));
-                    
-                    
+                    $q->getSingleResult([$primaryProperty->getValue($entity)]);
+
+
                     $query = "INSERT INTO `{$relation->getJoinTable()}` SET `{$relation->getColumn()}` = ?, `{$relation->getX_column()}` = ?";
                     $q     = new PreparedQuery($query);
-                    
+
                     foreach ($primaries as $primary) {
-                        $q->getSingleResult(array($primaryProperty->getValue($entity), $primary));
+                        $q->getSingleResult([$primaryProperty->getValue($entity), $primary]);
                     }
                 }
             }
@@ -187,7 +209,7 @@ class EntityManager {
         
         # TODO: make sort of cascading options.
         
-        return $q->getSingleResult(array($primaryProperty->getValue($entity)));
+        return $q->getSingleResult([$primaryProperty->getValue($entity)]);
     }
     
     public function find($fullyQualifiedClassname, $primaryValue) {
