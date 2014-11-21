@@ -3,6 +3,7 @@
 namespace PPA\core;
 
 use DomainException;
+use LogicException;
 use PDO;
 use PPA\core\exception\RelationException;
 use PPA\core\exception\TransactionException;
@@ -198,18 +199,86 @@ class EntityManager {
      * @return int The number of affected rows.
      */
     public function remove(Entity $entity) {
-        $classname       = get_class($entity);
-        $tablename       = $this->emdm->getTableName($classname);
-        $primaryProperty = $this->emdm->getPrimaryProperty($classname);
-//        $this->emdm->
-        # TODO: Maybe should be checked, if the entity was ever persisted
+        $classname              = get_class($entity);
+        $tablename              = $this->emdm->getTableName($classname);
+        $primaryProperty        = $this->emdm->getPrimaryProperty($classname);
+        $relations              = $this->emdm->getRelations($classname);
+        $oneToOneRelatedObjects = [];
         
-        $query = "DELETE FROM `{$tablename}` WHERE `{$primaryProperty->getColumn()}` = ?";
-        $q     = new PreparedQuery($query);
+        if ($primaryProperty->getValue($entity) == null) {
+            throw new LogicException("The primary property '{$primaryProperty->getName()}' of '{$classname}' is null, hence the entity cannot be deleted from database.");
+        }
         
-        # TODO: make sort of cascading options.
+        foreach ($relations as $relation) {
+            if ($relation instanceof OneToOne && $relation->isCascadeTypeRemove()) {
+                
+                // Get related objects before deleting from relation table,
+                // because in case of a Mock, the lazy fetching wouldn't work.
+                $relatedObject = $relation->getProperty()->getValue($entity);
+                if ($relatedObject instanceof MockEntity) {
+                    $relatedObject->exchange();
+                    $relatedObject = $relation->getProperty()->getValue($entity);
+                }
+                
+                // Check for not having a unpersisted related object.
+                // Otherwise queries may have invalid syntax.
+                if ($this->emdm->getPrimaryProperty($relation->getMappedBy())->getValue($relatedObject) != null) {
+                    $oneToOneRelatedObjects[] = $relatedObject;
+                }
+            } else if ($relation instanceof OneToMany && $relation->isCascadeTypeRemove()) {
+                $primaries      = [];
+                $relatedObjects = $relation->getProperty()->getValue($entity);
+                if ($relatedObjects instanceof MockEntityList) {
+                    $relatedObjects->exchange();
+                }
+
+                foreach ($relatedObjects as $relo) {
+                    // Check for not having null primaries of newly added objects in the array.
+//                    if ($this->emdm->getPrimaryProperty(get_class($relo))->getValue($relo) != null) {
+//                        $primaries[] = $this->emdm->getPrimaryProperty(get_class($relo))->getValue($relo);
+//                    }
+                    $this->remove($relo);
+                }
+
+//                $deleteRelatedObjects = new PreparedQuery("DELETE FROM `{$this->emdm->getTableName($relation->getMappedBy())}` WHERE `{$this->emdm->getPrimaryProperty($relation->getMappedBy())->getColumn()}` IN(" . implode(',', array_fill(0, count($primaries), '?')) . ")");
+//                $deleteRelatedObjects->getSingleResult($primaries);
+            } else if ($relation instanceof ManyToMany) {
+                
+                // Get related objects before deleting from relation table,
+                // because in case of a Mock, the lazy fetching wouldn't work.
+                $relatedObjects = $relation->getProperty()->getValue($entity);
+//                if ($relatedObjects instanceof MockEntityList) {
+//                    $relatedObjects->exchange();
+//                }
+                
+                $deleteFromJointable = new PreparedQuery("DELETE FROM `{$relation->getJoinTable()}` WHERE `{$relation->getColumn()}` = ?");
+                $deleteFromJointable->getSingleResult([$primaryProperty->getValue($entity)]);
+                
+                if ($relation->isCascadeTypeRemove()) {
+                    $primaries = [];
+                    
+                    foreach ($relatedObjects as $relo) {
+                        // Check for not having null primaries of newly added objects in the array.
+//                        if ($this->emdm->getPrimaryProperty(get_class($relo))->getValue($relo) != null) {
+//                            $primaries[] = $this->emdm->getPrimaryProperty(get_class($relo))->getValue($relo);
+//                        }
+                        $this->remove($relo);
+                    }
+                    
+//                    $deleteRelatedObjects = new PreparedQuery("DELETE FROM `{$this->emdm->getTableName($relation->getMappedBy())}` WHERE `{$this->emdm->getPrimaryProperty($relation->getMappedBy())->getColumn()}` IN(" . implode(',', array_fill(0, count($primaries), '?')) . ")");
+//                    $deleteRelatedObjects->getSingleResult($primaries);
+                }
+            }
+        }
         
-        return $q->getSingleResult([$primaryProperty->getValue($entity)]);
+        $deleteEntity = new PreparedQuery("DELETE FROM `{$tablename}` WHERE `{$primaryProperty->getColumn()}` = ?");
+        $return = $deleteEntity->getSingleResult([$primaryProperty->getValue($entity)]);
+        
+        foreach ($oneToOneRelatedObjects as $relatedObject) {
+            $this->remove($relatedObject);
+        }
+        
+        return $return;
     }
     
     public function find($fullyQualifiedClassname, $primaryValue) {

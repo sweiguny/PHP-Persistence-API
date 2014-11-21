@@ -56,7 +56,7 @@ class MockEntityList extends MockEntity implements ArrayAccess, Countable, Itera
     /**
      * Exchanges the mock list with an array that contains true entities.
      */
-    protected function exchange() {
+    public function exchange() {
         if ($this->entities == null) {
             PPA::log(1011, array($this->classname));
             $query          = new PreparedTypedQuery($this->query, $this->classname);

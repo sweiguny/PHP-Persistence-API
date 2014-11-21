@@ -27,7 +27,7 @@ class User extends Entity {
     
     /**
      * @Column(name="role_id");
-     * @oneToOne(fetch="eager", mappedBy = "_PPA_examples_entity_Role", cascade="all")
+     * @oneToOne(fetch="lazy", mappedBy = "_PPA_examples_entity_Role", cascade="all")
      */
     private $role;
     

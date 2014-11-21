@@ -2,7 +2,7 @@
 
 PPA\PPA::getInstance()->setLogger(new \PPA\examples\Logger());
 $em = PPA\core\EntityManager::getInstance();
-
+$em->begin();
 
 //$query = new PPA\core\query\TypedQuery("select * from `role` where name='sepp'", "\\PPA\\examples\\entity\\Role");
 //
@@ -11,23 +11,21 @@ $em = PPA\core\EntityManager::getInstance();
 //$role->addRight(new PPA\examples\entity\Right("test"));
 //$role->addRight(new PPA\examples\entity\Right("test2"));
 //PPA\prettyDump($role);
-//
-//$em->persist($role);
+//$em->remove($role);
 
-//$em->persist(new PPA\examples\entity\User());
 
 $query = new \PPA\core\query\TypedQuery("SELECT * FROM `order` WHERE id = 1", "\\PPA\\examples\\entity\\Order");
 $order = $query->getSingleResult();
-PPA\prettyDump($order->getOrderPos());
-echo count($order->getOrderPos());
-$order->getOrderPos()[1]->setArticle("can");
+//$order->getOrderPos()[1]->setArticle("can");
 //$order->getOrderPos()[1]->setArticle("knife");
-PPA\prettyDump($order->getOrderPos());
+//PPA\prettyDump($order->getOrderPos());
+$em->remove($order);
 
-$em->persist($order);
+$query = new \PPA\core\query\TypedQuery("SELECT * FROM `user` WHERE id = 1", "\\PPA\\examples\\entity\\User");
+$user  = $query->getSingleResult();
+$em->remove($user);
 
-//$query = new \PPA\core\query\TypedQuery("SELECT * FROM `user` WHERE id = 1", "\\PPA\\examples\\entity\\User");
-//$user  = $query->getSingleResult();
+$em->rollback();
 
 //$query = new \PPA\core\query\TypedQuery("SELECT * FROM `role` WHERE id = 1", "\\PPA\\examples\\entity\\Role");
 //$role  = $query->getSingleResult();
@@ -36,7 +34,6 @@ $em->persist($order);
 //\PPA\prettyDump($role->getRights());
 //$em->persist($role);
 //$em->remove($role->getRights()[1]);
-//$em->remove($role);
 
 //throw new \PPA\core\exception\TransactionException("test");
 
