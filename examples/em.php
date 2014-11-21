@@ -14,12 +14,12 @@ $em->begin();
 //$em->remove($role);
 
 
-$query = new \PPA\core\query\TypedQuery("SELECT * FROM `order` WHERE id = 1", "\\PPA\\examples\\entity\\Order");
-$order = $query->getSingleResult();
-//$order->getOrderPos()[1]->setArticle("can");
-//$order->getOrderPos()[1]->setArticle("knife");
-//PPA\prettyDump($order->getOrderPos());
-$em->remove($order);
+//$query = new \PPA\core\query\TypedQuery("SELECT * FROM `order` WHERE id = 1", "\\PPA\\examples\\entity\\Order");
+//$order = $query->getSingleResult();
+////$order->getOrderPos()[1]->setArticle("can");
+////$order->getOrderPos()[1]->setArticle("knife");
+////PPA\prettyDump($order->getOrderPos());
+//$em->remove($order);
 
 $query = new \PPA\core\query\TypedQuery("SELECT * FROM `user` WHERE id = 1", "\\PPA\\examples\\entity\\User");
 $user  = $query->getSingleResult();

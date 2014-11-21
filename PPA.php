@@ -74,7 +74,7 @@ class PPA {
         1004 => "Eager OneToMany-Relation - Query will be created",
         1005 => "Lazy ManyToMany-Relation - MockEntityList will be created",
         1006 => "Eager ManyToMany-Relation - Query will be created",
-        1010 => "MockEntity exchanges itself with a real Entity ('\\%s')",
+        1010 => "MockEntity exchanges itself with a real Entity ('%s')",
         1011 => "MockEntityList exchanges itself with a list of real Entities ('%s')",
         1100 => "Transaction was rolled back, during shutdown.",
         1200 => "Current logger ('\\%s') will be changed to '\\%s'",
