@@ -167,7 +167,7 @@ class PPA {
                 throw new InvalidArgumentException("The " . self::OPTION_DEFAULT_CASCADE_TYPE . " was set to '" . $options[self::OPTION_DEFAULT_CASCADE_TYPE] . "'. But the only legal values are '" . implode("', '", self::$LEGAL_CASCADING_TYPES) . "'.");
             }
         }
-        self::$OPTIONS  = array_merge(self::$OPTIONS, $options);
+        self::$OPTIONS = array_merge(self::$OPTIONS, $options);
     }
     
     /**

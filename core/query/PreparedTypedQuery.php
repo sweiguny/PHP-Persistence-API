@@ -7,6 +7,7 @@ use PDO;
 use PPA\core\Entity;
 use PPA\core\EntityFactory;
 use PPA\core\EntityMetaDataMap;
+use PPA\core\exception\FetchException;
 use PPA\core\mock\MockEntity;
 use PPA\core\mock\MockEntityList;
 use PPA\core\relation\ManyToMany;
@@ -70,8 +71,12 @@ class PreparedTypedQuery extends PreparedQuery {
             
             foreach ($row as $column => $value) {
                 
-                if ($properties[$column]->isPrimary()) {
-                    $primaryValue = $value;
+                if (isset($properties[$column])) {
+                    if ($properties[$column]->isPrimary()) {
+                        $primaryValue = $value;
+                    }
+                } else {
+                    throw new FetchException("The column '{$column}' does not exist for class '{$this->classname}'. Please check, if the fully qualified classname corresponds to the table.");
                 }
                 
                 // exclude oneToOne relations

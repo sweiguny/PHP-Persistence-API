@@ -156,7 +156,7 @@ class EntityAnalyzer {
                         $relations[] = $relation;
                         $pprop->setRelation($relation);
                     }
-                
+                    
                     $propertiesByName[$pprop->getName()]     = $pprop;
                     $propertiesByColumn[$pprop->getColumn()] = $pprop;
                 } else if (isset($annotations["@oneToMany"]) && isset($annotations["@joinTable"])) {
