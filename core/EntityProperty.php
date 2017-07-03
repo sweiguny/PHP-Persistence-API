@@ -5,39 +5,46 @@ namespace PPA\core;
 use PPA\core\relation\Relation;
 use ReflectionProperty;
 
-class EntityProperty extends ReflectionProperty {
+class EntityProperty extends ReflectionProperty
+{
 
     protected $column;
     protected $relation;
     protected $isPrimary;
 
-    public function __construct($class, $name) {
+    public function __construct($class, $name)
+    {
         parent::__construct($class, $name);
     }
-    
-    public function getClass() {
+
+    public function getClass()
+    {
         return $this->class;
     }
 
-    public function getColumn() {
+    public function getColumn()
+    {
         return $this->column;
     }
-    
-    public function setColumn($column) {
+
+    public function setColumn($column)
+    {
         $this->column = $column;
     }
-    
+
     /**
      * @param Relation $relation
      */
-    public function setRelation(Relation $relation) {
+    public function setRelation(Relation $relation)
+    {
         $this->relation = $relation;
     }
-    
+
     /**
      * @return Relation
      */
-    public function getRelation() {
+    public function getRelation()
+    {
         return $this->relation;
     }
 
@@ -46,16 +53,18 @@ class EntityProperty extends ReflectionProperty {
      * 
      * @return bool
      */
-    public function hasRelation() {
+    public function hasRelation()
+    {
         return isset($this->relation);
     }
-    
+
     /**
      * Checks if the property is the primary.
      * 
      * @return bool
      */
-    public function isPrimary() {
+    public function isPrimary()
+    {
         return $this->isPrimary;
     }
 
@@ -64,8 +73,9 @@ class EntityProperty extends ReflectionProperty {
      * 
      * @param bool $primary 
      */
-    public function makePrimary($primary = true) {
-        $this->isPrimary = (bool)$primary;
+    public function makePrimary($primary = true)
+    {
+        $this->isPrimary = (bool) $primary;
     }
 
 }

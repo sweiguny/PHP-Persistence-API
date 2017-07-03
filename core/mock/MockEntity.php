@@ -9,8 +9,8 @@ use PPA\core\query\PreparedTypedQuery;
 use PPA\PPA;
 
 
-class MockEntity extends Entity {
-
+class MockEntity extends Entity
+{
     /**
      * The query for retrieving the true data.
      * 
@@ -59,7 +59,8 @@ class MockEntity extends Entity {
      * @param EntityProperty $property
      * @param array $values
      */
-    public function __construct($query, $classname, Entity $owner, EntityProperty $property, array $values) {
+    public function __construct($query, $classname, Entity $owner, EntityProperty $property, array $values)
+    {
         $this->query     = $query;
         $this->classname = $classname;
         $this->owner     = $owner;
@@ -78,12 +79,16 @@ class MockEntity extends Entity {
      * @return mixed The value, the entity method should return.
      * @throws BadMethodCallException If method does not exist.
      */
-    public function __call($name, $arguments) {
+    public function __call($name, $arguments)
+    {
         $entity = $this->exchange();
-        
-        if (method_exists($entity, $name)) {
-            return call_user_func(array($entity, $name), $arguments);
-        } else {
+
+        if (method_exists($entity, $name))
+        {
+            return call_user_func([$entity, $name], $arguments);
+        }
+        else
+        {
             throw new BadMethodCallException("Method '{$name}()' does not exist in class '\\" . get_class($entity) . "'.");
         }
     }
@@ -91,13 +96,15 @@ class MockEntity extends Entity {
     /**
      * @return Entity The true entity instead of the mock.
      */
-    public function exchange() {
-        PPA::log(1010, array($this->classname));
+    public function exchange()
+    {
+        PPA::log(1010, [$this->classname]);
+        
         $query  = new PreparedTypedQuery($this->query, $this->classname);
         $entity = $query->getSingleResult($this->values);
-        
+
         $this->property->setValue($this->owner, $entity);
-        
+
         return $entity;
     }
 

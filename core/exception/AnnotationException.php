@@ -2,7 +2,8 @@
 
 namespace PPA\core\exception;
 
-class AnnotationException extends PPA_Exception {
+class AnnotationException extends PPA_Exception
+{
     
 }
 

@@ -2,7 +2,8 @@
 
 namespace PPA\core\exception;
 
-class FetchException extends PPA_Exception {
+class FetchException extends PPA_Exception
+{
     
 }
 

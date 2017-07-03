@@ -11,55 +11,56 @@ use PPA\PPA;
 use ReflectionClass;
 
 
-class EntityAnalyzer {
-    
+class EntityAnalyzer
+{
+
     /**
      * @var string The classname to be analyzed.
      */
     private $classname;
-    
+
     /**
      * The reflector.
      * 
      * @var ReflectionClass 
      */
     private $reflector;
-    
+
     /**
      * The status of the analyzer.
      * 
      * @var bool
      */
     private $analyzed = false;
-    
+
     /**
      * The property that represents the primary key in the table.
      * 
      * @var EntityProperty
      */
     private $primaryProperty;
-    
+
     /**
      * The name of the table to which the entity is mapped.
      * 
      * @var string
      */
     private $tableName;
-    
+
     /**
      * An array filled with properties indexed by the property name.
      * 
      * @var array
      */
     private $propertiesByName;
-    
+
     /**
      * An array filled with properties indexed by the column name.
      * 
      * @var array
      */
     private $propertiesByColumn;
-    
+
     /**
      * An array filled with all relations of the entity.
      * 
@@ -72,30 +73,32 @@ class EntityAnalyzer {
      * 
      * @var array
      */
-    private $propertyAnnotations = array(
-        "@id"         => array(),
-        "@column"     => array("name"),
-        "@table"      => array("name"),
-        "@oneToOne"   => array("mappedBy", "fetch", "cascade"),
-        "@oneToMany"  => array("mappedBy", "fetch", "cascade"),
-        "@manyToMany" => array("mappedBy", "fetch", "cascade"),
-        "@joinTable"  => array("name", "column", "x_column")
-    );
+    private $propertyAnnotations = [
+        "@id"         => [],
+        "@column"     => ["name"],
+        "@table"      => ["name"],
+        "@oneToOne"   => ["mappedBy", "fetch", "cascade"],
+        "@oneToMany"  => ["mappedBy", "fetch", "cascade"],
+        "@manyToMany" => ["mappedBy", "fetch", "cascade"],
+        "@joinTable"  => ["name", "column", "x_column"]
+    ];
 
     /**
-     * @param string $className The classname to be analyzed.
+     * @param string $fullyQualifiedClassname The classname to be analyzed.
      * @throws InvalidArgumentException If class is not a subclass of \PPA\Entity.
      */
-    public function __construct($fullyQualifiedClassname) {
+    public function __construct($fullyQualifiedClassname)
+    {
         $this->reflector = new ReflectionClass($fullyQualifiedClassname);
-        
-        if (!$this->reflector->isSubclassOf("\\PPA\\core\\Entity")) {
+
+        if (!$this->reflector->isSubclassOf("\\PPA\\core\\Entity"))
+        {
             throw new InvalidArgumentException("Class '{$fullyQualifiedClassname}' must be a subclass of \\PPA\\core\\Entity.");
         }
-        
+
         $this->classname = $fullyQualifiedClassname;
     }
-    
+
     /**
      * Does the analysis:
      * - prepares the table name
@@ -108,96 +111,128 @@ class EntityAnalyzer {
      * 
      * @throws AnnotationException
      */
-    public function doAnalysis() {
-        if ($this->analyzed) {
+    public function doAnalysis()
+    {
+        if ($this->analyzed)
+        {
             # TODO: trigger error and/or log message
-        } else {
+        }
+        else
+        {
             $primaryProperty    = null;
-            $propertiesByName   = array();
-            $propertiesByColumn = array();
-            $relations          = array();
+            $propertiesByName   = [];
+            $propertiesByColumn = [];
+            $relations          = [];
             $properties         = $this->reflector->getProperties();
             $annotations        = $this->extractAnnotations($this->reflector->getDocComment());
-            
-            if (isset($annotations["@table"]) && isset($annotations["@table"]["name"])) {
+
+            if (isset($annotations["@table"]) && isset($annotations["@table"]["name"]))
+            {
                 $this->tableName = $annotations["@table"]["name"];
-            } else {
+            }
+            else
+            {
                 $this->tableName = strtolower($this->reflector->getShortName());
             }
-            
-            
-            foreach ($properties as $property) {
+
+
+            foreach ($properties as $property)
+            {
                 $annotations = $this->extractAnnotations($property->getDocComment());
-                
+
                 $pprop = new EntityProperty($this->classname, $property->getName());
                 $pprop->setAccessible(true);
 
-                if (isset($annotations["@column"])) {
-                    if (isset($annotations["@id"])) {
+                if (isset($annotations["@column"]))
+                {
+                    if (isset($annotations["@id"]))
+                    {
                         $pprop->makePrimary();
                         $primaryProperty = $pprop;
                     }
 
-                    if (isset($annotations["@column"]["name"])) {
+                    if (isset($annotations["@column"]["name"]))
+                    {
                         $pprop->setColumn($annotations["@column"]["name"]);
-                    } else {
+                    }
+                    else
+                    {
                         $pprop->setColumn($property->getName());
                     }
 
-                    if (isset($annotations["@oneToOne"])) {
-                        if (!isset($annotations["@oneToOne"]["fetch"])) {
+                    if (isset($annotations["@oneToOne"]))
+                    {
+                        if (!isset($annotations["@oneToOne"]["fetch"]))
+                        {
                             $annotations["@oneToOne"]["fetch"] = "lazy";
                         }
-                        if (!isset($annotations["@oneToOne"]["cascade"])) {
+                        if (!isset($annotations["@oneToOne"]["cascade"]))
+                        {
                             $annotations["@oneToOne"]["cascade"] = PPA::getOption(PPA::OPTION_DEFAULT_CASCADE_TYPE);
                         }
-                        
+
                         $relation    = new OneToOne($pprop, $annotations["@oneToOne"]["fetch"], $annotations["@oneToOne"]["cascade"], $annotations["@oneToOne"]["mappedBy"]);
                         $relations[] = $relation;
+                        
                         $pprop->setRelation($relation);
                     }
-                    
+
                     $propertiesByName[$pprop->getName()]     = $pprop;
                     $propertiesByColumn[$pprop->getColumn()] = $pprop;
-                } else if (isset($annotations["@oneToMany"]) && isset($annotations["@joinTable"])) {
-                    if (!isset($annotations["@oneToMany"]["fetch"])) {
+                }
+                else if (isset($annotations["@oneToMany"]) && isset($annotations["@joinTable"]))
+                {
+                    if (!isset($annotations["@oneToMany"]["fetch"]))
+                    {
                         $annotations["@oneToMany"]["fetch"] = "lazy";
                     }
-                    if (!isset($annotations["@oneToMany"]["cascade"])) {
+                    if (!isset($annotations["@oneToMany"]["cascade"]))
+                    {
                         $annotations["@oneToMany"]["cascade"] = PPA::getOption(PPA::OPTION_DEFAULT_CASCADE_TYPE);
                     }
 
                     $relation    = new OneToMany($pprop, $annotations["@oneToMany"]["fetch"], $annotations["@oneToMany"]["cascade"], $annotations["@oneToMany"]["mappedBy"], $annotations["@joinTable"]["x_column"]);
                     $relations[] = $relation;
+                    
                     $pprop->setRelation($relation);
 
                     $propertiesByName[$pprop->getName()] = $pprop;
-                } else if (isset($annotations["@manyToMany"]) && isset($annotations["@joinTable"])) {
-                    if (!isset($annotations["@manyToMany"]["fetch"])) {
+                }
+                else if (isset($annotations["@manyToMany"]) && isset($annotations["@joinTable"]))
+                {
+                    if (!isset($annotations["@manyToMany"]["fetch"]))
+                    {
                         $annotations["@manyToMany"]["fetch"] = "lazy";
                     }
-                    if (!isset($annotations["@manyToMany"]["cascade"])) {
+                    if (!isset($annotations["@manyToMany"]["cascade"]))
+                    {
                         $annotations["@manyToMany"]["cascade"] = PPA::getOption(PPA::OPTION_DEFAULT_CASCADE_TYPE);
                     }
 
-                    $relation = new ManyToMany($pprop, $annotations["@manyToMany"]["fetch"], $annotations["@manyToMany"]["cascade"], $annotations["@manyToMany"]["mappedBy"], $annotations["@joinTable"]["name"], $annotations["@joinTable"]["column"], $annotations["@joinTable"]["x_column"]);
+                    $relation    = new ManyToMany($pprop, $annotations["@manyToMany"]["fetch"], $annotations["@manyToMany"]["cascade"], $annotations["@manyToMany"]["mappedBy"], $annotations["@joinTable"]["name"], $annotations["@joinTable"]["column"], $annotations["@joinTable"]["x_column"]);
                     $relations[] = $relation;
+                    
                     $pprop->setRelation($relation);
 
                     $propertiesByName[$pprop->getName()] = $pprop;
-                } else {
+                }
+                else
+                {
                     $message = $this->handleUncombinables($annotations);
+                    
                     // A null message indicates, that the current property is not to be processed by PPA
-                    if ($message != null) {
+                    if ($message != null)
+                    {
                         throw new AnnotationException($message);
                     }
                 }
             }
-            
-            if ($primaryProperty == null) {
+
+            if ($primaryProperty == null)
+            {
                 throw new AnnotationException("Entity '{$this->classname}' does not have an @id annotation.");
             }
-            
+
             $this->primaryProperty    = $primaryProperty;
             $this->propertiesByName   = $propertiesByName;
             $this->propertiesByColumn = $propertiesByColumn;
@@ -212,56 +247,70 @@ class EntityAnalyzer {
      * @param array $annotations The annotations of the properties.
      * @throws AnnotationException
      */
-    private function handleUncombinables(array $annotations) {
+    private function handleUncombinables(array $annotations)
+    {
         $message = null;
-        
-        if (isset($annotations["@joinTable"])) {
-            if (!isset($annotations["@manyToMany"])) {
+
+        if (isset($annotations["@joinTable"]))
+        {
+            if (!isset($annotations["@manyToMany"]))
+            {
                 $message = "Entity '{$this->classname}' provides an @joinTable annotation, but not an @manyToMany.";
-            } else if (!isset($annotations["@oneToMany"])) {
+            }
+            else if (!isset($annotations["@oneToMany"]))
+            {
                 $message = "Entity '{$this->classname}' provides an @joinTable annotation, but not an @oneToMany.";
             }
-        } else if (isset($annotations["@manyToMany"]) && !isset($annotations["@joinTable"])) {
+        }
+        else if (isset($annotations["@manyToMany"]) && !isset($annotations["@joinTable"]))
+        {
             $message = "Entity '{$this->classname}' provides an @manyToMany annotation, but not an @joinTable.";
-        } else if (isset($annotations["@oneToMany"]) && !isset($annotations["@joinTable"])) {
+        }
+        else if (isset($annotations["@oneToMany"]) && !isset($annotations["@joinTable"]))
+        {
             $message = "Entity '{$this->classname}' provides an @oneToMany annotation, but not an @joinTable.";
         }
-        
+
         return $message;
     }
 
     /**
      * @return EntityProperty The primary property of the entity.
      */
-    public function getPrimaryProperty() {
+    public function getPrimaryProperty()
+    {
         return $this->primaryProperty;
     }
 
     /**
      * @return string The name of the table in which the entity is persisted.
      */
-    public function getTableName() {
+    public function getTableName()
+    {
         return $this->tableName;
     }
 
     /**
      * @return array A list of properties with the property name as index.
      */
-    public function getPropertiesByName() {
+    public function getPropertiesByName()
+    {
         return $this->propertiesByName;
     }
-    
+
     /**
      * @return array A list of properties with the column name as index.
      */
-    public function getPropertiesByColumn() {
+    public function getPropertiesByColumn()
+    {
         return $this->propertiesByColumn;
     }
-    
+
     /**
      * @return array A list of the entity's relations.
      */
-    public function getRelations() {
+    public function getRelations()
+    {
         return $this->relations;
     }
 
@@ -269,47 +318,53 @@ class EntityAnalyzer {
      * @param string $docComment The documentation of a property.
      * @return array The extracted Annotations.
      */
-    private function extractAnnotations($docComment) {
-        
+    private function extractAnnotations($docComment)
+    {
         // The extracted annotations to be returned.
-        $extracted = array();
+        $extracted = [];
         $divided   = $this->divideAnnotations($docComment);
-        
-        foreach ($divided as $annotation) {
-            
+
+        foreach ($divided as $annotation)
+        {
             // Process every possible annotation.
-            foreach ($this->propertyAnnotations as $propertyAnnoKey => $propertyAnnoValue) {
-                
+            foreach ($this->propertyAnnotations as $propertyAnnoKey => $propertyAnnoValue)
+            {
                 // Pattern for getting lines, which contains the $propertyParamKey
                 // and to capture everything within the parenthesis.
                 $pattern = "#{$propertyAnnoKey}[\s]*\(?(.+)\)?#i";
-                $matches = array();
+                $matches = [];
 
                 // If key exists, continue extraction.
-                if (preg_match($pattern, $annotation, $matches)) {
-                    
+                if (preg_match($pattern, $annotation, $matches))
+                {
                     // The params to be prepared.
-                    $extracted[$propertyAnnoKey] = array();
-                    
+                    $extracted[$propertyAnnoKey] = [];
+
                     // Split the parameter list.
                     $parameters = explode(",", $matches[1]);
-                    
-                    foreach ($parameters as $parameter) {
-                        
+
+                    foreach ($parameters as $parameter)
+                    {
                         // Pattern to extract the param-key and param-value.
                         $pattern = "#[\s]*([\w]+)[\s]*=[\s]*[\"\']([\w]+)[\"\']#";
-                        
-                        if (preg_match($pattern, $parameter, $matches)) {
-                            
+
+                        if (preg_match($pattern, $parameter, $matches))
+                        {
                             // If param key is not in white-list, an error is triggered.
                             // This requires a case-insensitive search.
                             $key = array_search(strtolower($matches[1]), array_map('strtolower', $propertyAnnoValue));
-                            if ($key !== false) {
-                                if ($propertyAnnoValue[$key] != "mappedBy") {
+                            
+                            if ($key !== false)
+                            {
+                                if ($propertyAnnoValue[$key] != "mappedBy")
+                                {
                                     $matches[2] = strtolower($matches[2]);
                                 }
+                                
                                 $extracted[$propertyAnnoKey][$propertyAnnoValue[$key]] = $matches[2];
-                            } else {
+                            }
+                            else
+                            {
                                 trigger_error("Parameter '{$matches[1]}' of Annotation '{$propertyAnnoKey}' is not provided.", E_USER_NOTICE);
                             }
                         }
@@ -317,19 +372,21 @@ class EntityAnalyzer {
                 }
             }
         }
-        
+
         return $extracted;
     }
-    
+
     /**
      * Trims and splits the documentation.
      * 
      * @param string $docComment The documentation of the property.
      * @return array
      */
-    private function divideAnnotations($docComment) {
+    private function divideAnnotations($docComment)
+    {
         return explode("*", substr($docComment, 3, -2));
     }
+
 }
 
 ?>

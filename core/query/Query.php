@@ -6,8 +6,8 @@ use PDO;
 use PDOStatement;
 use PPA\PPA;
 
-class Query implements iQuery {
-
+class Query implements iQuery
+{
     /**
      * @var string the query
      */
@@ -24,7 +24,8 @@ class Query implements iQuery {
      * 
      * @param string $query
      */
-    public function __construct($query) {
+    public function __construct($query)
+    {
         $this->conn  = PPA::getInstance()->getConnection();
         $this->query = trim($query);
 
@@ -42,14 +43,19 @@ class Query implements iQuery {
      * 
      * @return array A list of POPOs.
      */
-    public function getResultList() {
-        if ($this->type == "select") {
-            PPA::log(2500, array($this->query));
+    public function getResultList()
+    {
+        if ($this->type == "select")
+        {
+            PPA::log(2500, [$this->query]);
             $result = $this->getResultListInternal($this->conn->query($this->query));
+
+            PPA::log(2510, [count($result)]);
             
-            PPA::log(2510, array(count($result)));
             return $result;
-        } else {
+        }
+        else
+        {
             return $this->getSingleResult();
         }
     }
@@ -69,36 +75,47 @@ class Query implements iQuery {
      * 
      * @return mixed
      */
-    public function getSingleResult() {
-        PPA::log(2000, array($this->query));
+    public function getSingleResult()
+    {
+        PPA::log(2000, [$this->query]);
         
         $statement = $this->conn->query($this->query);
         $result    = null;
 
-        switch ($this->type) {
-            case 'select': {
-                    if ($statement->columnCount() == 1) {
+        switch ($this->type)
+        {
+            case 'select':
+                {
+                    if ($statement->columnCount() == 1)
+                    {
                         $result = $statement->fetchColumn();
-                        PPA::log(2015, array($result));
-                    } else {
+                        PPA::log(2015, [$result]);
+                    }
+                    else
+                    {
                         $result = $this->getResultListInternal($statement);
-                        if (empty($result)) {
+                        
+                        if (empty($result))
+                        {
                             $result = null;
-                        } else {
+                        }
+                        else
+                        {
                             $result = $result[0];
                         }
+                        
                         PPA::log(2010);
                     }
                     break;
                 }
             case 'update':
             case 'delete':
-                $result = (int)$statement->rowCount();
-                PPA::log(2020, array($result));
+                $result = (int) $statement->rowCount();
+                PPA::log(2020, [$result]);
                 break;
             case 'insert':
                 $result = $this->conn->lastInsertId();
-                PPA::log(2030, array($result));
+                PPA::log(2030, [$result]);
                 break;
             default:
                 break;
@@ -115,7 +132,8 @@ class Query implements iQuery {
      * @param string $full_qualified_classname
      * @return array The result list.
      */
-    private function getResultListInternal(PDOStatement $statement) {
+    private function getResultListInternal(PDOStatement $statement)
+    {
         return $statement->fetchAll(PDO::FETCH_OBJ);
     }
 

@@ -7,8 +7,8 @@ use PPA\core\EntityProperty;
 use PPA\core\exception\FetchException;
 use PPA\PPA;
 
-abstract class Relation {
-
+abstract class Relation
+{
     /**
      *
      * @var EntityProperty
@@ -33,19 +33,22 @@ abstract class Relation {
      */
     private $mappedBy;
 
-    public function __construct(EntityProperty $property, $fetch, $cascade, $mappedBy) {
+    public function __construct(EntityProperty $property, $fetch, $cascade, $mappedBy)
+    {
         $this->fetch   = trim($fetch);
         $this->cascade = trim($cascade);
-        
-        if (!in_array($this->fetch, array("lazy", "eager"))) {
+
+        if (!in_array($this->fetch, ["lazy", "eager"]))
+        {
             throw new FetchException("Fetch-type can only be 'lazy' or 'eager'.");
         }
-        
+
 //        \PPA\prettyDump($property);
-        if (!in_array($this->cascade, PPA::$LEGAL_CASCADING_TYPES)) {
+        if (!in_array($this->cascade, PPA::$LEGAL_CASCADING_TYPES))
+        {
             throw new InvalidArgumentException("The cascade type for property '{$property->getName()}' of class '\\{$property->getClass()}' was set to '{$this->cascade}'. But the only legal values are '" . implode("', '", PPA::$LEGAL_CASCADING_TYPES) . "'.");
         }
-        
+
         $this->property = $property;
         $this->mappedBy = str_replace("_", "\\", $mappedBy);
     }
@@ -54,7 +57,8 @@ abstract class Relation {
      * 
      * @return EntityProperty
      */
-    public function getProperty() {
+    public function getProperty()
+    {
         return $this->property;
     }
 
@@ -62,7 +66,8 @@ abstract class Relation {
      * 
      * @return string
      */
-    public function getMappedBy() {
+    public function getMappedBy()
+    {
         return $this->mappedBy;
     }
 
@@ -70,7 +75,8 @@ abstract class Relation {
      * 
      * @return boolean
      */
-    public function isLazy() {
+    public function isLazy()
+    {
         return $this->fetch == "lazy";
     }
 
@@ -78,7 +84,8 @@ abstract class Relation {
      * 
      * @return boolean
      */
-    public function isEager() {
+    public function isEager()
+    {
         return $this->fetch == "eager";
     }
 
@@ -86,7 +93,8 @@ abstract class Relation {
      * 
      * @return boolean
      */
-    public function isCascadeTypePersist() {
+    public function isCascadeTypePersist()
+    {
         return $this->cascade == "all" || $this->cascade == "persist";
     }
 
@@ -94,9 +102,11 @@ abstract class Relation {
      * 
      * @return boolean
      */
-    public function isCascadeTypeRemove() {
+    public function isCascadeTypeRemove()
+    {
         return $this->cascade == "all" || $this->cascade == "remove";
     }
+
 }
 
 ?>

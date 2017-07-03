@@ -6,8 +6,8 @@ use PDO;
 use PDOStatement;
 use PPA\PPA;
 
-class PreparedQuery implements iPreparedQuery {
-    
+class PreparedQuery implements iPreparedQuery
+{
     /**
      * @var string the query
      */
@@ -24,67 +24,87 @@ class PreparedQuery implements iPreparedQuery {
      */
     protected $statement;
 
-    public function __construct($query) {
+    public function __construct($query)
+    {
         $this->conn  = PPA::getInstance()->getConnection();
         $this->query = trim($query);
 
         $firstWord  = explode(" ", $this->query);
         $this->type = strtolower($firstWord[0]);
-        
-        
+
+
         // To discern, if constructor was called by
         // class-inheritor or the class itself
-        if (get_class() == get_class($this)) {
-            PPA::log(3000, array($this->query));
-        } else {
-            PPA::log(5000, array($this->classname, $this->query));
+        if (get_class() == get_class($this))
+        {
+            PPA::log(3000, [$this->query]);
         }
-        
-        
+        else
+        {
+            PPA::log(5000, [$this->classname, $this->query]);
+        }
+
+
         $this->statement = $this->conn->prepare($this->query);
     }
 
-    public function getResultList(array $values) {
-        if ($this->type == "select") {
-            PPA::log(3501, array(print_r($values, true)));
+    public function getResultList(array $values)
+    {
+        if ($this->type == "select")
+        {
+            PPA::log(3501, [print_r($values, true)]);
             $this->statement->execute($values);
-            
+
             $result = $this->getResultListInternal();
-            PPA::log(3510, array(count($result)));
+            PPA::log(3510, [count($result)]);
+            
             return $result;
-        } else {
+        }
+        else
+        {
             return $this->getSingleResult($values);
         }
     }
 
-    public function getSingleResult(array $values) {
-        PPA::log(3001, array(print_r($values, true)));
+    public function getSingleResult(array $values)
+    {
+        PPA::log(3001, [print_r($values, true)]);
         $this->statement->execute($values);
 
-        switch ($this->type) {
-            case 'select': {
-                    if ($this->statement->columnCount() == 1) {
+        switch ($this->type)
+        {
+            case 'select':
+                {
+                    if ($this->statement->columnCount() == 1)
+                    {
                         $result = $this->statement->fetchColumn();
-                        PPA::log(3015, array($result));
-                    } else {
+                        PPA::log(3015, [$result]);
+                    }
+                    else
+                    {
                         $result = $this->getResultListInternal();
-                        if (empty($result)) {
+                        
+                        if (empty($result))
+                        {
                             $result = null;
-                        } else {
+                        }
+                        else
+                        {
                             $result = $result[0];
                         }
+                        
                         PPA::log(3010);
                     }
                     break;
                 }
             case 'update':
             case 'delete':
-                $result = (int)$this->statement->rowCount();
-                PPA::log(3020, array($result));
+                $result = (int) $this->statement->rowCount();
+                PPA::log(3020, [$result]);
                 break;
             case 'insert':
                 $result = $this->conn->lastInsertId();
-                PPA::log(3030, array($result));
+                PPA::log(3030, [$result]);
                 break;
             default:
                 break;
@@ -93,10 +113,11 @@ class PreparedQuery implements iPreparedQuery {
         return $result;
     }
 
-    private function getResultListInternal() {
+    private function getResultListInternal()
+    {
         return $this->statement->fetchAll(PDO::FETCH_OBJ);
     }
-    
+
 }
 
 ?>

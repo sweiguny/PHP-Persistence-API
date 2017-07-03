@@ -2,7 +2,8 @@
 
 namespace PPA\core\exception;
 
-class RelationException extends PPA_Exception {
+class RelationException extends PPA_Exception
+{
     
 }
 

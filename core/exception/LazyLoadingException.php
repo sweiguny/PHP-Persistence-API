@@ -2,7 +2,8 @@
 
 namespace PPA\core\exception;
 
-class LazyLoadingException extends PPA_Exception {
+class LazyLoadingException extends PPA_Exception
+{
     
 }
 

@@ -2,7 +2,8 @@
 
 namespace PPA\core\query;
 
-interface iRetrieval {
+interface iRetrieval
+{
     
 }
 

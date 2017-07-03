@@ -12,8 +12,8 @@ use PPA\core\query\PreparedTypedQuery;
 use PPA\PPA;
 
 
-class MockEntityList extends MockEntity implements ArrayAccess, Countable, Iterator {
-
+class MockEntityList extends MockEntity implements ArrayAccess, Countable, Iterator
+{
     /**
      *
      * @var array
@@ -31,7 +31,8 @@ class MockEntityList extends MockEntity implements ArrayAccess, Countable, Itera
      * @param EntityProperty $property
      * @param array $values
      */
-    public function __construct($query, $classname, Entity $owner, EntityProperty $property, array $values) {
+    public function __construct($query, $classname, Entity $owner, EntityProperty $property, array $values)
+    {
         parent::__construct($query, $classname, $owner, $property, $values);
     }
 
@@ -43,12 +44,16 @@ class MockEntityList extends MockEntity implements ArrayAccess, Countable, Itera
      * @return mixed The value, the function of the internal array should return.
      * @throws BadMethodCallException If method does not exist.
      */
-    public function __call($name, $arguments) {
+    public function __call($name, $arguments)
+    {
         $this->exchange();
-        
-        if (method_exists($this->entities, $name)) {
-            return call_user_func(array($this->entities, $name), $arguments);
-        } else {
+
+        if (method_exists($this->entities, $name))
+        {
+            return call_user_func([$this->entities, $name], $arguments);
+        }
+        else
+        {
             throw new BadMethodCallException("Method '{$name}()' cannot be called on an Array.");
         }
     }
@@ -56,35 +61,44 @@ class MockEntityList extends MockEntity implements ArrayAccess, Countable, Itera
     /**
      * Exchanges the mock list with an array that contains true entities.
      */
-    public function exchange() {
-        if ($this->entities == null) {
-            PPA::log(1011, array($this->classname));
+    public function exchange()
+    {
+        if ($this->entities == null)
+        {
+            PPA::log(1011, [$this->classname]);
+            
             $query          = new PreparedTypedQuery($this->query, $this->classname);
             $this->entities = $query->getResultList($this->values);
-            
+
             $this->property->setValue($this->owner, $this->entities);
         }
     }
 
-    public function offsetExists($offset) {
+    public function offsetExists($offset)
+    {
         $this->exchange();
         return isset($this->entities[$offset]);
     }
 
-    public function offsetGet($offset) {
+    public function offsetGet($offset)
+    {
         $this->exchange();
         return $this->entities[$offset];
     }
 
-    public function offsetSet($offset, $value) {
+    public function offsetSet($offset, $value)
+    {
         $this->exchange();
-        
-        if ($offset == null) {
+
+        if ($offset == null)
+        {
             $this->entities[] = $value;
-        } else {
+        }
+        else
+        {
             $this->entities[$offset] = $value;
         }
-        
+
         // Must be done twice (first time is in method 'exchange()'), because to
         // '$this->property->setValue(...)' the parameters are passed by value
         // and not by reference. As the entities are changed after the first
@@ -93,39 +107,52 @@ class MockEntityList extends MockEntity implements ArrayAccess, Countable, Itera
         $this->property->setValue($this->owner, $this->entities);
     }
 
-    public function offsetUnset($offset) {
+    public function offsetUnset($offset)
+    {
         $this->exchange();
+        
         unset($this->entities[$offset]);
     }
 
-    public function count() {
+    public function count()
+    {
         $this->exchange();
+        
         return count($this->entities);
     }
 
-    public function current() {
+    public function current()
+    {
         $this->exchange();
+        
         return current($this->entities);
     }
 
-    public function key() {
+    public function key()
+    {
         $this->exchange();
+        
         return key($this->entities);
     }
 
-    public function next() {
+    public function next()
+    {
         $this->exchange();
+        
         return next($this->entities);
     }
 
-    public function rewind() {
+    public function rewind()
+    {
         $this->exchange();
         reset($this->entities);
     }
 
-    public function valid() {
+    public function valid()
+    {
         $key = $this->key();
         $var = ($key !== null && $key !== false);
+        
         return $var;
     }
 

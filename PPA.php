@@ -10,8 +10,8 @@ use PPA\core\exception\PPA_Exception;
 use PPA\core\iPPA_Logger;
 use PPA\core\PPA_DummyLogger;
 
-class PPA {
-    
+class PPA
+{
     # Cascade type
     const OPTION_DEFAULT_CASCADE_TYPE       = "DEFAULT_CASCADE_TYPE";
     const DEFAULT_CASCADE_TYPE              = "none";
@@ -55,11 +55,11 @@ class PPA {
      * @var array The existing message classes
      */
     private static $MSG_CLASSES = [
-        self::MSG_CLASS_PREPARE                 => array(3000, 5000),
-        self::MSG_CLASS_EXECUTE                 => array(2000, 2500, 3001, 3501, 4000, 4500, 5001, 5501),
-        self::MSG_CLASS_AFFECTION               => array(2020, 3020),
-        self::MSG_CLASS_RETRIEVE                => array(2010, 2015, 2030, 2510, 3010, 3015, 3030, 3510, 4010, 4510, 5010, 5510),
-        self::MSG_CLASS_NOTIFICATION            => array(1001, 1002, 1003, 1004, 1005, 1006, 1010, 1011, 1100, 1200, 1300)
+        self::MSG_CLASS_PREPARE                 => [3000, 5000],
+        self::MSG_CLASS_EXECUTE                 => [2000, 2500, 3001, 3501, 4000, 4500, 5001, 5501],
+        self::MSG_CLASS_AFFECTION               => [2020, 3020],
+        self::MSG_CLASS_RETRIEVE                => [2010, 2015, 2030, 2510, 3010, 3015, 3030, 3510, 4010, 4510, 5010, 5510],
+        self::MSG_CLASS_NOTIFICATION            => [1001, 1002, 1003, 1004, 1005, 1006, 1010, 1011, 1100, 1200, 1300]
     ];
     
     /**
@@ -117,10 +117,13 @@ class PPA {
      * @return PPA
      * @throws PPA_Exception
      */
-    public static function getInstance() {
-        if (self::$instance == null) {
+    public static function getInstance()
+    {
+        if (self::$instance == null)
+        {
             throw new PPA_Exception("PHP Persitence API must be initialized first.");
         }
+        
         return self::$instance;
     }
 
@@ -151,25 +154,31 @@ class PPA {
      * @param string $password The database password - see PDO-doc
      * @param array $options Options for PPA.
      */
-    public static function init($dsn, $username, $password, array $options = []) {
-        if (self::$instance != null) {
+    public static function init($dsn, $username, $password, array $options = [])
+    {
+        if (self::$instance != null)
+        {
             throw new PPA_Exception("PHP Persitence API already inited.");
         }
-        
+
         require_once __DIR__ . '/Util.php';
-        
+
         self::$instance = new self($dsn, $username, $password);
-        
+
         # Check options against validity
-        if (isset($options[self::OPTION_DEFAULT_CASCADE_TYPE])) {
+        if (isset($options[self::OPTION_DEFAULT_CASCADE_TYPE]))
+        {
             $options[self::OPTION_DEFAULT_CASCADE_TYPE] = strtolower(trim($options[self::OPTION_DEFAULT_CASCADE_TYPE]));
-            if (!in_array($options[self::OPTION_DEFAULT_CASCADE_TYPE], self::$LEGAL_CASCADING_TYPES)) {
+            
+            if (!in_array($options[self::OPTION_DEFAULT_CASCADE_TYPE], self::$LEGAL_CASCADING_TYPES))
+            {
                 throw new InvalidArgumentException("The " . self::OPTION_DEFAULT_CASCADE_TYPE . " was set to '" . $options[self::OPTION_DEFAULT_CASCADE_TYPE] . "'. But the only legal values are '" . implode("', '", self::$LEGAL_CASCADING_TYPES) . "'.");
             }
         }
+        
         self::$OPTIONS = array_merge(self::$OPTIONS, $options);
     }
-    
+
     /**
      * Sends a certain message to the assigned logger. This message will mainly
      * be used by PPA internally. Because the logging options need to be
@@ -184,12 +193,16 @@ class PPA {
      * @param int $logCode
      * @param array $params
      */
-    public static function log($logCode, array $params = []) {
+    public static function log($logCode, array $params = [])
+    {
         $message = null;
-        
-        if (in_array($logCode, self::$MSG_CLASSES[self::MSG_CLASS_PREPARE])) {
-            if (self::$OPTIONS[self::OPTION_LOG_PREPARES]) {
-                switch ($logCode) {
+
+        if (in_array($logCode, self::$MSG_CLASSES[self::MSG_CLASS_PREPARE]))
+        {
+            if (self::$OPTIONS[self::OPTION_LOG_PREPARES])
+            {
+                switch ($logCode)
+                {
                     case 3000:
                         $message = sprintf(self::$messages[$logCode], $params[0]);
                         break;
@@ -201,9 +214,13 @@ class PPA {
                         break;
                 }
             }
-        } else if (in_array($logCode, self::$MSG_CLASSES[self::MSG_CLASS_EXECUTE])) {
-            if (self::$OPTIONS[self::OPTION_LOG_EXECUTES]) {
-                switch ($logCode) {
+        }
+        else if (in_array($logCode, self::$MSG_CLASSES[self::MSG_CLASS_EXECUTE]))
+        {
+            if (self::$OPTIONS[self::OPTION_LOG_EXECUTES])
+            {
+                switch ($logCode)
+                {
                     case 2000:
                     case 2500:
                     case 3001:
@@ -221,9 +238,13 @@ class PPA {
                         break;
                 }
             }
-        } else if (in_array($logCode, self::$MSG_CLASSES[self::MSG_CLASS_AFFECTION])) {
-            if (self::$OPTIONS[self::OPTION_LOG_AFFECTIONS]) {
-                switch ($logCode) {
+        }
+        else if (in_array($logCode, self::$MSG_CLASSES[self::MSG_CLASS_AFFECTION]))
+        {
+            if (self::$OPTIONS[self::OPTION_LOG_AFFECTIONS])
+            {
+                switch ($logCode)
+                {
                     case 2020:
                     case 3020:
                         $message = sprintf(self::$messages[$logCode], $params[0]);
@@ -233,9 +254,13 @@ class PPA {
                         break;
                 }
             }
-        } else if (in_array($logCode, self::$MSG_CLASSES[self::MSG_CLASS_RETRIEVE])) {
-            if (self::$OPTIONS[self::OPTION_LOG_RETRIEVES]) {
-                switch ($logCode) {
+        }
+        else if (in_array($logCode, self::$MSG_CLASSES[self::MSG_CLASS_RETRIEVE]))
+        {
+            if (self::$OPTIONS[self::OPTION_LOG_RETRIEVES])
+            {
+                switch ($logCode)
+                {
                     case 2010:
                     case 3010:
                         $message = self::$messages[$logCode];
@@ -261,9 +286,13 @@ class PPA {
                         break;
                 }
             }
-        } else if (in_array($logCode, self::$MSG_CLASSES[self::MSG_CLASS_NOTIFICATION])) {
-            if (self::$OPTIONS[self::OPTION_LOG_NOTIFICATIONS]) {
-                switch ($logCode) {
+        }
+        else if (in_array($logCode, self::$MSG_CLASSES[self::MSG_CLASS_NOTIFICATION]))
+        {
+            if (self::$OPTIONS[self::OPTION_LOG_NOTIFICATIONS])
+            {
+                switch ($logCode)
+                {
                     case 1001:
                     case 1002:
                     case 1003:
@@ -286,74 +315,89 @@ class PPA {
                         break;
                 }
             }
-        } else {
+        }
+        else
+        {
             throw new PPA_Exception("LogCode {$logCode} cannot be recognized.", 0);
         }
-        
-        if ($message != null) {
+
+        if ($message != null)
+        {
             self::getInstance()->getLogger()->log($logCode, $message);
         }
     }
     
-    public static function getOption($key) {
+    public static function getOption($key)
+    {
         return self::$OPTIONS[$key];
     }
 
-    public static function printOptions() {
+    public static function printOptions()
+    {
         prettyDump(self::$OPTIONS);
     }
 
     private function __clone() { }
-    private function __construct($dsn, $username, $password) {
-        register_shutdown_function(array($this, 'rollbackActiveTransaction'));
-        set_exception_handler(array($this, 'handleException'));
-        spl_autoload_register(array($this, 'classload'), true, true);
-        
-        try {
-            $this->conn = new PDO($dsn, $username, $password, array(
+    private function __construct($dsn, $username, $password)
+    {
+        register_shutdown_function([$this, 'rollbackActiveTransaction']);
+        set_exception_handler([$this, 'handleException']);
+        spl_autoload_register([$this, 'classload'], true, true);
+
+        try
+        {
+            $this->conn = new PDO($dsn, $username, $password, [
                 PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_AUTOCOMMIT => true
-            ));
-        } catch (Exception $e) {
+            ]);
+        }
+        catch (Exception $e)
+        {
             prettyDump("Connection failed: {$e->getMessage()}");
         }
-        
+
         $this->logger = new PPA_DummyLogger();
     }
-    
+
     /**
      * Loads the php class respectively to the root folder.
      * 
      * @param string $class_name
      */
-    public function classload($class_name) {
+    public function classload($class_name)
+    {
         $root = realpath(__DIR__);
-        
-        if (($namespaces = Util::getNamespaces($class_name))) {
+
+        if (($namespaces = Util::getNamespaces($class_name)))
+        {
             $class_name = array_pop($namespaces);
             array_shift($namespaces);
-            
+
             $root .= DIRECTORY_SEPARATOR . implode($namespaces, DIRECTORY_SEPARATOR);
         }
-        
+
         $file = $root . DIRECTORY_SEPARATOR . $class_name . ".php";
 
-        if (file_exists($file)) {
+        if (file_exists($file))
+        {
             require_once $file;
         }
     }
-    
-    public function handleException(Exception $exception) {
+
+    public function handleException(Exception $exception)
+    {
         self::log(1300, [get_class($exception), $exception->getMessage()]);
 //        $this->logger->log(1300, get_class($exception) . " occured with message: " . $exception->getMessage());
         $this->rollbackActiveTransaction();
         throw $exception;
     }
-    
-    public function rollbackActiveTransaction() {
-        if (EntityManager::getInstance()->inTransaction()) {
+
+    public function rollbackActiveTransaction()
+    {
+        if (EntityManager::getInstance()->inTransaction())
+        {
             EntityManager::getInstance()->rollback();
-            
+
             self::log(1100);
 //            $this->logger->log(1100, "Transaction was rolled back, during shutdown.");
         }
@@ -362,7 +406,8 @@ class PPA {
     /**
      * @return PDO
      */
-    public function getConnection() {
+    public function getConnection()
+    {
         return $this->conn;
     }
 
@@ -373,17 +418,20 @@ class PPA {
      * 
      * @param iPPA_Logger $logger
      */
-    public function setLogger(iPPA_Logger $logger) {
-        self::log(1200, array(get_class(self::getInstance()->getLogger()), get_class($logger)));
+    public function setLogger(iPPA_Logger $logger)
+    {
+        self::log(1200, [get_class(self::getInstance()->getLogger()), get_class($logger)]);
         $this->logger = $logger;
     }
-    
+
     /**
      * @return iPPA_Logger
      */
-    public function getLogger() {
+    public function getLogger()
+    {
         return $this->logger;
     }
+
 }
 
 /**
@@ -391,12 +439,16 @@ class PPA {
  * 
  * @param mixed $param
  */
-function prettyDump($param) {
-    if ($param == null) {
+function prettyDump($param)
+{
+    if ($param == null)
+    {
         echo "<pre>";
         var_dump($param);
         echo "</pre>";
-    } else {
+    }
+    else
+    {
         echo "<pre>" . print_r($param, true) . "</pre>";
     }
 }

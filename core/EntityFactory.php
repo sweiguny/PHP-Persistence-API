@@ -5,7 +5,8 @@ namespace PPA\core;
 use PPA\core\exception\NoEntityException;
 use ReflectionClass;
 
-class EntityFactory {
+class EntityFactory
+{
 
     /**
      * Instantiates an instance of the given classname, but without calling the
@@ -15,13 +16,17 @@ class EntityFactory {
      * @return Entity An instance of the classname.
      * @throws NoEntityException
      */
-    public static function create($classname) {
+    public static function create($classname)
+    {
         $reflection = new ReflectionClass($classname);
         $$classname = $reflection->newInstanceWithoutConstructor();
-        
-        if ($$classname instanceof Entity) {
+
+        if ($$classname instanceof Entity)
+        {
             return $$classname;
-        } else {
+        }
+        else
+        {
             throw new NoEntityException($classname);
         }
     }
