@@ -1,0 +1,13 @@
+{
+    "require": {
+        "symfony/dependency-injection": "^3.3",
+        "symfony/event-dispatcher": "^3.3",
+        "doctrine/orm": "v2.5.6",
+        "doctrine/dbal": "v2.5.12"
+    },
+    "autoload": {
+        "psr-4": {
+            "PPA\\": "src/PPA"
+        }
+    }
+}

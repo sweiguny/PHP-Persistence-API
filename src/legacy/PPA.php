@@ -342,7 +342,7 @@ class PPA
     {
         register_shutdown_function([$this, 'rollbackActiveTransaction']);
         set_exception_handler([$this, 'handleException']);
-        spl_autoload_register([$this, 'classload'], true, true);
+//        spl_autoload_register([$this, 'classload'], true, true);
 
         try
         {
