@@ -5,9 +5,18 @@
         "doctrine/orm": "v2.5.6",
         "doctrine/dbal": "v2.5.12"
     },
+    "require-dev": {
+        "phpunit/phpunit": "6.2",
+        "phpunit/dbunit": "^3.0"
+    },
     "autoload": {
         "psr-4": {
             "PPA\\": "src/PPA"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PPA\\": "tests/PPA"
         }
     }
 }
