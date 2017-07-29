@@ -11,12 +11,13 @@
     },
     "autoload": {
         "psr-4": {
-            "PPA\\": "src/PPA"
+            "PPA\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "PPA\\": "tests/PPA"
+            "PPA\\tests\\bootstrap\\": "tests/bootstrap/",
+            "PPA\\tests\\": "tests/PPA/"
         }
     }
 }

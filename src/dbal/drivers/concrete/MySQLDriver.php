@@ -2,7 +2,9 @@
 
 namespace PPA\dbal\drivers\concrete;
 
-class MySQLDriver extends \PPA\dbal\drivers\AbstractDriver
+use PPA\dbal\drivers\AbstractDriver;
+
+class MySQLDriver extends AbstractDriver
 {
     
     public function getCharset(): string

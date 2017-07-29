@@ -2,9 +2,11 @@
 
 namespace PPA\orm;
 
-use ReflectionClass;
+use PPA\orm\entity\Serializable;
+use PPA\orm\events\EntityPersistEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class UnitOfWork
+class UnitOfWork implements EventSubscriberInterface
 {
     /**
      *
@@ -36,11 +38,27 @@ class UnitOfWork
         return $this->identityMap;
     }
     
-    public function getChangeSet($entity)
+    public function getChangeSet(Serializable $entity)
     {
         
     }
 
+    /**
+     * 
+     * @return array
+     */
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            EntityPersistEvent::NAME => "addEntity"
+        ];
+    }
+
+    public function addEntity(EntityPersistEvent $event)
+    {
+        die("here in addEntity");
+    }
+    
 }
 
 ?>

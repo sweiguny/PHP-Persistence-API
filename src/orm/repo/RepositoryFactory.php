@@ -23,7 +23,7 @@ class RepositoryFactory
         $this->unitOfWork = $unitOfWork;
     }
     
-    public function getRepository(string $classname)
+    public function getRepository(string $classname): DefaultRepository
     {
         if (!isset($this->repositories[$classname]))
         {
@@ -33,7 +33,7 @@ class RepositoryFactory
         return $this->repositories[$classname];
     }
 
-    private function createRepository(string $classname)
+    private function createRepository(string $classname): DefaultRepository
     {
         return new DefaultRepository($this->unitOfWork, $classname);
     }

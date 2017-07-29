@@ -2,6 +2,7 @@
 
 namespace PPA\orm\repo;
 
+use PPA\orm\entity\Serializable;
 use PPA\orm\UnitOfWork;
 
 class DefaultRepository
@@ -25,7 +26,7 @@ class DefaultRepository
         $this->classname  = $classname;
     }
     
-    public function findBy($key)
+    public function findBy($key): Serializable
     {
         $entity = $this->unitOfWork->getIdentityMap()->retrieve($this->classname, $key);
         

@@ -3,6 +3,7 @@
 namespace PPA\orm;
 
 use LogicException;
+use PPA\orm\entity\Serializable;
 
 class IdentityMap
 {
@@ -34,7 +35,7 @@ class IdentityMap
         $this->map[$classname][$key] = $entity;
     }
     
-    public function retrieve($classname, $key)
+    public function retrieve($classname, $key): Serializable
     {
         if (isset($this->map[$classname]) && isset($this->map[$classname][$key]))
         {

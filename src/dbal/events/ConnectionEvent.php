@@ -2,13 +2,14 @@
 
 namespace PPA\dbal\events;
 
+use PPA\core\PPA;
 use PPA\dbal\drivers\DriverInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 class ConnectionEvent extends Event
 {
-    const PRE_CONNECT  = "PPA.pre-connect";
-    const POST_CONNECT = "PPA.post-connect";
+    const PRE_CONNECT  = PPA::EventPrefix . "pre-connect";
+    const POST_CONNECT = PPA::EventPrefix . "post-connect";
     
     /**
      *

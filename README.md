@@ -1,7 +1,9 @@
 PHP Persistence API
 ======
-
+[![Build Status](https://travis-ci.org/sweiguny/PHP-Persistence-API.svg?branch=master)](https://travis-ci.org/sweiguny/PHP-Persistence-API)
 The PHP Persistence API (`PPA`) is an Interface for PHP-Applications to access Object-Relational data.
+
+##Note: this project is currently under a huge refactoring process.
 
 ***
 

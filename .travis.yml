@@ -5,4 +5,15 @@ php:
   - '7.1'
 install:
    - composer install
-script: phpunit --verbose
+script: phpunit -c tests/travis/$DB.phpunit.xml
+
+jobs:
+    include:
+        stage: test
+        env:
+           - DB=mariadb
+        before_script:
+           - mysql -e 'CREATE DATABASE IF NOT EXISTS ppa_test;'
+        addons:
+            mariadb: 10.1
+        

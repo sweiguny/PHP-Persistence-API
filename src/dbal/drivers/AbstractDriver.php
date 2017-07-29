@@ -15,7 +15,7 @@ abstract class AbstractDriver implements DriverInterface
             PDO::ATTR_AUTOCOMMIT => true
         ];
 
-    public function __construct(array $options)
+    public function __construct(array $options = [])
     {
         $this->options = array_merge($this->getDefaultOptions(), $this->options, $options);
     }
