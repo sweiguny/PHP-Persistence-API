@@ -56,7 +56,7 @@ class UnitOfWork implements EventSubscriberInterface
 
     public function addEntity(EntityPersistEvent $event)
     {
-        die("here in addEntity");
+        \PPA\prettyDump($event);
     }
     
 }

@@ -2,6 +2,7 @@
 
 namespace PPA\dbal;
 
+use LogicException;
 use PDO;
 use PPA\dbal\drivers\AbstractDriver;
 use PPA\dbal\events\ConnectionEvent;
@@ -109,6 +110,11 @@ class Connection
     
     public function getPdo(): PDO
     {
+        if ($this->pdo == null)
+        {
+            throw new LogicException('Connection must be established first. Do that by calling $connection->connect().');
+        }
+        
         return $this->pdo;
     }
 
