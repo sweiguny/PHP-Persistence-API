@@ -1,15 +1,16 @@
 PHP Persistence API
 ======
 [![Build Status](https://travis-ci.org/sweiguny/PHP-Persistence-API.svg?branch=master)](https://travis-ci.org/sweiguny/PHP-Persistence-API)
+
 The PHP Persistence API (`PPA`) is an Interface for PHP-Applications to access Object-Relational data.
 
-##Note: this project is currently under a huge refactoring process.
+## Note: this project currently underlies a huge refactoring process.
 
 ***
 
 #### Features:
 - [Easy to embed in your project](https://github.com/sweiguny/PHP-Persistence-API/wiki/Embedding-PPA)
-- Configure entities via [annotations](https://github.com/sweiguny/PHP-Persistence-API/wiki/Annotations-&-Parameters) (no xml!)
+- Configure entities via [annotations](https://github.com/sweiguny/PHP-Persistence-API/wiki/Annotations-&-Parameters)
   - Relations
     - OneToOne
     - OneToMany
@@ -17,8 +18,7 @@ The PHP Persistence API (`PPA`) is an Interface for PHP-Applications to access O
 - [TypedQueries](https://github.com/sweiguny/PHP-Persistence-API/wiki/TypedQuery) and [PreparedQueries](https://github.com/sweiguny/PHP-Persistence-API/wiki/PreparedQuery).
 - CRUD
   - Transactions
-- Good performance
-  - [Eager & Lazy Loading](https://github.com/sweiguny/PHP-Persistence-API/wiki/Eager-and-Lazy-Loading)
+- [Eager & Lazy Loading](https://github.com/sweiguny/PHP-Persistence-API/wiki/Eager-and-Lazy-Loading)
 - A neat [WIKI](https://github.com/sweiguny/PHP-Persistence-API/wiki)
 
 **Features in spe:**
