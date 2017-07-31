@@ -2,56 +2,64 @@
 
 namespace PPA\tests\dbal\drivers;
 
-use PDO;
-use PHPUnit\Framework\TestCase;
+use PPA\dbal\drivers\AbstractDriver;
 use PPA\dbal\drivers\concrete\MySQLDriver;
+use PPA\tests\bootstrap\AbstractDriverTestCase;
 
 /**
  * @coversDefaultClass \PPA\dbal\drivers\concrete\MySQLDriver
  */
-class MySQLDriverTest extends TestCase
+class MySQLDriverTest extends AbstractDriverTestCase
 {
-    
     /**
-     * 
-     * @covers ::getDefaultPort
-     * @covers ::getDriverName
      * @covers ::getCharset
-     * @covers ::getDefaultOptions
-     */
-    public function testDriver()
-    {
-        $driver = new MySQLDriver();
-        
-        $this->assertEquals(3306,    $driver->getDefaultPort());
-        $this->assertEquals("mysql", $driver->getDriverName());
-        $this->assertEquals("utf8",  $driver->getCharset());
-        $this->assertEquals([],      $driver->getDefaultOptions());
-    }
-    
-    /**
-     * @depends testDriver
      * 
-     * @covers \PPA\dbal\drivers\AbstractDriver::__construct
-     * @covers \PPA\dbal\drivers\AbstractDriver::getOptions
+     * @return string
      */
-    public function testOptions()
+    public function getCharset(): string
     {
-        $abstractDefaultOptions = [
-            PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_AUTOCOMMIT => true
-        ];
-        $testOptions = [
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
-        ];
-        
-        $driver = new MySQLDriver($testOptions);
-        
-        $expectedOptions = array_merge($abstractDefaultOptions, $driver->getDefaultOptions(), $testOptions);
-        
-        $this->assertEquals($expectedOptions, $driver->getOptions());
+        return "utf8";
     }
-    
+
+    /**
+     * @covers ::getDefaultOptions
+     * 
+     * @return array
+     */
+    public function getDefaultOptions(): array
+    {
+        return [];
+    }
+
+    /**
+     * @covers ::getDefaultPort
+     * 
+     * @return int
+     */
+    public function getDefaultPort(): int
+    {
+        return 3306;
+    }
+
+    /**
+     * @covers ::getDriverName
+     * 
+     * @return string
+     */
+    public function getDriverName(): string
+    {
+        return "mysql";
+    }
+
+    /**
+     * 
+     * @return AbstractDriver
+     */
+    public function getDriver(): AbstractDriver
+    {
+        return new MySQLDriver();
+    }
+
 }
 
 ?>

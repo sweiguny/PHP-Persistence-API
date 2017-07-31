@@ -7,7 +7,7 @@ use PPA\core\Entity;
 /*
  * @table(name='role')
  */
-class Role extends Entity
+class Role extends \PPA\core\HistoryEntity
 {
     /**
      * @id
@@ -16,6 +16,7 @@ class Role extends Entity
     private $id;
 
     /**
+     * @track
      * @column(name="name")
      */
     private $name;
@@ -28,6 +29,8 @@ class Role extends Entity
 
     public function __construct($name)
     {
+        parent::__construct();
+        
         $this->name = $name;
     }
 

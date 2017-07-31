@@ -56,7 +56,10 @@ class UnitOfWork implements EventSubscriberInterface
 
     public function addEntity(EntityPersistEvent $event)
     {
-        \PPA\prettyDump($event);
+        $entityManager = $event->getEntityManager();
+        $entity        = $event->getEntity();
+        
+        $this->identityMap->add($entity, "id");
     }
     
 }

@@ -52,8 +52,8 @@ class EntityManager
     
     public function persist(Serializable $entity)
     {
-        // add entity to uow
         $event = new EntityPersistEvent($this, $entity);
+        
         $this->eventDispatcher->dispatch(EntityPersistEvent::NAME, $event);
     }
     

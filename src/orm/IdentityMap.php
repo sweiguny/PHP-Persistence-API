@@ -18,7 +18,7 @@ class IdentityMap
         
     }
     
-    public function add($entity, $key)
+    public function add(Serializable $entity, $key)
     {
         $classname = get_class($entity);
         
