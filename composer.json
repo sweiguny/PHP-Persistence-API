@@ -1,5 +1,20 @@
 {
+    "name": "sweiguny/php-persistence-api",
+    "type": "library",
+    "description": "Interface for PHP-Applications to access Object-Relational data. ",
+    "keywords": ["orm", "dbal"],
+    "homepage": "https://github.com/sweiguny/PHP-Persistence-API",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Simon Weiguny",
+            "email": "s.weiguny@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    
     "require": {
+        "php": ">=7.0.0",
         "symfony/dependency-injection": "^3.3",
         "symfony/event-dispatcher": "^3.3",
         "doctrine/orm": "v2.5.6",
