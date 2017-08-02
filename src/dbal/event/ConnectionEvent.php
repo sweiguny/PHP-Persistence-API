@@ -1,6 +1,6 @@
 <?php
 
-namespace PPA\dbal\events;
+namespace PPA\dbal\event;
 
 use PPA\core\PPA;
 use PPA\dbal\drivers\DriverInterface;

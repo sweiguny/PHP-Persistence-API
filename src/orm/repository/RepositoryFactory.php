@@ -1,6 +1,6 @@
 <?php
 
-namespace PPA\orm\repo;
+namespace PPA\orm\repository;
 
 use PPA\orm\UnitOfWork;
 

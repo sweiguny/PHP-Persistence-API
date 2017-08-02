@@ -5,7 +5,7 @@ namespace PPA\dbal;
 use LogicException;
 use PDO;
 use PPA\dbal\drivers\AbstractDriver;
-use PPA\dbal\events\ConnectionEvent;
+use PPA\dbal\event\ConnectionEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Connection

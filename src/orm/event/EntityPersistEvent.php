@@ -1,6 +1,6 @@
 <?php
 
-namespace PPA\orm\events;
+namespace PPA\orm\event;
 
 use PPA\core\PPA;
 use PPA\orm\entity\Serializable;

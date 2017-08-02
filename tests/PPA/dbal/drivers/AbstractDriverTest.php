@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use PPA\dbal\drivers\AbstractDriver;
 
 /**
- * @coversDefaultClass \PPA\dbal\drivers\AbstractDriver
+ * @coversDefaultClass AbstractDriver
  */
 class AbstractDriverTest extends TestCase
 {

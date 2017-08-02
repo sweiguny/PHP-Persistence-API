@@ -5,9 +5,9 @@ namespace PPA\orm;
 use PPA\core\EventDispatcher;
 use PPA\dbal\TransactionManager;
 use PPA\orm\entity\Serializable;
-use PPA\orm\events\EntityPersistEvent;
-use PPA\orm\repo\DefaultRepository;
-use PPA\orm\repo\RepositoryFactory;
+use PPA\orm\event\EntityPersistEvent;
+use PPA\orm\repository\DefaultRepository;
+use PPA\orm\repository\RepositoryFactory;
 
 class EntityManager
 {

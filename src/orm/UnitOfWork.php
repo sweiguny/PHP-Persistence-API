@@ -3,7 +3,7 @@
 namespace PPA\orm;
 
 use PPA\orm\entity\Serializable;
-use PPA\orm\events\EntityPersistEvent;
+use PPA\orm\event\EntityPersistEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class UnitOfWork implements EventSubscriberInterface
@@ -58,6 +58,8 @@ class UnitOfWork implements EventSubscriberInterface
     {
         $entityManager = $event->getEntityManager();
         $entity        = $event->getEntity();
+        
+        $metaData = $this->analyzer->analyze($entity);
         
         $this->identityMap->add($entity, "id");
     }

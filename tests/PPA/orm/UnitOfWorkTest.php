@@ -21,7 +21,9 @@ class UnitOfWorkTest extends TestCase
         $transactionManager = new TransactionManager($connection);
         $entityManager      = new EntityManager($transactionManager, $eventDispatcher);
         
-        $entityManager->persist(new Order());
+//        $entityManager->persist(new Order());
+//        
+//        new \PPA\orm\mapping\AnnotationLaoder();
     }
     
 }
