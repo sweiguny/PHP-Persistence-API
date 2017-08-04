@@ -57,12 +57,21 @@ class AnnotationReader
         // PlantUML
         "startuml", "enduml"
     ];
+    
+    public static function addIgnore(string $annotation)
+    {
+        if (!in_array($annotation, self::$ignoredAnnotations))
+        {
+            self::$ignoredAnnotations[] = $annotation;
+        }
+    }
 
     public function read(Serializable $entity): AnnotationBag
     {
         $reflectionClass = new ReflectionClass($entity);
         
         return new AnnotationBag(
+                $entity,
                 $this->fetchAnnotations($reflectionClass->getDocComment()),
                 $this->readPropertyAnnotations($reflectionClass->getProperties())
             );
