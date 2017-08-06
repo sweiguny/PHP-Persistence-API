@@ -16,4 +16,7 @@ jobs:
            - mysql -e 'CREATE DATABASE IF NOT EXISTS ppa_test;'
         addons:
             mariadb: 10.1
-        
+notifications:
+  email:
+    on_success: never
+    on_failure: change
