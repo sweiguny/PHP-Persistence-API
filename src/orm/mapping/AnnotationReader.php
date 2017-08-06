@@ -2,7 +2,6 @@
 
 namespace PPA\orm\mapping;
 
-use PPA\orm\entity\Serializable;
 use ReflectionClass;
 
 /**
@@ -11,7 +10,9 @@ use ReflectionClass;
 class AnnotationReader
 {
     const PATTERN_ANNOTATIONS = "#\@([\w\\\\]+)[\s]*\(?(.*)\)?#";
-    const PATTERN_PARAMETERS  = "#[\s]*([\w]+)[\s]*=[\s]*[\"\']([\s\w\\\\]+)[\"\']#";
+    const PATTERN_PARAMETERS  = "#[\s]*([\w]+)[\s]*=[\s]*[\"\']([\s\w\\\\%]+)[\"\']#";
+    
+    
     
     private static $ignoredAnnotations = [
         // Annotation tags
@@ -66,31 +67,17 @@ class AnnotationReader
         }
     }
 
-    public function read(Serializable $entity): AnnotationBag
+    public function read(Annotatable $annotatable): AnnotationBag
     {
-        $reflectionClass = new ReflectionClass($entity);
+        $reflectionClass = new ReflectionClass($annotatable);
         
         return new AnnotationBag(
-                $entity,
+                $annotatable,
                 $this->fetchAnnotations($reflectionClass->getDocComment()),
                 $this->readPropertyAnnotations($reflectionClass->getProperties())
             );
-//        return [$reflectionClass->getName() => [
-//            "class" => $this->fetchAnnotations($reflectionClass->getDocComment()),
-//            "props" => $this->readPropertyAnnotations($reflectionClass->getProperties())
-//        ]];
     }
     
-//    public function readClassAnnotations(Serializable $entity): array
-//    {
-//        $reflectionClass = new ReflectionClass($entity);
-//        
-//        $annotations = $this->fetchAnnotations($reflectionClass->getDocComment());
-////        print_r($annotations);
-//        
-//        return [$reflectionClass->getName() => $annotations];
-//    }
-
     private function readPropertyAnnotations(array $properties): array
     {
         $result = [];

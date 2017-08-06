@@ -1,20 +1,12 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace PPA\orm\mapping;
-
-use PPA\orm\entity\Serializable;
 
 class AnnotationBag
 {
     /**
      *
-     * @var Serializable
+     * @var Annotatable
      */
     private $owner;
 
@@ -30,14 +22,14 @@ class AnnotationBag
      */
     private $propertyAnnotations;
     
-    public function __construct(Serializable $owner, array $classAnnotations, array $propertyAnnotations)
+    public function __construct(Annotatable $owner, array $classAnnotations, array $propertyAnnotations)
     {
         $this->owner               = $owner;
         $this->classAnnotations    = $classAnnotations;
         $this->propertyAnnotations = $propertyAnnotations;
     }
     
-    public function getOwner(): Serializable
+    public function getOwner(): Annotatable
     {
         return $this->owner;
     }

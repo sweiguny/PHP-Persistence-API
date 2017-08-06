@@ -27,6 +27,10 @@ class AnnotationLoader
         self::$includePaths[] = $path;
     }
     
+    /**
+     *
+     * @var AnnotationFactory
+     */
     private $factory;
 
     public function __construct()
@@ -34,10 +38,10 @@ class AnnotationLoader
         $this->factory = new AnnotationFactory();
     }
     
-    public function load(AnnotationBag $bag)
+    public function load(AnnotationBag $bag): array
     {
-        echo PHP_EOL;
-//        echo print_r($bag->getClassAnnotations(), true).PHP_EOL;
+//        print_r($bag);die();
+        $loadedAnnotations = [];
         
         foreach ($bag->getClassAnnotations() as $classname => $parameters)
         {
@@ -46,14 +50,27 @@ class AnnotationLoader
                 throw new LogicException(sprintf("Annotation '@%s' could not be loaded. Maybe you need to add/remove a leading slash.", $classname));
             }
             
-            $annotation = $this->factory->instantiate($bag->getOwner(), $classname, $parameters);
+            $loadedAnnotations[] = $this->factory->instantiate($bag->getOwner(), $classname, $parameters);
         }
+        
+        foreach ($bag->getPropertyAnnotations() as $propertyName => $annotations)
+        {
+            foreach ($annotations as $classname => $parameters)
+            {
+                if (!$this->annotationExists($classname))
+                {
+                    throw new LogicException(sprintf("Annotation '@%s' could not be loaded. Maybe you need to add/remove a leading slash.", $classname));
+                }
+
+                $loadedAnnotations[] = $this->factory->instantiate($bag->getOwner(), $classname, $parameters, $propertyName);
+            }
+        }
+        
+        return $loadedAnnotations;
     }
     
     private function annotationExists(string $classname)
     {
-//        echo print_r($classname, true).PHP_EOL;
-        
         if (class_exists($classname, false))
         {
             return true;
@@ -61,9 +78,12 @@ class AnnotationLoader
         
         if ($this->hasNamespace($classname))
         {
-            spl_autoload_call($classname);
+//            echo "**********{$classname}**************";
+//            spl_autoload_call($classname);
+            
+//            print_r(class_exists($classname));
 
-            return class_exists($classname, false);
+            return class_exists($classname/*, false*/);
         }
         else
         {
@@ -87,6 +107,11 @@ class AnnotationLoader
         $splitted = explode("\\", $classname);
 
         return count($splitted) != 1;
+    }
+    
+    private function functionName($param)
+    {
+        
     }
     
 }

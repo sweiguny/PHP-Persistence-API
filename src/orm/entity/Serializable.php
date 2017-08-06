@@ -2,10 +2,12 @@
 
 namespace PPA\orm\entity;
 
+use PPA\orm\mapping\Annotatable;
+
 /**
  * This is just a marker interface for entities.
  */
-interface Serializable
+interface Serializable extends Annotatable
 {
     
 }

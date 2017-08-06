@@ -3,16 +3,19 @@
 namespace PPA\tests\orm\mapping;
 
 use PHPUnit\Framework\TestCase;
+use PPA\orm\entity\Serializable;
 use PPA\orm\mapping\AnnotationLoader;
 use PPA\orm\mapping\AnnotationReader;
-use PPA\tests\bootstrap\entity\Order;
+use PPA\tests\bootstrap\entity\BadlyAnnotated;
+use PPA\tests\bootstrap\entity\WellAnnotated;
 use ReflectionClass;
+use ReflectionMethod;
 
 class AnnotationLoaderTest extends TestCase
 {
     /**
      *
-     * @var \ReflectionMethod
+     * @var ReflectionMethod
      */
     private $methodHasNamespace;
 
@@ -36,17 +39,20 @@ class AnnotationLoaderTest extends TestCase
         $this->methodHasNamespace->setAccessible(true);
     }
     
-    public function testLoad()
+    /**
+     * @dataProvider provideEntities
+     */
+    public function testLoad(Serializable $entity)
     {
-        $entity = new Order();
-        
-        AnnotationReader::addIgnore("xxx\Table");
+//        AnnotationReader::addIgnore("xxx\Table");
         
         $annotationReader = new AnnotationReader();
         $annotationLoader = new AnnotationLoader();
         
-        $annotationLoader->load($annotationReader->read($entity));
+        $loadedAnnotations = $annotationLoader->load($annotationReader->read($entity));
+        print_r($loadedAnnotations);
         
+//        $this->is
     }
     
     /**
@@ -66,6 +72,14 @@ class AnnotationLoaderTest extends TestCase
             ['\PPA\orm\mapping\annotations\Table', true],
             ['Column', false],
             ['\Column', true]
+        ];
+    }
+    
+    public function provideEntities(): array
+    {
+        return [
+            [new WellAnnotated()]
+//            new BadlyAnnotated()
         ];
     }
     

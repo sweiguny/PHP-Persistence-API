@@ -2,7 +2,8 @@
 
 namespace PPA\orm\mapping;
 
-use DomainException;
+use LogicException;
+use PPA\core\exceptions\ExceptionFactory;
 use PPA\orm\entity\Serializable;
 use ReflectionClass;
 use ReflectionException;
@@ -11,12 +12,24 @@ use ReflectionProperty;
 
 class AnnotationFactory
 {
+    /**
+     *
+     * @var AnnotationReader
+     */
+    private $annotationReader;
     
-    public function instantiate(Serializable $entity, string $classname, array $parameters): Annotation
+    public function __construct()
     {
-        $reflector = new ReflectionClass($classname);
-        
+        $this->annotationReader = new AnnotationReader();
+    }
+    
+    public function instantiate(Serializable $entity, string $classname, array $parameters, string $propertyName = null): Annotation
+    {
+        $reflector   = new ReflectionClass($classname);
         $constructor = $reflector->getConstructor();
+        $description = $this->annotationReader->read($reflector->newInstanceWithoutConstructor());
+        
+        $this->workOnParameters($entity, $description, $parameters, $propertyName);
         
         /* @var $annotation Annotation */
         $annotation = $constructor == null
@@ -27,7 +40,7 @@ class AnnotationFactory
         
         if (!empty($parameters))
         {
-            throw new DomainException("Unknown parameter(s) '" . implode("', '", array_keys($parameters)) . "' of Annotation '@{$classname}' used in entity class '" . get_class($entity) . "'.");
+            throw ExceptionFactory::UnknownParameters($parameters, $classname, get_class($entity));
         }
         
         return $annotation;
@@ -65,27 +78,96 @@ class AnnotationFactory
             catch (ReflectionException $exc) // when there's no setter-method.
             {
                 /**
-                 * If there is no setter method an exception is thrown.
-                 * To avoid catching other exceptions than the exptected one,
-                 * the exception message is checked (since there is no exception code).
-                 * 
-                 * If there is no setter method, we inject the property directly.
+                 * If there is no setter method
+                 * an exception is thrown
+                 * and we inject the property directly.
                  */
-                if ($exc->getMessage() == "Method {$setterName} does not exist")
-                {
-                    $property->setAccessible(true);
-                    $property->setValue($annotation, $annotationParameters[$propName]);
-                }
-                else
-                {
-                    throw $exc;
-                }
+                
+                $property->setAccessible(true);
+                $property->setValue($annotation, $annotationParameters[$propName]);
             }
             finally
             {
                 unset($annotationParameters[$propName]);
             }
         }
+    }
+    
+    /**
+     * This method checks for required parameters of the defined annotations.
+     * It also parses the default values.
+     * 
+     * @param Serializable $entity
+     * @param AnnotationBag $annotationDescription
+     * @param array $annotationParameters
+     * @param string $propertyName
+     * @throws LogicException
+     */
+    private function workOnParameters(Serializable $entity, AnnotationBag $annotationDescription, array &$annotationParameters, string $propertyName = null)
+    {
+        $classAnnotations    = $annotationDescription->getClassAnnotations();
+        $propertyAnnotations = $annotationDescription->getPropertyAnnotations();
+        
+        
+        if (!isset($classAnnotations[Annotation::TARGET]) && !isset($classAnnotations[Annotation::TARGET]["value"]))
+        {
+            throw ExceptionFactory::TargetAnnotationNotExistent(get_class($annotationDescription->getOwner()));
+        }
+        
+        $target = $classAnnotations[Annotation::TARGET]["value"];
+        
+        if ($propertyName == null && $target != Annotation::TARGET_CLASS)
+        {
+            throw ExceptionFactory::WrongTargetClass(get_class($annotationDescription->getOwner()), get_class($entity), $target);
+        }
+        else if ($propertyName != null && $target != Annotation::TARGET_PROPERTY)
+        {
+            throw ExceptionFactory::WrongTargetProperty(get_class($annotationDescription->getOwner()), get_class($entity), $propertyName, $target);
+        }
+        
+        /*
+         * Check for required parameters
+         */
+        foreach ($propertyAnnotations as $key => $value)
+        {
+            $parameter = $value["Parameter"];
+            
+            if (isset($parameter["required"]) && !isset($annotationParameters[$key]))
+            {
+                if (!isset($parameter["default"]))
+                {
+                    throw ExceptionFactory::ParameterRequired($key, get_class($annotationDescription->getOwner()), get_class($entity));
+                }
+                
+                $annotationParameters[$key] = $this->parseDefault($entity, $parameter["default"], $propertyName);
+            }
+        }
+        
+        /*
+         * Other checks?
+         */
+//        foreach ($annotationParameters as $parameter)
+//        {
+//            
+//        }
+    }
+    
+    private function parseDefault(Serializable $entity, $value, string $propertyName = null)
+    {
+        switch ($value)
+        {
+            case "%classname%":
+                $classname = explode("\\", get_class($entity));
+                $value     = strtolower(array_pop($classname));
+                break;
+            case "%propertyname%":
+                $value     = strtolower($propertyName);
+                break;
+            default:
+                break;
+        }
+        
+        return $value;
     }
     
 }
