@@ -9,7 +9,7 @@ class EntityAnalyzerTest extends TestCase
     
     public function testAnalyze()
     {
-        
+        $this->assertTrue(true);
     }
     
 }

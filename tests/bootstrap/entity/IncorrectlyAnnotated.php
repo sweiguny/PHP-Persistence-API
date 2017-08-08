@@ -11,7 +11,7 @@ use PPA\orm\entity\Serializable;
  * @Column
  * @\Column
  */
-class BadlyAnnotated implements Serializable
+class IncorrectlyAnnotated implements Serializable
 {
     /**
      * @\PPA\orm\mapping\annotations\Id

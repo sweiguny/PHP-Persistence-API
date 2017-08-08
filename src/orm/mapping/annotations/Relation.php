@@ -3,16 +3,18 @@
 namespace PPA\orm\mapping\annotations;
 
 use PPA\core\exceptions\ExceptionFactory;
+use PPA\orm\entity\Serializable;
 use PPA\orm\mapping\Annotation;
+use ReflectionClass;
 
 abstract class Relation implements Annotation
 {
     const FETCH_TYPE_EAGER = "eager";
     const FETCH_TYPE_LAZY  = "lazy";
     
-    const CASCADE_TYPE_ALL = "all";
-    const CASCADE_TYPE_NONE = "none";
-    const CASCADE_TYPE_REMOVE = "remove";
+    const CASCADE_TYPE_ALL     = "all";
+    const CASCADE_TYPE_NONE    = "none";
+    const CASCADE_TYPE_REMOVE  = "remove";
     const CASCADE_TYPE_PERSIST = "persist";
     
     private static $fetchTypes = [
@@ -56,6 +58,13 @@ abstract class Relation implements Annotation
     
     public function setMapped_by(string $mapped_by)
     {
+        $class = new ReflectionClass($mapped_by);
+        
+        if (!$class->implementsInterface(Serializable::class))
+        {
+            throw ExceptionFactory::NotSerializable($mapped_by);
+        }
+        
         $this->mapped_by = $mapped_by;
     }
 

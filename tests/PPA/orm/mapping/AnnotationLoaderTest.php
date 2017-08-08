@@ -42,18 +42,18 @@ class AnnotationLoaderTest extends TestCase
     /**
      * @dataProvider provideEntities
      */
-    public function testLoad(Serializable $entity)
-    {
-//        AnnotationReader::addIgnore("xxx\Table");
-        
-        $annotationReader = new AnnotationReader();
-        $annotationLoader = new AnnotationLoader();
-        
-        $loadedAnnotations = $annotationLoader->load($annotationReader->read($entity));
-        print_r($loadedAnnotations);
-        
-//        $this->is
-    }
+//    public function testLoad(Serializable $entity)
+//    {
+////        AnnotationReader::addIgnore("xxx\Table");
+//        
+//        $annotationReader = new AnnotationReader();
+//        $annotationLoader = new AnnotationLoader();
+//        
+//        $loadedAnnotations = $annotationLoader->load($annotationReader->read($entity));
+//        print_r($loadedAnnotations);
+//        
+////        $this->is
+//    }
     
     /**
      * @dataProvider provideClassnames

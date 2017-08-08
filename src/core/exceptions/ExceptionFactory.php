@@ -2,6 +2,7 @@
 
 namespace PPA\core\exceptions;
 
+use PPA\core\exceptions\logic\NotSerializableException;
 use PPA\core\exceptions\logic\ParameterRequiredException;
 use PPA\core\exceptions\logic\TargetAnnotationNotExistentException;
 use PPA\core\exceptions\logic\UnknownCascadeTypeException;
@@ -9,6 +10,7 @@ use PPA\core\exceptions\logic\UnknownFetchTypeException;
 use PPA\core\exceptions\logic\UnknownParametersException;
 use PPA\core\exceptions\logic\WrongTargetClassException;
 use PPA\core\exceptions\logic\WrongTargetPropertyException;
+use PPA\orm\entity\Serializable;
 use PPA\orm\mapping\Annotation;
 
 
@@ -50,6 +52,11 @@ final class ExceptionFactory
     public static function UnknownFetchType(string $fetch, array $fetchTypes): UnknownFetchTypeException
     {
         return new UnknownFetchTypeException("The cascade type is '{$fetch}', but must be one of these: '" . implode("', '", $fetchTypes) . "'");
+    }
+    
+    public static function NotSerializable(string $mappedClass): NotSerializableException
+    {
+        return new NotSerializableException(sprintf("Mapped class '%s' must implement interface '%s'.", $mappedClass, Serializable::class));
     }
     
 }

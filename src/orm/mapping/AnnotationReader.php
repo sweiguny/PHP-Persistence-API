@@ -84,7 +84,7 @@ class AnnotationReader
         
         foreach ($properties as $property)
         {
-            $propName   = $property->getName();
+            $propName    = $property->getName();
             $annotations = $this->fetchAnnotations($property->getDocComment());
             
             $result[$propName] = $annotations;
@@ -137,7 +137,7 @@ class AnnotationReader
      */
     private function extractAnnotations(string $docComment): array
     {
-        $split = explode("*", substr($docComment, 2, -2)); // removes /* and */
+        $split = explode("*", substr($docComment, 3, -2)); // removes /** and */
         $split = array_map("trim", $split);
         $split = array_filter($split, [$this, "filterAnnotations"]);
         

@@ -3,12 +3,28 @@
 namespace PPA\tests\orm\mapping;
 
 use PHPUnit\Framework\TestCase;
+use PPA\core\exceptions\logic\ParameterRequiredException;
+use PPA\core\exceptions\logic\UnknownParametersException;
+use PPA\core\exceptions\logic\WrongTargetClassException;
+use PPA\core\exceptions\logic\WrongTargetPropertyException;
+use PPA\orm\entity\Serializable;
 use PPA\orm\mapping\AnnotationFactory;
-use ReflectionClass;
-use ReflectionMethod;
+use PPA\orm\mapping\AnnotationLoader;
+use PPA\orm\mapping\AnnotationReader;
+use PPA\tests\bootstrap\annotations\TestAnnotation;
+use PPA\tests\bootstrap\annotations\UnknownParametersAnnotation;
+use PPA\tests\bootstrap\entity\TargetClassWrong;
+use PPA\tests\bootstrap\entity\TargetPropertyWrong;
+use PPA\tests\bootstrap\entity\TestDefaultsEntity;
 
 class AnnotationFactoryTest extends TestCase
 {
+    /**
+     *
+     * @var Serializable
+     */
+    private $dummyEntity;
+    
     /**
      *
      * @var AnnotationFactory
@@ -17,51 +33,89 @@ class AnnotationFactoryTest extends TestCase
     
     /**
      *
-     * @var ReflectionMethod
+     * @var AnnotationReader
      */
-    private $methodGetConstructorParameters;
-
+    private $annotationReader;
+    
     /**
      *
-     * @var ReflectionMethod
+     * @var AnnotationLoader
      */
-    private $methodSetProperties;
-    
+    private $annotationLoader;
+
     protected function setUp()
     {
+        $this->dummyEntity       = new class() implements Serializable {};
         $this->annotationFactory = new AnnotationFactory();
-        
-        $reflectionClass = new ReflectionClass($this->annotationFactory);
-        
-        $this->methodGetConstructorParameters = $reflectionClass->getMethod("getConstructorParameters");
-        $this->methodSetProperties            = $reflectionClass->getMethod("setProperties");
+        $this->annotationReader  = new AnnotationReader();
+        $this->annotationLoader  = new AnnotationLoader();
     }
     
-    public function testInstantiateAnnotationWithConstructor()
+    public function testInstantiateNormal()
     {
+        $parameters = [
+            "value1" => 1, // shall be set by constructor
+            "value2" => 2, // shall be set by constructor
+            "value3" => 3  // shall be set by setter (and hence multiplied by 2)
+                           // value4 shall not be set
+        ];
         
+        /* @var $testAnnotation TestAnnotation */
+        $testAnnotation = $this->annotationFactory->instantiate($this->dummyEntity, TestAnnotation::class, $parameters);
+        
+        $this->assertEquals($testAnnotation->getValue1(), 1);
+        $this->assertEquals($testAnnotation->getValue2(), 2);
+        $this->assertEquals($testAnnotation->getValue3(), 6);
+        $this->assertEquals($testAnnotation->getValue4(), 0);
     }
     
-    public function testInstantiateAnnotationWithEmptyConstructor()
+    public function testInstatiateUnknownParameters()
     {
+        $parameters = [
+            "value1" => 1,
+            "value2" => 2
+        ];
         
+        $this->expectException(UnknownParametersException::class);
+        
+        $this->annotationFactory->instantiate($this->dummyEntity, UnknownParametersAnnotation::class, $parameters);
     }
     
-    public function testInstantiateAnnotationWithoutConstructorBySetter()
+    public function testRequiredParameter()
     {
+        $parameters = [
+            "value1" => 1,
+            "value2" => 2
+        ];
         
+        $this->expectException(ParameterRequiredException::class);
+        
+        $this->annotationFactory->instantiate($this->dummyEntity, TestAnnotation::class, $parameters);
     }
     
-    public function testInstantiateAnnotationWithoutConstructorByProperties()
+    public function testDefaults()
     {
+        $entity = new TestDefaultsEntity();
+        $fqcn   = explode("\\", get_class($entity));
+        $result = $this->annotationLoader->load($this->annotationReader->read($entity));
         
+        $this->assertEquals(strtolower(array_pop($fqcn)), $result[0]->getName());
+        $this->assertEquals($entity->getColumn(), $result[1]->getName());
     }
     
-    public function testInstantiateAll()
+    public function testWrongTargetProperty()
     {
+        $this->expectException(WrongTargetPropertyException::class);
         
+        $this->annotationLoader->load($this->annotationReader->read(new TargetClassWrong()));
     }
     
+    public function testWrongTargetClass()
+    {
+        $this->expectException(WrongTargetClassException::class);
+        
+        $this->annotationLoader->load($this->annotationReader->read(new TargetPropertyWrong()));
+    }
     
 }
 

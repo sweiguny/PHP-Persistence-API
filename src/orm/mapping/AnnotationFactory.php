@@ -8,7 +8,6 @@ use PPA\orm\entity\Serializable;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionParameter;
-use ReflectionProperty;
 
 class AnnotationFactory
 {
@@ -46,7 +45,7 @@ class AnnotationFactory
         return $annotation;
     }
     
-    private function getConstructorParameters(array $constructorParameters, array &$annotationParameters): array
+    public function getConstructorParameters(array $constructorParameters, array &$annotationParameters): array
     {
         $parameters = [];
         
@@ -62,33 +61,33 @@ class AnnotationFactory
     
     private function setProperties(Annotation $annotation, ReflectionClass $reflector, array &$annotationParameters)
     {
-        $properties = $reflector->getProperties();
-        
-        /* @var $property ReflectionProperty */
-        foreach ($properties as $property)
+        foreach ($annotationParameters as $key => $parameter)
         {
-            $propName   = $property->getName();
-            $setterName = "set" . ucfirst($propName);
-            
-            try // to user setter method
+            if ($reflector->hasProperty($key))
             {
-                $setter = $reflector->getMethod($setterName);
-                $setter->invoke($annotation, $annotationParameters[$propName]);
-            }
-            catch (ReflectionException $exc) // when there's no setter-method.
-            {
-                /**
-                 * If there is no setter method
-                 * an exception is thrown
-                 * and we inject the property directly.
-                 */
-                
-                $property->setAccessible(true);
-                $property->setValue($annotation, $annotationParameters[$propName]);
-            }
-            finally
-            {
-                unset($annotationParameters[$propName]);
+                $property   = $reflector->getProperty($key);
+                $setterName = "set" . ucfirst($key);
+
+                try // to user setter method
+                {
+                    $setter = $reflector->getMethod($setterName);
+                    $setter->invoke($annotation, $parameter);
+                }
+                catch (ReflectionException $exc) // when there's no setter-method.
+                {
+                    /**
+                     * If there is no setter method
+                     * an exception is thrown
+                     * and we inject the property directly.
+                     */
+
+                    $property->setAccessible(true);
+                    $property->setValue($annotation, $parameter);
+                }
+                finally
+                {
+                    unset($annotationParameters[$key]);
+                }
             }
         }
     }
