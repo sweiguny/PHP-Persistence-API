@@ -3,7 +3,7 @@
 namespace PPA\orm\mapping;
 
 use InvalidArgumentException;
-use LogicException;
+use PPA\core\exceptions\ExceptionFactory;
 
 /**
  * Loads annotations of the entities.
@@ -11,11 +11,21 @@ use LogicException;
 class AnnotationLoader
 {
     
-    const PPA_ANNOTATION_PATH = __DIR__ . DIRECTORY_SEPARATOR . "annotation";
+    const PPA_ANNOTATION_PATH = __DIR__ . DIRECTORY_SEPARATOR . "annotations";
     
     private static $includePaths = [
         self::PPA_ANNOTATION_PATH
     ];
+
+    /**
+     * Contains all unqualified class names that were resolved once.
+     * This accelerates the class loading process, because the process of
+     * loading and processing the php-file can be omitted.
+     * 
+     * @var array
+     */
+    private static $unqualifiedClasses = [];
+
 
     public static function addIncludePath(string $path)
     {
@@ -38,80 +48,146 @@ class AnnotationLoader
         $this->factory = new AnnotationFactory();
     }
     
-    public function load(AnnotationBag $bag): array
+    public function load(RawAnnotationBag $bag): AnnotationBag
     {
-//        print_r($bag);die();
+        return new AnnotationBag(
+                $bag->getOwner(),
+                $this->loadClassAnnotations($bag),
+                $this->loadPropertyAnnotations($bag)
+            );
+    }
+    
+    private function loadClassAnnotations(RawAnnotationBag $bag): array
+    {
         $loadedAnnotations = [];
         
-        foreach ($bag->getClassAnnotations() as $classname => $parameters)
+        foreach ($bag->getClassAnnotations() as $annotationClassname => $parameters)
         {
-            if (!$this->annotationExists($classname))
-            {
-                throw new LogicException(sprintf("Annotation '@%s' could not be loaded. Maybe you need to add/remove a leading slash.", $classname));
-            }
-            
-            $loadedAnnotations[] = $this->factory->instantiate($bag->getOwner(), $classname, $parameters);
+            $loadedAnnotations[] = $this->workOnAnnotation($annotationClassname, $bag->getOwner(), $parameters);
         }
+        
+        return $loadedAnnotations;
+    }
+
+    private function loadPropertyAnnotations(RawAnnotationBag $bag): array
+    {
+        $loadedAnnotations = [];
         
         foreach ($bag->getPropertyAnnotations() as $propertyName => $annotations)
         {
-            foreach ($annotations as $classname => $parameters)
+            $loadedAnnotations[$propertyName] = [];
+            
+            foreach ($annotations as $annotationClassname => $parameters)
             {
-                if (!$this->annotationExists($classname))
-                {
-                    throw new LogicException(sprintf("Annotation '@%s' could not be loaded. Maybe you need to add/remove a leading slash.", $classname));
-                }
-
-                $loadedAnnotations[] = $this->factory->instantiate($bag->getOwner(), $classname, $parameters, $propertyName);
+                $loadedAnnotations[$propertyName][] = $this->workOnAnnotation($annotationClassname, $bag->getOwner(), $parameters, $propertyName);
             }
         }
         
         return $loadedAnnotations;
     }
     
-    private function annotationExists(string $classname)
+    private function workOnAnnotation(string $annotationClassname, Annotatable $owner, array $parameters, string $propertyName = null): Annotation
     {
-        if (class_exists($classname, false))
+        $resolvedClassname = $this->loadAndResolveAnnotationClassname($annotationClassname, get_class($owner));
+                
+        return $this->factory->instantiate($owner, $resolvedClassname, $parameters, $propertyName);
+    }
+
+    private function loadAndResolveAnnotationClassname(string $annotationClassname, string $ownerClassname): string
+    {
+        if (class_exists($annotationClassname, false))
         {
-            return true;
+            return $annotationClassname;
         }
         
-        if ($this->hasNamespace($classname))
+        if ($this->hasNamespace($annotationClassname) && class_exists($annotationClassname))
         {
-//            echo "**********{$classname}**************";
-//            spl_autoload_call($classname);
-            
-//            print_r(class_exists($classname));
-
-            return class_exists($classname/*, false*/);
+            return $annotationClassname;
         }
         else
         {
-            foreach (self::$includePaths as $path)
+            if (isset(self::$unqualifiedClasses[$annotationClassname]))
             {
-                $file = $path . DIRECTORY_SEPARATOR . $classname . ".php";
-
-                if (is_file($file))
+                return self::$unqualifiedClasses[$annotationClassname];
+            }
+            else
+            {
+                foreach (self::$includePaths as $path)
                 {
-                    require_once $file;
-                    return true;
+//                    echo "###########{$annotationClassname}###########\n";
+
+                    $file = $path . DIRECTORY_SEPARATOR . $annotationClassname . ".php";
+
+                    if (is_file($file))
+                    {
+//                        echo $file . "\n";
+
+                        $resolvedClassname = $this->getFullyQualifiedClassname($file);
+                        self::$unqualifiedClasses[$annotationClassname] = $resolvedClassname;
+                        
+                        require_once $file;
+                        return $resolvedClassname;
+                    }
                 }
             }
-
-            return false;
+            
+            throw ExceptionFactory::CouldNotLoadAnnotation($annotationClassname, $ownerClassname);
         }
     }
     
+    private function getFullyQualifiedClassname(string $path): string
+    {
+        $contents = file_get_contents($path);
+        $tokens   = token_get_all($contents);
+
+        $namespace = "";
+        $class     = "";
+        
+        $fetchNamespace = false;
+        $fetchClass     = false;
+        
+        foreach ($tokens as $token)
+        {
+            if (is_array($token) && $token[0] == T_NAMESPACE)
+            {
+                $fetchNamespace = true;
+            }
+
+            if (is_array($token) && $token[0] == T_CLASS)
+            {
+                $fetchClass = true;
+            }
+
+            if ($fetchNamespace)
+            {
+                if (is_array($token) && in_array($token[0], [T_STRING, T_NS_SEPARATOR]))
+                {
+                    $namespace .= $token[1];
+                }
+                else if ($token === ";")
+                {
+                    $fetchNamespace = false;
+                }
+            }
+
+            if ($fetchClass)
+            {
+                if (is_array($token) && $token[0] == T_STRING)
+                {
+                    $class = $token[1];
+                    break;
+                }
+            }
+        }
+
+        return $namespace ? $namespace . '\\' . $class : $class;
+    }
+
     private function hasNamespace(string $classname): bool
     {
         $splitted = explode("\\", $classname);
 
         return count($splitted) != 1;
-    }
-    
-    private function functionName($param)
-    {
-        
     }
     
 }

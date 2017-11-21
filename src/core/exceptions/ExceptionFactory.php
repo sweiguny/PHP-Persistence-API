@@ -2,6 +2,7 @@
 
 namespace PPA\core\exceptions;
 
+use PPA\core\exceptions\logic\CouldNotLoadAnnotationException;
 use PPA\core\exceptions\logic\NotSerializableException;
 use PPA\core\exceptions\logic\ParameterRequiredException;
 use PPA\core\exceptions\logic\TargetAnnotationNotExistentException;
@@ -57,6 +58,11 @@ final class ExceptionFactory
     public static function NotSerializable(string $mappedClass): NotSerializableException
     {
         return new NotSerializableException(sprintf("Mapped class '%s' must implement interface '%s'.", $mappedClass, Serializable::class));
+    }
+    
+    public static function CouldNotLoadAnnotation(string $annotationClassname, string $ownerClassname): CouldNotLoadAnnotationException
+    {
+        return new CouldNotLoadAnnotationException(sprintf("Annotation '@%s' (set on class '%s') could not be loaded. Maybe you need to add/remove a leading slash.", $annotationClassname, $ownerClassname));
     }
     
 }

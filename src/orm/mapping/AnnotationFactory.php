@@ -22,9 +22,9 @@ class AnnotationFactory
         $this->annotationReader = new AnnotationReader();
     }
     
-    public function instantiate(Serializable $entity, string $classname, array $parameters, string $propertyName = null): Annotation
+    public function instantiate(Serializable $entity, string $annotationClassname, array $parameters, string $propertyName = null): Annotation
     {
-        $reflector   = new ReflectionClass($classname);
+        $reflector   = new ReflectionClass($annotationClassname);
         $constructor = $reflector->getConstructor();
         $description = $this->annotationReader->read($reflector->newInstanceWithoutConstructor());
         
@@ -39,7 +39,7 @@ class AnnotationFactory
         
         if (!empty($parameters))
         {
-            throw ExceptionFactory::UnknownParameters($parameters, $classname, get_class($entity));
+            throw ExceptionFactory::UnknownParameters($parameters, $annotationClassname, get_class($entity));
         }
         
         return $annotation;
@@ -97,12 +97,12 @@ class AnnotationFactory
      * It also parses the default values.
      * 
      * @param Serializable $entity
-     * @param AnnotationBag $annotationDescription
+     * @param RawAnnotationBag $annotationDescription
      * @param array $annotationParameters
      * @param string $propertyName
      * @throws LogicException
      */
-    private function workOnParameters(Serializable $entity, AnnotationBag $annotationDescription, array &$annotationParameters, string $propertyName = null)
+    private function workOnParameters(Serializable $entity, RawAnnotationBag $annotationDescription, array &$annotationParameters, string $propertyName = null)
     {
         $classAnnotations    = $annotationDescription->getClassAnnotations();
         $propertyAnnotations = $annotationDescription->getPropertyAnnotations();

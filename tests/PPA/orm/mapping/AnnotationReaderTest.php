@@ -29,15 +29,6 @@ class AnnotationReaderTest extends TestCase
         $this->annotationReader = new AnnotationReader();
         $this->reflectionClass  = new ReflectionClass($this->annotationReader);
     }
-//    public function testRead()
-//    {
-//        $entity = new Order();
-//        
-//        $reader = new AnnotationReader();
-//        $annotations = $reader->readClassAnnotations($entity);
-//        
-//        print_r($annotations);
-//    }
     
     /**
      * @covers ::filterAnnotations

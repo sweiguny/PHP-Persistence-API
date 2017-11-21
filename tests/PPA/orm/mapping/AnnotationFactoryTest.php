@@ -99,8 +99,11 @@ class AnnotationFactoryTest extends TestCase
         $fqcn   = explode("\\", get_class($entity));
         $result = $this->annotationLoader->load($this->annotationReader->read($entity));
         
-        $this->assertEquals(strtolower(array_pop($fqcn)), $result[0]->getName());
-        $this->assertEquals($entity->getColumn(), $result[1]->getName());
+        $classAnnotations    = $result->getClassAnnotations();
+        $propertyAnnotations = $result->getPropertyAnnotations();
+        
+        $this->assertEquals(strtolower(array_pop($fqcn)), $classAnnotations[0]->getName());
+        $this->assertEquals($entity->getColumn(), $propertyAnnotations["column"][0]->getName());
     }
     
     public function testWrongTargetProperty()

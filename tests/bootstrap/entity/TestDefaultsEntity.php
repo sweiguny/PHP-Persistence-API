@@ -3,7 +3,7 @@
 namespace PPA\tests\bootstrap\entity;
 
 /**
- * @\PPA\orm\mapping\annotations\Table
+ * @PPA\orm\mapping\annotations\Table
  */
 class TestDefaultsEntity implements \PPA\orm\entity\Serializable
 {

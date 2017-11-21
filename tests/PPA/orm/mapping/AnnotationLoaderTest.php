@@ -4,10 +4,11 @@ namespace PPA\tests\orm\mapping;
 
 use PHPUnit\Framework\TestCase;
 use PPA\orm\entity\Serializable;
+use PPA\orm\mapping\AnnotationBag;
 use PPA\orm\mapping\AnnotationLoader;
 use PPA\orm\mapping\AnnotationReader;
-use PPA\tests\bootstrap\entity\BadlyAnnotated;
-use PPA\tests\bootstrap\entity\WellAnnotated;
+use PPA\orm\mapping\annotations\Table;
+use PPA\tests\bootstrap\entity\Customer;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -42,18 +43,35 @@ class AnnotationLoaderTest extends TestCase
     /**
      * @dataProvider provideEntities
      */
-//    public function testLoad(Serializable $entity)
-//    {
-////        AnnotationReader::addIgnore("xxx\Table");
-//        
-//        $annotationReader = new AnnotationReader();
-//        $annotationLoader = new AnnotationLoader();
-//        
-//        $loadedAnnotations = $annotationLoader->load($annotationReader->read($entity));
-//        print_r($loadedAnnotations);
-//        
-////        $this->is
-//    }
+    public function testLoad(Serializable $entity)
+    {
+        $annotationReader = new AnnotationReader();
+        $annotationLoader = new AnnotationLoader();
+        
+        $declaredClasses   = get_declared_classes();
+        $annotationBag     = $annotationLoader->load($annotationReader->read($entity));
+        $loadedAnnotations = $this->getClassList($annotationBag);
+        
+        $differenceCheck = array_diff($declaredClasses, $loadedAnnotations);
+        $counterCheck    = array_diff($loadedAnnotations, $declaredClasses);
+        
+        $this->assertEmpty($counterCheck);
+        $this->assertEquals(count($differenceCheck), count($declaredClasses) - count($loadedAnnotations));
+    }
+    
+    private function getClassList(AnnotationBag $annotationBag): array
+    {
+        $classAnnotations    = $annotationBag->getClassAnnotations();
+        $propertyAnnotations = $annotationBag->getPropertyAnnotations();
+        $result              = $classAnnotations;
+        
+        foreach ($propertyAnnotations as $annotations)
+        {
+            array_merge($result, $annotations);
+        }
+        
+        return array_unique(array_map("get_class", $result));
+    }
     
     /**
      * @dataProvider provideClassnames
@@ -78,7 +96,7 @@ class AnnotationLoaderTest extends TestCase
     public function provideEntities(): array
     {
         return [
-            [new WellAnnotated()]
+            [new Customer(1, "John", "Doe", "at home")]
 //            new BadlyAnnotated()
         ];
     }

@@ -3,6 +3,7 @@
 namespace PPA\orm;
 
 use PPA\orm\entity\Serializable;
+use PPA\orm\mapping\AnnotationBag;
 use PPA\orm\mapping\AnnotationLoader;
 use PPA\orm\mapping\AnnotationReader;
 
@@ -33,18 +34,16 @@ class EntityAnalyzer
         $this->annotationLoader = new AnnotationLoader();
     }
     
-    public function analyze(Serializable $entity): array
+    public function analyze(Serializable $entity): AnnotationBag
     {
-        $annotations = $this->annotationReader->read($entity);
-        $this->annotationLoader->load($annotations);
+        $annotationBag = $this->annotationLoader->load($this->annotationReader->read($entity));
         
         
-        $analysis = [];
         
-        return $analysis;
+        return $annotationBag;
     }
     
-    public function getMetaData(Serializable $entity): array
+    public function getMetaData(Serializable $entity): AnnotationBag
     {
         $classname = get_class($entity);
         $metadata  = $this->metaDataMap->retrieve($classname);

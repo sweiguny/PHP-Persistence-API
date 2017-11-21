@@ -67,11 +67,11 @@ class AnnotationReader
         }
     }
 
-    public function read(Annotatable $annotatable): AnnotationBag
+    public function read(Annotatable $annotatable): RawAnnotationBag
     {
         $reflectionClass = new ReflectionClass($annotatable);
         
-        return new AnnotationBag(
+        return new RawAnnotationBag(
                 $annotatable,
                 $this->fetchAnnotations($reflectionClass->getDocComment()),
                 $this->readPropertyAnnotations($reflectionClass->getProperties())
@@ -162,7 +162,7 @@ class AnnotationReader
             return false;
         }
         
-        // check if annotation has be be ignored
+        // check if annotation has to be ignored
         foreach (self::$ignoredAnnotations as $ignore)
         {
             if (strpos($value, $ignore) === 1)
