@@ -3,7 +3,6 @@
 namespace PPA\orm;
 
 use InvalidArgumentException;
-use PPA\orm\mapping\AnnotationBag;
 
 class MetaDataMap
 {
@@ -13,7 +12,7 @@ class MetaDataMap
      */
     private $map = [];
     
-    public function add($classname, AnnotationBag $metadata)
+    public function add($classname, Analysis $metadata)
     {
         if (isset($this->map[$classname]))
         {
@@ -25,7 +24,7 @@ class MetaDataMap
         }
     }
     
-    public function retrieve($classname): AnnotationBag
+    public function retrieve($classname): Analysis
     {
         if (isset($this->map[$classname]))
         {

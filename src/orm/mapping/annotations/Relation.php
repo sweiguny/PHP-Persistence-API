@@ -32,25 +32,25 @@ abstract class Relation implements Annotation
     /**
      * The fully qualified classname of the related entity. Is case sensitive.
      * 
-     * @Parameter(required='true', type='string')
+     * @Parameter(required="true", type="string")
      * 
      * @var string
      */
     private $mapped_by;
     
     /**
-     * The fetch type. Can be 'eager' or 'lazy'.
+     * The fetch type. Can be "eager" or "lazy".
      * 
-     * @Parameter(required='true', type='string')
+     * @Parameter(required="true", type="string")
      * 
      * @var string
      */
     private $fetch;
     
     /**
-     * The cascade type. Can be 'all', 'none', 'remove' or 'persist'.
+     * The cascade type. Can be "all", "none", "remove" or "persist".
      * 
-     * @Parameter(required='true', type='string')
+     * @Parameter(required="true", type="string")
      * 
      * @var string
      */
@@ -87,7 +87,6 @@ abstract class Relation implements Annotation
         
         $this->cascade = $cascade;
     }
-
 
 }
 

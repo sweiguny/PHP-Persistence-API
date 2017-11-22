@@ -10,7 +10,7 @@ use PPA\orm\mapping\Annotation;
 class Table implements Annotation
 {
     /**
-     * @Parameter(default='%classname%', required='true', type='string')
+     * @Parameter(default="%classname%", required="true", type="string")
      * 
      * @var string
      */

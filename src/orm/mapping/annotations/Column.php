@@ -10,7 +10,7 @@ use PPA\orm\mapping\Annotation;
 class Column implements Annotation
 {
     /**
-     * @Parameter(default='%propertyname%', required='true', type='string')
+     * @Parameter(default="%propertyname%", required="true", type="string")
      * 
      * @var string
      */

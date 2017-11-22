@@ -22,15 +22,15 @@ class UnitOfWork implements EventSubscriberInterface
     
     /**
      * 
-     * @var EntityAnalyzer 
+     * @var EntityAnalyser 
      */
-    private $analyzer;
+    private $analyser;
     
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->identityMap   = new IdentityMap();
-        $this->analyzer      = new EntityAnalyzer();
+        $this->analyser      = new EntityAnalyser();
     }
 
     public function getIdentityMap(): IdentityMap
@@ -59,7 +59,7 @@ class UnitOfWork implements EventSubscriberInterface
         $entityManager = $event->getEntityManager();
         $entity        = $event->getEntity();
         
-        $metaData = $this->analyzer->analyze($entity);
+        $metaData = $this->analyser->analyse($entity);
         
         $this->identityMap->add($entity, "id");
     }

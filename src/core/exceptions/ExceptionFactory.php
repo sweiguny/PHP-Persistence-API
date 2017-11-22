@@ -5,6 +5,7 @@ namespace PPA\core\exceptions;
 use PPA\core\exceptions\logic\CouldNotLoadAnnotationException;
 use PPA\core\exceptions\logic\NotSerializableException;
 use PPA\core\exceptions\logic\ParameterRequiredException;
+use PPA\core\exceptions\logic\TableAnnotationMissingException;
 use PPA\core\exceptions\logic\TargetAnnotationNotExistentException;
 use PPA\core\exceptions\logic\UnknownCascadeTypeException;
 use PPA\core\exceptions\logic\UnknownFetchTypeException;
@@ -63,6 +64,11 @@ final class ExceptionFactory
     public static function CouldNotLoadAnnotation(string $annotationClassname, string $ownerClassname): CouldNotLoadAnnotationException
     {
         return new CouldNotLoadAnnotationException(sprintf("Annotation '@%s' (set on class '%s') could not be loaded. Maybe you need to add/remove a leading slash.", $annotationClassname, $ownerClassname));
+    }
+    
+    public static function TableAnnotationMissing(string $entityClassname)
+    {
+        return new TableAnnotationMissingException(sprintf("@Table Annotation is missing on Entity class '%s'.", $entityClassname));
     }
     
 }

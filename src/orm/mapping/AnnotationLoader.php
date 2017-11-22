@@ -63,7 +63,9 @@ class AnnotationLoader
         
         foreach ($bag->getClassAnnotations() as $annotationClassname => $parameters)
         {
-            $loadedAnnotations[] = $this->workOnAnnotation($annotationClassname, $bag->getOwner(), $parameters);
+                list($resolvedClassname, $annotation) = $this->workOnAnnotation($annotationClassname, $bag->getOwner(), $parameters);
+                
+                $loadedAnnotations[$resolvedClassname] = $annotation;
         }
         
         return $loadedAnnotations;
@@ -79,18 +81,20 @@ class AnnotationLoader
             
             foreach ($annotations as $annotationClassname => $parameters)
             {
-                $loadedAnnotations[$propertyName][] = $this->workOnAnnotation($annotationClassname, $bag->getOwner(), $parameters, $propertyName);
+                list($resolvedClassname, $annotation) = $this->workOnAnnotation($annotationClassname, $bag->getOwner(), $parameters, $propertyName);
+                
+                $loadedAnnotations[$propertyName][$resolvedClassname] = $annotation;
             }
         }
         
         return $loadedAnnotations;
     }
     
-    private function workOnAnnotation(string $annotationClassname, Annotatable $owner, array $parameters, string $propertyName = null): Annotation
+    private function workOnAnnotation(string $annotationClassname, Annotatable $owner, array $parameters, string $propertyName = null): array
     {
-        $resolvedClassname = $this->loadAndResolveAnnotationClassname($annotationClassname, get_class($owner));
-                
-        return $this->factory->instantiate($owner, $resolvedClassname, $parameters, $propertyName);
+        $resolvedClassname = ltrim($this->loadAndResolveAnnotationClassname($annotationClassname, get_class($owner)), "\\");
+        
+        return [$resolvedClassname, $this->factory->instantiate($owner, $resolvedClassname, $parameters, $propertyName)];
     }
 
     private function loadAndResolveAnnotationClassname(string $annotationClassname, string $ownerClassname): string

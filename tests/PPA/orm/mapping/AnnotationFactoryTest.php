@@ -11,6 +11,8 @@ use PPA\orm\entity\Serializable;
 use PPA\orm\mapping\AnnotationFactory;
 use PPA\orm\mapping\AnnotationLoader;
 use PPA\orm\mapping\AnnotationReader;
+use PPA\orm\mapping\annotations\Column;
+use PPA\orm\mapping\annotations\Table;
 use PPA\tests\bootstrap\annotations\TestAnnotation;
 use PPA\tests\bootstrap\annotations\UnknownParametersAnnotation;
 use PPA\tests\bootstrap\entity\TargetClassWrong;
@@ -102,8 +104,8 @@ class AnnotationFactoryTest extends TestCase
         $classAnnotations    = $result->getClassAnnotations();
         $propertyAnnotations = $result->getPropertyAnnotations();
         
-        $this->assertEquals(strtolower(array_pop($fqcn)), $classAnnotations[0]->getName());
-        $this->assertEquals($entity->getColumn(), $propertyAnnotations["column"][0]->getName());
+        $this->assertEquals(strtolower(array_pop($fqcn)), $classAnnotations[Table::class]->getName());
+        $this->assertEquals($entity->getColumn(), $propertyAnnotations["column"][Column::class]->getName());
     }
     
     public function testWrongTargetProperty()
