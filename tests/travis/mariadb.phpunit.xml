@@ -20,8 +20,8 @@
     <php>
         <var name="driver"   value="mysql"/>
         <var name="hostname" value="127.0.0.1" />
-        <var name="database" value="ppa" />
-        <var name="username" value="ppa" />
+        <var name="database" value="ppa_test" />
+        <var name="username" value="root" />
         <var name="password" value="" />
         <!--<var name="port"     value="3306"/>-->
     </php>
