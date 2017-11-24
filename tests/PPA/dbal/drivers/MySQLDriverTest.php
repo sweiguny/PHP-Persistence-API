@@ -7,7 +7,7 @@ use PPA\dbal\drivers\concrete\MySQLDriver;
 use PPA\tests\bootstrap\AbstractDriverTestCase;
 
 /**
- * @coversDefaultClass \PPA\dbal\drivers\concrete\MySQLDriver
+ * @coversDefaultClass PPA\dbal\drivers\concrete\MySQLDriver
  */
 class MySQLDriverTest extends AbstractDriverTestCase
 {

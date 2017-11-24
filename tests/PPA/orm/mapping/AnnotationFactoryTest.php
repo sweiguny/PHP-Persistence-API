@@ -19,6 +19,9 @@ use PPA\tests\bootstrap\entity\TargetClassWrong;
 use PPA\tests\bootstrap\entity\TargetPropertyWrong;
 use PPA\tests\bootstrap\entity\TestDefaultsEntity;
 
+/**
+ * @coversDefaultClass PPA\orm\mapping\AnnotationFactory
+ */
 class AnnotationFactoryTest extends TestCase
 {
     /**

@@ -7,6 +7,9 @@ use PHPUnit\Framework\TestCase;
 use PPA\dbal\Connection;
 use PPA\dbal\DriverManager;
 
+/**
+ * @coversDefaultClass PPA\dbal\Connection
+ */
 class ConnectionTest extends TestCase
 {
     /**
@@ -31,7 +34,10 @@ class ConnectionTest extends TestCase
         }
     }
     
-    public function testConnected()
+    /**
+     * @covers ::isConnected
+     */
+    public function testIsConnected()
     {
         $connection = $this->connection;
         

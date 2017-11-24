@@ -24,7 +24,7 @@ class MetaDataMap
         }
     }
     
-    public function retrieve($classname): Analysis
+    public function retrieve($classname): ?Analysis
     {
         if (isset($this->map[$classname]))
         {

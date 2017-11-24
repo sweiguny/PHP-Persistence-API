@@ -8,7 +8,7 @@ use PPA\tests\bootstrap\entity\DocCommentProvider;
 use ReflectionClass;
 
 /**
- * @coversDefaultClass AnnotationReader
+ * @coversDefaultClass PPA\orm\mapping\AnnotationReader
  */
 class AnnotationReaderTest extends TestCase
 {

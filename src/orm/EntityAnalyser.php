@@ -39,7 +39,7 @@ class EntityAnalyser
         $this->annotationLoader = new AnnotationLoader();
     }
     
-    public function getMetaData(Serializable $entity): AnnotationBag
+    public function getMetaData(Serializable $entity): Analysis
     {
         $classname = get_class($entity);
         $metadata  = $this->metaDataMap->retrieve($classname);

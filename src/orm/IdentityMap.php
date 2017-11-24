@@ -2,7 +2,7 @@
 
 namespace PPA\orm;
 
-use LogicException;
+use PPA\core\exceptions\ExceptionFactory;
 use PPA\orm\entity\Serializable;
 
 class IdentityMap
@@ -29,7 +29,7 @@ class IdentityMap
         
         if (isset($this->map[$classname][$key]))
         {
-            throw new LogicException("'{$classname}' with key '{$key}' already in " . __CLASS__ . ".");
+            throw ExceptionFactory::AlreadyExistentInIdentityMap($classname, $key);
         }
         
         $this->map[$classname][$key] = $entity;
@@ -43,7 +43,7 @@ class IdentityMap
         }
         else
         {
-            throw new LogicException("'{$classname}' with key '{$key}' not in " . __CLASS__ . ".");
+            throw ExceptionFactory::NotExistentInIdentityMap($classname, $key);
         }
     }
     
@@ -55,7 +55,7 @@ class IdentityMap
         }
         else
         {
-            throw new LogicException("'{$classname}' with key '{$key}' not in " . __CLASS__ . ".");
+            throw ExceptionFactory::NotExistentInIdentityMap($classname, $key);
         }
     }
     

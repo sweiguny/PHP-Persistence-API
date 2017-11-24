@@ -9,6 +9,9 @@ use PPA\orm\EntityAnalyser;
 use PPA\tests\bootstrap\entity\Customer;
 use PPA\tests\bootstrap\entity\NoTableAnnotation;
 
+/**
+ * @coversDefaultClass PPA\orm\EntityAnalyser
+ */
 class EntityAnalyserTest extends TestCase
 {
     /**
@@ -17,17 +20,17 @@ class EntityAnalyserTest extends TestCase
      */
     private $entityAnalyser;
     
-
     protected function setUp()
     {
-        $this->entityAnalyser       = new EntityAnalyser();
+        $this->entityAnalyser = new EntityAnalyser();
     }
     
     /**
+     * @covers ::analyse
      * 
      * @dataProvider provideEntities
      */
-    public function testAnalyse(Serializable $entity, ?string $expectedException)
+    public function testAnalyse(Serializable $entity, ?string $expectedException, string $primaryPropertyName)
     {
         if ($expectedException != null)
         {
@@ -36,16 +39,14 @@ class EntityAnalyserTest extends TestCase
         
         $analysis = $this->entityAnalyser->analyse($entity, get_class($entity));
         
-        print_r($analysis);
-        
-        $this->assertTrue(true);
+        $this->assertEquals($primaryPropertyName, $analysis->getPrimaryProperty()->getName());
     }
     
     public function provideEntities()
     {
         return [
-            [new Customer(1, "John", "Doe", "at home"), null],
-            [new NoTableAnnotation(1, "John", "Doe", "at home"), TableAnnotationMissingException::class]
+            [new Customer(1, "John", "Doe", "at home"), null, "customerNo"],
+            [new NoTableAnnotation(1, "John", "Doe", "at home"), TableAnnotationMissingException::class, "customerNo"]
         ];
     }
     

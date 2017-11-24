@@ -2,7 +2,9 @@
 
 namespace PPA\core\exceptions;
 
+use PPA\core\exceptions\logic\AlreadyExistentInIdentityMapException;
 use PPA\core\exceptions\logic\CouldNotLoadAnnotationException;
+use PPA\core\exceptions\logic\NotExistentInIdentityMapException;
 use PPA\core\exceptions\logic\NotSerializableException;
 use PPA\core\exceptions\logic\ParameterRequiredException;
 use PPA\core\exceptions\logic\TableAnnotationMissingException;
@@ -66,9 +68,19 @@ final class ExceptionFactory
         return new CouldNotLoadAnnotationException(sprintf("Annotation '@%s' (set on class '%s') could not be loaded. Maybe you need to add/remove a leading slash.", $annotationClassname, $ownerClassname));
     }
     
-    public static function TableAnnotationMissing(string $entityClassname)
+    public static function TableAnnotationMissing(string $entityClassname): TableAnnotationMissingException
     {
         return new TableAnnotationMissingException(sprintf("@Table Annotation is missing on Entity class '%s'.", $entityClassname));
+    }
+    
+    public static function NotExistentInIdentityMap(string $classname, $key): NotExistentInIdentityMapException
+    {
+        return new NotExistentInIdentityMapException(sprintf("'{$classname}' with key '{$key}' not in IdentityMap.", $classname, $key));
+    }
+    
+    public static function AlreadyExistentInIdentityMap(string $classname, $key): AlreadyExistentInIdentityMapException
+    {
+        return new AlreadyExistentInIdentityMapException(sprintf("'{$classname}' with key '{$key}' already in IdentityMap.", $classname, $key));
     }
     
 }

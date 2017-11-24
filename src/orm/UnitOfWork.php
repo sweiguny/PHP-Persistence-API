@@ -59,9 +59,11 @@ class UnitOfWork implements EventSubscriberInterface
         $entityManager = $event->getEntityManager();
         $entity        = $event->getEntity();
         
-        $metaData = $this->analyser->analyse($entity);
+        $metaData = $this->analyser->getMetaData($entity);
         
-        $this->identityMap->add($entity, "id");
+        $key = $metaData->getPrimaryProperty()->getValue($entity);
+        
+        $this->identityMap->add($entity, $key);
     }
     
 }

@@ -42,7 +42,7 @@ class Analysis
      * 
      * @var array
      */
-    private $relations;
+//    private $relations;
     
     public function __construct(string $classname, EntityProperty $primaryProperty, $tableName, $propertiesByName, $propertiesByColumn)
     {
@@ -54,7 +54,30 @@ class Analysis
 //        $this->relations          = $relations;
     }
 
-    
+    public function getClassname()
+    {
+        return $this->classname;
+    }
+
+    public function getPrimaryProperty(): EntityProperty
+    {
+        return $this->primaryProperty;
+    }
+
+    public function getTableName()
+    {
+        return $this->tableName;
+    }
+
+    public function getPropertiesByName()
+    {
+        return $this->propertiesByName;
+    }
+
+    public function getPropertiesByColumn()
+    {
+        return $this->propertiesByColumn;
+    }
     
 }
 

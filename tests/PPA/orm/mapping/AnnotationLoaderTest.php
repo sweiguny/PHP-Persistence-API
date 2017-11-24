@@ -7,11 +7,13 @@ use PPA\orm\entity\Serializable;
 use PPA\orm\mapping\AnnotationBag;
 use PPA\orm\mapping\AnnotationLoader;
 use PPA\orm\mapping\AnnotationReader;
-use PPA\orm\mapping\annotations\Table;
 use PPA\tests\bootstrap\entity\Customer;
 use ReflectionClass;
 use ReflectionMethod;
 
+/**
+ * @coversDefaultClass PPA\orm\mapping\AnnotationLoader
+ */
 class AnnotationLoaderTest extends TestCase
 {
     /**
@@ -41,6 +43,8 @@ class AnnotationLoaderTest extends TestCase
     }
     
     /**
+     * @covers ::load
+     * 
      * @dataProvider provideEntities
      */
     public function testLoad(Serializable $entity)

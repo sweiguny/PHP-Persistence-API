@@ -20,25 +20,24 @@
     <php>
         <var name="driver"   value="mysql"/>
         <var name="hostname" value="127.0.0.1" />
-        <var name="database" value="ppa_test" />
-        <var name="username" value="root" />
+        <var name="database" value="ppa" />
+        <var name="username" value="ppa" />
         <var name="password" value="" />
         <!--<var name="port"     value="3306"/>-->
     </php>
     
     
     <!-- code coverage definition -->
-    <!--    
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">src</directory>
+            <directory suffix=".php">../../src</directory>
             <exclude>
-                <directory suffix=".php">src/legacy</directory>
+                <directory suffix=".php">../../src/legacy</directory>
             </exclude>
         </whitelist>
     </filter>
     <logging>
-        <log type="coverage-html" target="tests/_coverage" lowUpperBound="35" highLowerBound="70"/>
+        <log type="coverage-html" target="../../tests/_coverage" lowUpperBound="35" highLowerBound="70"/>
     </logging>
-    -->
+    
 </phpunit>
