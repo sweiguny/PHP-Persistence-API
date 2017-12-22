@@ -3,7 +3,9 @@
 namespace PPA\orm;
 
 use PPA\orm\entity\Serializable;
-use PPA\orm\event\EntityPersistEvent;
+use PPA\orm\event\entityManagement\EntityPersistEvent;
+use PPA\orm\event\entityManagement\EntityRemoveEvent;
+use PPA\orm\event\entityManagement\FlushEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class UnitOfWork implements EventSubscriberInterface
@@ -25,6 +27,19 @@ class UnitOfWork implements EventSubscriberInterface
      * @var EntityAnalyser 
      */
     private $analyser;
+
+    /**
+     * 
+     * @return array
+     */
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            EntityPersistEvent::NAME => "addEntity",
+            EntityRemoveEvent::NAME  => "removeEntity",
+            FlushEvent::NAME         => "writeChanges"
+        ];
+    }
     
     public function __construct(EntityManager $entityManager)
     {
@@ -43,17 +58,6 @@ class UnitOfWork implements EventSubscriberInterface
         
     }
 
-    /**
-     * 
-     * @return array
-     */
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            EntityPersistEvent::NAME => "addEntity"
-        ];
-    }
-
     public function addEntity(EntityPersistEvent $event)
     {
         $entityManager = $event->getEntityManager();
@@ -64,6 +68,23 @@ class UnitOfWork implements EventSubscriberInterface
         $key = $metaData->getPrimaryProperty()->getValue($entity);
         
         $this->identityMap->add($entity, $key);
+    }
+
+    public function removeEntity(EntityRemoveEvent $event)
+    {
+        $entityManager = $event->getEntityManager();
+        $entity        = $event->getEntity();
+        
+        $metaData = $this->analyser->getMetaData($entity);
+        
+        $key = $metaData->getPrimaryProperty()->getValue($entity);
+        
+        $this->identityMap->remove($entity, $key);
+    }
+    
+    protected function writeChanges(FlushEvent $event)
+    {
+        die("here");
     }
     
 }

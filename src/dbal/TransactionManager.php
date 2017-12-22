@@ -3,6 +3,10 @@
 namespace PPA\dbal;
 
 use PDO;
+use PPA\orm\event\transactions\TransactionBeginEvent;
+use PPA\orm\event\transactions\TransactionCommitEvent;
+use PPA\orm\event\transactions\TransactionRollbackEvent;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class TransactionManager
 {
@@ -18,10 +22,17 @@ class TransactionManager
      */
     private $pdo;
 
-    public function __construct(Connection $connection)
+    /**
+     *
+     * @var EventDispatcher
+     */
+    private $eventDispatcher;
+
+    public function __construct(Connection $connection, EventDispatcher $eventDispatcher)
     {
-        $this->connection = $connection;
-        $this->pdo        = $connection->getPdo();
+        $this->connection      = $connection;
+        $this->pdo             = $connection->getPdo();
+        $this->eventDispatcher = $eventDispatcher;
     }
     
     public function begin()
@@ -30,6 +41,8 @@ class TransactionManager
         {
             throw new TransactionException("Already in a transaction.");
         }
+        
+        $this->eventDispatcher->dispatch(TransactionBeginEvent::NAME, new TransactionBeginEvent());
         
         $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
         $this->pdo->beginTransaction();
@@ -42,6 +55,8 @@ class TransactionManager
             throw new TransactionException("Not in a transaction.");
         }
         
+        $this->eventDispatcher->dispatch(TransactionCommitEvent::NAME, new TransactionCommitEvent());
+        
         $this->pdo->commit();
         $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
     }
@@ -52,6 +67,8 @@ class TransactionManager
         {
             throw new TransactionException("Not in a transaction.");
         }
+        
+        $this->eventDispatcher->dispatch(TransactionRollbackEvent::NAME, new TransactionRollbackEvent());
         
         $this->pdo->rollBack();
         $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);

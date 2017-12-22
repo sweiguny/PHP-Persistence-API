@@ -1,15 +1,15 @@
 <?php
 
-namespace PPA\orm\event;
+namespace PPA\orm\event\entityManagement;
 
 use PPA\core\PPA;
 use PPA\orm\entity\Serializable;
 use PPA\orm\EntityManager;
 use Symfony\Component\EventDispatcher\Event;
 
-class EntityPersistEvent extends Event
+class EntityManagementEvent extends Event
 {
-    const NAME = PPA::EventPrefix . "persist";
+    const NAME = PPA::EntityManagementEventPrefix . "persist";
     
     /**
      *

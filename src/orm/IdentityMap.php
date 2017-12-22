@@ -35,7 +35,7 @@ class IdentityMap
         $this->map[$classname][$key] = $entity;
     }
     
-    public function retrieve($classname, $key): Serializable
+    public function retrieve(string $classname, $key): ?Serializable
     {
         if (isset($this->map[$classname]) && isset($this->map[$classname][$key]))
         {
@@ -43,12 +43,15 @@ class IdentityMap
         }
         else
         {
-            throw ExceptionFactory::NotExistentInIdentityMap($classname, $key);
+            return null;
+            //throw ExceptionFactory::NotExistentInIdentityMap($classname, $key);
         }
     }
     
-    public function remove($classname, $key)
+    public function remove(Serializable $entity, $key)
     {
+        $classname = get_class($entity);
+        
         if (isset($this->map[$classname]) && isset($this->map[$classname][$key]))
         {
             unset($this->map[$classname][$key]);

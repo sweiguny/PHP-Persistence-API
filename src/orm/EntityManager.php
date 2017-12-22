@@ -5,7 +5,9 @@ namespace PPA\orm;
 use PPA\core\EventDispatcher;
 use PPA\dbal\TransactionManager;
 use PPA\orm\entity\Serializable;
-use PPA\orm\event\EntityPersistEvent;
+use PPA\orm\event\entityManagement\EntityPersistEvent;
+use PPA\orm\event\entityManagement\EntityRemoveEvent;
+use PPA\orm\event\entityManagement\FlushEvent;
 use PPA\orm\repository\DefaultRepository;
 use PPA\orm\repository\RepositoryFactory;
 
@@ -34,7 +36,7 @@ class EntityManager
      * @var EventDispatcher
      */
     private $eventDispatcher;
-    
+
     public function __construct(TransactionManager $transactionManager, EventDispatcher $eventDispatcher)
     {
         $this->transactionManager = $transactionManager;
@@ -59,7 +61,9 @@ class EntityManager
     
     public function remove(Serializable $entity)
     {
-        //remove entity to uow
+        $event = new EntityRemoveEvent($this, $entity);
+        
+        $this->eventDispatcher->dispatch(EntityRemoveEvent::NAME, $event);
     }
     
     public function getChangeSet(Serializable $entity)
@@ -69,7 +73,7 @@ class EntityManager
     
     public function flush()
     {
-        // process uof and 
+        $this->eventDispatcher->dispatch(FlushEvent::NAME, new FlushEvent());
     }
 
 }
