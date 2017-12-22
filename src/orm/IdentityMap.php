@@ -62,6 +62,22 @@ class IdentityMap
         }
     }
     
+    public function dumpMapByObjectId(): array
+    {
+        $dump = [];
+        
+        foreach ($this->map as $classname => $listByPrimary)
+        {
+            foreach ($listByPrimary as $key => $entity)
+            {
+                $oid        = spl_object_hash($entity);
+                $dump[$oid] = $entity;
+            }
+        }
+        
+        return $dump;
+    }
+    
 }
 
 ?>

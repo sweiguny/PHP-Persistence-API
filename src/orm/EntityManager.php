@@ -8,10 +8,12 @@ use PPA\orm\entity\Serializable;
 use PPA\orm\event\entityManagement\EntityPersistEvent;
 use PPA\orm\event\entityManagement\EntityRemoveEvent;
 use PPA\orm\event\entityManagement\FlushEvent;
+use PPA\orm\event\transactions\TransactionCommitEvent;
 use PPA\orm\repository\DefaultRepository;
 use PPA\orm\repository\RepositoryFactory;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class EntityManager
+class EntityManager implements EventSubscriberInterface
 {
     /**
      *
@@ -36,6 +38,13 @@ class EntityManager
      * @var EventDispatcher
      */
     private $eventDispatcher;
+
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            TransactionCommitEvent::NAME => "doFlush"
+        ];
+    }
 
     public function __construct(TransactionManager $transactionManager, EventDispatcher $eventDispatcher)
     {
@@ -74,6 +83,11 @@ class EntityManager
     public function flush()
     {
         $this->eventDispatcher->dispatch(FlushEvent::NAME, new FlushEvent());
+    }
+    
+    private function doFlush(TransactionCommitEvent $event)
+    {
+        $this->flush();
     }
 
 }

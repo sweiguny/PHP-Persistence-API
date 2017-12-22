@@ -47,15 +47,24 @@ class UnitOfWork implements EventSubscriberInterface
         $this->identityMap   = new IdentityMap();
         $this->analyser      = new EntityAnalyser();
     }
-
-    public function getIdentityMap(): IdentityMap
-    {
-        return $this->identityMap;
-    }
     
     public function getChangeSet(Serializable $entity)
     {
         
+    }
+    
+    protected function writeChanges(FlushEvent $event)
+    {
+        $managedEntities = $this->identityMap->dumpMapByObjectId();
+        
+        foreach ($managedEntities as $oid => $entity)
+        {
+            $changeSet = $this->getChangeSet($entity);
+            
+            
+        }
+        
+        die("here");
     }
 
     public function addEntity(EntityPersistEvent $event)
@@ -81,10 +90,10 @@ class UnitOfWork implements EventSubscriberInterface
         
         $this->identityMap->remove($entity, $key);
     }
-    
-    protected function writeChanges(FlushEvent $event)
+
+    public function getIdentityMap(): IdentityMap
     {
-        die("here");
+        return $this->identityMap;
     }
     
 }
