@@ -23,6 +23,12 @@ class UnitOfWork implements EventSubscriberInterface
     private $identityMap;
     
     /**
+     *
+     * @var OriginsMap
+     */
+    private $originsMap;
+
+    /**
      * 
      * @var EntityAnalyser 
      */
@@ -44,8 +50,9 @@ class UnitOfWork implements EventSubscriberInterface
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->identityMap   = new IdentityMap();
         $this->analyser      = new EntityAnalyser();
+        $this->identityMap   = new IdentityMap();
+        $this->originsMap    = new OriginsMap($this->analyser);
     }
     
     public function getChangeSet(Serializable $entity)
@@ -77,6 +84,7 @@ class UnitOfWork implements EventSubscriberInterface
         $key = $metaData->getPrimaryProperty()->getValue($entity);
         
         $this->identityMap->add($entity, $key);
+        $this->originsMap->add($entity, $key);
     }
 
     public function removeEntity(EntityRemoveEvent $event)
@@ -89,6 +97,7 @@ class UnitOfWork implements EventSubscriberInterface
         $key = $metaData->getPrimaryProperty()->getValue($entity);
         
         $this->identityMap->remove($entity, $key);
+        $this->originsMap->remove($entity, $key);
     }
 
     public function getIdentityMap(): IdentityMap

@@ -3,8 +3,10 @@
 namespace PPA\core\exceptions;
 
 use PPA\core\exceptions\logic\AlreadyExistentInIdentityMapException;
+use PPA\core\exceptions\logic\AlreadyExistentInOriginsMapException;
 use PPA\core\exceptions\logic\CouldNotLoadAnnotationException;
 use PPA\core\exceptions\logic\NotExistentInIdentityMapException;
+use PPA\core\exceptions\logic\NotExistentInOriginsMapException;
 use PPA\core\exceptions\logic\NotSerializableException;
 use PPA\core\exceptions\logic\ParameterRequiredException;
 use PPA\core\exceptions\logic\TableAnnotationMissingException;
@@ -81,6 +83,16 @@ final class ExceptionFactory
     public static function AlreadyExistentInIdentityMap(string $classname, $key): AlreadyExistentInIdentityMapException
     {
         return new AlreadyExistentInIdentityMapException(sprintf("'{$classname}' with key '{$key}' already in IdentityMap.", $classname, $key));
+    }
+    
+    public static function NotExistentInOriginsMap(string $classname, $key): NotExistentInOriginsMapException
+    {
+        return new NotExistentInOriginsMapException(sprintf("'{$classname}' with key '{$key}' not in OriginsMap.", $classname, $key));
+    }
+    
+    public static function AlreadyExistentInOriginsMap(string $classname, $key): AlreadyExistentInOriginsMapException
+    {
+        return new AlreadyExistentInOriginsMapException(sprintf("'{$classname}' with key '{$key}' already in OriginsMap.", $classname, $key));
     }
     
 }
