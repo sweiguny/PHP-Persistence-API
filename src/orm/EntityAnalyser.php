@@ -4,7 +4,6 @@ namespace PPA\orm;
 
 use PPA\core\exceptions\ExceptionFactory;
 use PPA\orm\entity\Serializable;
-use PPA\orm\mapping\AnnotationBag;
 use PPA\orm\mapping\AnnotationLoader;
 use PPA\orm\mapping\AnnotationReader;
 use PPA\orm\mapping\annotations\Column;

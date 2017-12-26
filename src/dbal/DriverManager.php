@@ -28,9 +28,9 @@ class DriverManager
         return new $driverClass($driverOptions);
     }
     
-    protected static function lookupDriver($driverName): string
+    protected static function lookupDriver(string $driverName): string
     {
-        return self::$driverMap[$driverName];
+        return self::$driverMap[strtolower($driverName)];
     }
     
 }

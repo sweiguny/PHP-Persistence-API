@@ -47,12 +47,6 @@ class ConnectionTest extends TestCase
         
         $this->assertTrue($connection->isConnected());
     }
-    
-
-    protected function getDataSet(): IDataSet
-    {
-        
-    }
 
 }
 

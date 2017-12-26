@@ -43,13 +43,10 @@ class OriginsMap
             throw ExceptionFactory::AlreadyExistentInOriginsMap($classname, $key);
         }
         
-        print_r((array)$entity);
-        print_r($this->analyser->getMetaData($entity));
-        
-        $this->map[$classname][$key] = $entity;
+        $this->map[$classname][$key] = $this->extractData($entity);
     }
     
-    public function retrieve(string $classname, $key): ?Serializable
+    public function retrieve(string $classname, $key): ?array
     {
         if (isset($this->map[$classname]) && isset($this->map[$classname][$key]))
         {
@@ -73,6 +70,20 @@ class OriginsMap
         {
             throw ExceptionFactory::NotExistentInOriginsMap($classname, $key);
         }
+    }
+    
+    public function extractData(Serializable $entity): array
+    {
+        $properties = $this->analyser->getMetaData($entity)->getPropertiesByColumn();
+        $data       = [];
+        
+        foreach ($properties as $property)
+        {
+            /* @var $property \PPA\core\EntityProperty */
+            $data[$property->getName()] = $property->getValue($entity);
+        }
+        
+        return $data;
     }
     
 }

@@ -10,6 +10,7 @@ use PPA\dbal\TransactionManager;
 use PPA\orm\entity\Serializable;
 use PPA\orm\EntityManager;
 use PPA\orm\IdentityMap;
+use PPA\orm\OriginsMap;
 use PPA\orm\UnitOfWork;
 use PPA\tests\bootstrap\entity\Customer;
 use PPA\tests\bootstrap\TestDriverManager;
@@ -37,6 +38,12 @@ class UnitOfWorkTest extends TestCase
      * @var IdentityMap
      */
     private static $identityMap;
+    
+    /**
+     *
+     * @var OriginsMap
+     */
+    private static $originsMap;
 
     public static function setUpBeforeClass()
     {
@@ -55,16 +62,19 @@ class UnitOfWorkTest extends TestCase
         
         self::$unitOfWork  = $reflectionProperty->getValue(self::$entityManager);
         self::$identityMap = self::$unitOfWork->getIdentityMap();
+        self::$originsMap  = self::$unitOfWork->getOriginsMap();
     }
     
     /**
      * @covers ::addEntity
      * @covers PPA\orm\IdentityMap::add
      * @covers PPA\orm\IdentityMap::retrieve
+     * @covers PPA\orm\OriginsMap::add
+     * @covers PPA\orm\OriginsMap::retrieve
      * 
      * @dataProvider provideEntitiesToAdd
      */
-    public function testAddEntity(Serializable $entity, string $expectedException = null)
+    public function testAddEntity(Serializable $entity, string $expectedException = null): Serializable
     {
         if ($expectedException != null)
         {
@@ -73,15 +83,21 @@ class UnitOfWorkTest extends TestCase
 
         self::$entityManager->persist($entity);
         
-        $result = self::$identityMap->retrieve(get_class($entity), $entity->getCustomerNo());
+        $result1 = self::$identityMap->retrieve(get_class($entity), $entity->getCustomerNo());
+        $result2 = self::$originsMap->retrieve(get_class($entity), $entity->getCustomerNo());
         
-        $this->assertTrue($result === $entity);
+        $this->assertTrue($result1 === $entity);
+        $this->assertNotNull($result2);
+        
+        return $entity;
     }
     
     /**
      * @covers ::removeEntity
      * @covers PPA\orm\IdentityMap::remove
      * @covers PPA\orm\IdentityMap::retrieve
+     * @covers PPA\orm\OriginsMap::remove
+     * @covers PPA\orm\OriginsMap::retrieve
      * 
      * @depends testAddEntity
      * @dataProvider provideEntitiesToRemove
@@ -95,25 +111,59 @@ class UnitOfWorkTest extends TestCase
         
         self::$entityManager->remove($entity);
         
-        $result = self::$identityMap->retrieve(get_class($entity), $entity->getCustomerNo());
+        $result1 = self::$identityMap->retrieve(get_class($entity), $entity->getCustomerNo());
+        $result2 = self::$originsMap->retrieve(get_class($entity), $entity->getCustomerNo());
         
-        $this->assertNull($result);
+        $this->assertNull($result1);
+        $this->assertNull($result2);
     }
     
     public function provideEntitiesToAdd()
     {
+        $reflectionClass   = new ReflectionClass(Customer::class);
+        $constructorParams = [1, "John", "Doe", "at home"];
+        $testEntity        = $reflectionClass->newInstanceArgs($constructorParams);
+        
+        
         return [
-            [new Customer(1, "John", "Doe", "at home")],
-            [new Customer(1, "John", "Doe", "at home"), AlreadyExistentInIdentityMapException::class]
+            [$testEntity],
+            [$testEntity, AlreadyExistentInIdentityMapException::class]
         ];
     }
     
     public function provideEntitiesToRemove()
     {
+        $reflectionClass   = new ReflectionClass(Customer::class);
+        $constructorParams = [1, "John", "Doe", "at home"];
+        $testEntity        = $reflectionClass->newInstanceArgs($constructorParams);
+        
+        
         return [
-            [new Customer(1, "John", "Doe", "at home")],
-            [new Customer(1, "John", "Doe", "at home"), NotExistentInIdentityMapException::class]
+            [$testEntity],
+            [$testEntity, NotExistentInIdentityMapException::class]
         ];
+    }
+    
+    
+    /**
+     * @covers ::getChangeSet
+     * @covers PPA\orm\OriginsMap::extractData
+     * @covers PPA\orm\OriginsMap::retrieve
+     * 
+     * @depends testAddEntity
+     */
+    public function testGetChangeset()
+    {
+        $entity = new Customer(2, "Jane", "Doe", "over there");
+        
+        self::$entityManager->persist($entity);
+        
+        $entity->setFirstname("MyFirstName");
+        
+        $result = self::$unitOfWork->getChangeSet($entity);
+        
+        $this->assertNotEmpty($result);
+        $this->assertEquals(1, count($result));
     }
     
 }

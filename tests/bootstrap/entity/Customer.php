@@ -58,6 +58,12 @@ class Customer implements Serializable
     {
         return $this->firstname;
     }
+    
+    public function setFirstname($firstname)
+    {
+        $this->firstname = $firstname;
+        return $this;
+    }
 
     public function getLastname()
     {
