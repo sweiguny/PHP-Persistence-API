@@ -56,7 +56,7 @@ class ChangeSet implements ArrayAccess , Countable, Iterator
         return current($this->changes);
     }
 
-    public function key(): scalar
+    public function key()
     {
         return key($this->changes);
     }

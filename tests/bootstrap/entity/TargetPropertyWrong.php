@@ -11,7 +11,7 @@ class TargetPropertyWrong implements Serializable
 {
     /**
      * @\PPA\orm\mapping\annotations\Id
-     * @\PPA\orm\mapping\annotations\Column
+     * @\PPA\orm\mapping\annotations\Column(datatype="integer")
      *
      * @var int 
      */

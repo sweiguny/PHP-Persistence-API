@@ -8,7 +8,7 @@ namespace PPA\tests\bootstrap\entity;
 class TestDefaultsEntity implements \PPA\orm\entity\Serializable
 {
     /**
-     * @\PPA\orm\mapping\annotations\Column
+     * @\PPA\orm\mapping\annotations\Column(datatype="string")
      * 
      * @var string Holds the expected name for the annotation
      */

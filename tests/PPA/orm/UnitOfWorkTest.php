@@ -164,7 +164,25 @@ class UnitOfWorkTest extends TestCase
         
         $this->assertNotEmpty($result);
         $this->assertEquals(1, count($result));
+        
+        return $entity;
     }
+    
+    /**
+     * @covers ::writeChanges
+     * 
+     * @depends testGetChangeset
+     */
+    public function testWriteChanges(Customer $entity)
+    {
+        $reflector = new ReflectionClass(self::$unitOfWork);
+        
+        $writeChanges = $reflector->getMethod("writeChanges");
+        $writeChanges->setAccessible(true);
+        $writeChanges->invoke(self::$unitOfWork, new \PPA\orm\event\entityManagement\FlushEvent(self::$entityManager, $entity));
+    }
+    
+    
     
 }
 

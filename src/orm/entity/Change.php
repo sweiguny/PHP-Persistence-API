@@ -29,7 +29,7 @@ class Change
      */
     private $toValue;
     
-    public function __construct(EntityProperty $property, mixed $fromValue, mixed $toValue)
+    public function __construct(EntityProperty $property, $fromValue, $toValue)
     {
         $this->property  = $property;
         $this->fromValue = $fromValue;

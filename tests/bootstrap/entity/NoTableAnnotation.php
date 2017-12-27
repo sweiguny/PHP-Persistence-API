@@ -10,28 +10,28 @@ class NoTableAnnotation implements Serializable
 {
     /**
      * @Id
-     * @Column
+     * @Column(datatype="integer")
      * 
      * @var int
      */
     private $customerNo;
     
     /**
-     * @Column
+     * @Column(datatype="string")
      * 
      * @var string
      */
     private $firstname;
     
     /**
-     * @Column
+     * @Column(datatype="string")
      * 
      * @var string
      */
     private $lastname;
     
     /**
-     * @Column
+     * @Column(datatype="string")
      * 
      * @var string
      */

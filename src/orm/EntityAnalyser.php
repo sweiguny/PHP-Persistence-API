@@ -103,7 +103,7 @@ class EntityAnalyser
             
             /* @var $column Column */
             $column = $annotations[Column::class];
-            $property->setColumn($column->getName());
+            $property->setColumn($column);
             
             if (isset($annotations[Id::class]))
             {

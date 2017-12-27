@@ -15,14 +15,14 @@ class IncorrectlyAnnotated implements Serializable
 {
     /**
      * @\PPA\orm\mapping\annotations\Id
-     * @Column
+     * @Column(datatype="integer")
      *
      * @var int 
      */
     private $id;
 
     /**
-     * @Column
+     * @Column(datatype="integer")
      * 
      * @var int 
      */

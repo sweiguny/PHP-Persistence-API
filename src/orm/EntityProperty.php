@@ -2,11 +2,16 @@
 
 namespace PPA\orm;
 
+use PPA\orm\mapping\annotations\Column;
+use PPA\orm\mapping\annotations\Relation;
 use ReflectionProperty;
 
 class EntityProperty extends ReflectionProperty
 {
-
+    /**
+     *
+     * @var Column
+     */
     protected $column;
 //    protected $relation;
     protected $isPrimary;
@@ -16,17 +21,17 @@ class EntityProperty extends ReflectionProperty
         parent::__construct($class, $name);
     }
 
-    public function getClass()
+    public function getClass(): string
     {
         return $this->class;
     }
 
-    public function getColumn()
+    public function getColumn(): Column
     {
         return $this->column;
     }
 
-    public function setColumn($column)
+    public function setColumn(Column $column): void
     {
         $this->column = $column;
     }
@@ -62,7 +67,7 @@ class EntityProperty extends ReflectionProperty
      * 
      * @return bool
      */
-    public function isPrimary()
+    public function isPrimary(): bool
     {
         return $this->isPrimary;
     }
@@ -72,7 +77,7 @@ class EntityProperty extends ReflectionProperty
      * 
      * @param bool $primary 
      */
-    public function makePrimary($primary = true)
+    public function makePrimary($primary = true): void
     {
         $this->isPrimary = (bool) $primary;
     }

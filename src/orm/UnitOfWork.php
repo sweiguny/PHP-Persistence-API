@@ -9,6 +9,7 @@ use PPA\orm\entity\Serializable;
 use PPA\orm\event\entityManagement\EntityPersistEvent;
 use PPA\orm\event\entityManagement\EntityRemoveEvent;
 use PPA\orm\event\entityManagement\FlushEvent;
+use PPA\orm\mapping\types\TypeString;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class UnitOfWork implements EventSubscriberInterface
@@ -58,9 +59,10 @@ class UnitOfWork implements EventSubscriberInterface
         $this->originsMap    = new OriginsMap($this->analyser);
     }
     
-    public function getChangeSet(Serializable $entity, Analysis $analysis): ChangeSet
+    public function getChangeSet(Serializable $entity): ChangeSet
     {
         $changeSet    = new ChangeSet();
+        $analysis     = $this->analyser->getMetaData($entity);
         $properties   = $analysis->getPropertiesByName();
         $originalData = $this->originsMap->retrieve($analysis->getClassname(), $analysis->getPrimaryProperty()->getValue($entity));
         $currentData  = $this->originsMap->extractData($entity);
@@ -98,7 +100,7 @@ class UnitOfWork implements EventSubscriberInterface
             /* @var $entity Serializable */
             
             $analysis  = $this->analyser->getMetaData($entity);
-            $changeSet = $this->getChangeSet($entity, $analysis);
+            $changeSet = $this->getChangeSet($entity);
             
             if (!empty($changeSet))
             {
@@ -108,7 +110,19 @@ class UnitOfWork implements EventSubscriberInterface
                 {
                     /* @var $change Change */
                     
-                    $query .= "`{$change->getProperty()->getColumn()}` = {$change->getToValue()}";
+                    $column   = $change->getProperty()->getColumn();
+                    $dataType = $column->getDatatype();
+                    
+                    if (get_class($dataType) == TypeString::class)
+                    {
+                        $value = "'{$change->getToValue()}'";
+                    }
+                    else
+                    {
+                        $value = $change->getToValue();
+                    }
+                    
+                    $query .= "`{$column->getName()}` = {$value}";
                 }
                 
                 var_dump($query);

@@ -59,7 +59,7 @@ class AnnotationFactory
         return $parameters;
     }
     
-    private function setProperties(Annotation $annotation, ReflectionClass $reflector, array &$annotationParameters)
+    private function setProperties(Annotation $annotation, ReflectionClass $reflector, array &$annotationParameters): void
     {
         foreach ($annotationParameters as $key => $parameter)
         {
@@ -102,43 +102,73 @@ class AnnotationFactory
      * @param string $propertyName
      * @throws LogicException
      */
-    private function workOnParameters(Serializable $entity, RawAnnotationBag $annotationDescription, array &$annotationParameters, string $propertyName = null)
+    private function workOnParameters(Serializable $entity, RawAnnotationBag $annotationDescription, array &$annotationParameters, string $propertyName = null): void
     {
         $classAnnotations    = $annotationDescription->getClassAnnotations();
         $propertyAnnotations = $annotationDescription->getPropertyAnnotations();
-        
+        $annotationClass     = get_class($annotationDescription->getOwner());
+        $entityClass         = get_class($entity);
         
         if (!isset($classAnnotations[Annotation::TARGET]) && !isset($classAnnotations[Annotation::TARGET]["value"]))
         {
-            throw ExceptionFactory::TargetAnnotationNotExistent(get_class($annotationDescription->getOwner()));
+            throw ExceptionFactory::TargetAnnotationNotExistent($annotationClass);
         }
         
         $target = $classAnnotations[Annotation::TARGET]["value"];
         
         if ($propertyName == null && $target != Annotation::TARGET_CLASS)
         {
-            throw ExceptionFactory::WrongTargetClass(get_class($annotationDescription->getOwner()), get_class($entity), $target);
+            throw ExceptionFactory::WrongTargetClass($annotationClass, $entityClass, $target);
         }
         else if ($propertyName != null && $target != Annotation::TARGET_PROPERTY)
         {
-            throw ExceptionFactory::WrongTargetProperty(get_class($annotationDescription->getOwner()), get_class($entity), $propertyName, $target);
+            throw ExceptionFactory::WrongTargetProperty($annotationClass, $entityClass, $propertyName, $target);
         }
         
         /*
-         * Check for required parameters
+         * Check datatypes and requirement of parameters 
          */
-        foreach ($propertyAnnotations as $key => $value)
+        foreach ($propertyAnnotations as $parameterName => $value)
         {
             $parameter = $value["Parameter"];
+            $datatype  = $parameter["datatype"];
             
-            if (isset($parameter["required"]) && !isset($annotationParameters[$key]))
+            if (isset($parameter["required"]) && !isset($annotationParameters[$parameterName]))
             {
                 if (!isset($parameter["default"]))
                 {
-                    throw ExceptionFactory::ParameterRequired($key, get_class($annotationDescription->getOwner()), get_class($entity));
+                    throw ExceptionFactory::ParameterRequired($parameterName, $annotationClass, $entityClass);
                 }
                 
-                $annotationParameters[$key] = $this->parseDefault($entity, $parameter["default"], $propertyName);
+                $annotationParameters[$parameterName] = $this->parseDefault($entity, $parameter["default"], $propertyName);
+            }
+            
+            if (isset($annotationParameters[$parameterName]))
+            {
+                if (!in_array($datatype, Annotation::INTERNAL_DATATYPES))
+                {
+                    throw ExceptionFactory::UnknownInternalDatatype($datatype, $parameterName, $annotationClass);
+                }
+                
+                $result = settype($annotationParameters[$parameterName], $datatype);
+                var_dump($result);
+//                use ctype!
+                
+//                $value = $annotationParameters[$parameterName];
+//                
+//                switch ($datatype)
+//                {
+//                    case Annotation::DATATYPE_STRING:
+//                        $value = (string)$value;
+//                        break;
+//                    case Annotation::DATATYPE_INTEGER:
+//                        $value = (integer)$value;
+//                    default:
+//                        throw ExceptionFactory::UnknownInternalDatatype($datatype, $parameterName, $annotationClass);
+//                        break;
+//                }
+//                
+//                $annotationParameters[$parameterName] = $value;
             }
         }
         

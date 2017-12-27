@@ -2,8 +2,10 @@
 
 namespace PPA\core\exceptions;
 
+use PPA\core\exceptions\io\NotADirectoryException;
 use PPA\core\exceptions\logic\AlreadyExistentInIdentityMapException;
 use PPA\core\exceptions\logic\AlreadyExistentInOriginsMapException;
+use PPA\core\exceptions\logic\ColumnDataypeDoesNotExistException;
 use PPA\core\exceptions\logic\CouldNotLoadAnnotationException;
 use PPA\core\exceptions\logic\NotExistentInIdentityMapException;
 use PPA\core\exceptions\logic\NotExistentInOriginsMapException;
@@ -11,13 +13,16 @@ use PPA\core\exceptions\logic\NotSerializableException;
 use PPA\core\exceptions\logic\ParameterRequiredException;
 use PPA\core\exceptions\logic\TableAnnotationMissingException;
 use PPA\core\exceptions\logic\TargetAnnotationNotExistentException;
+use PPA\core\exceptions\logic\TypeDirectoryAlreadyConsideredException;
 use PPA\core\exceptions\logic\UnknownCascadeTypeException;
 use PPA\core\exceptions\logic\UnknownFetchTypeException;
+use PPA\core\exceptions\logic\UnknownInternalDatatypeException;
 use PPA\core\exceptions\logic\UnknownParametersException;
 use PPA\core\exceptions\logic\WrongTargetClassException;
 use PPA\core\exceptions\logic\WrongTargetPropertyException;
 use PPA\orm\entity\Serializable;
 use PPA\orm\mapping\Annotation;
+use PPA\orm\mapping\types\AbstractType;
 
 
 final class ExceptionFactory
@@ -27,7 +32,7 @@ final class ExceptionFactory
     
     public static function UnknownParameters(array $parameters, string $annotationClass, string $entityClass): UnknownParametersException
     {
-        return new UnknownParametersException("Unknown parameter(s) '" . implode("', '", array_keys($parameters)) . "' of Annotation '@{$annotationClass}' used in entity class '{$entityClass}'.");
+        return new UnknownParametersException("Unknown parameter(s) ['" . implode("', '", array_keys($parameters)) . "'] of Annotation '@{$annotationClass}' used in entity class '{$entityClass}'.");
     }
     
     public static function TargetAnnotationNotExistent(string $annotationClass): TargetAnnotationNotExistentException
@@ -52,12 +57,12 @@ final class ExceptionFactory
     
     public static function UnknownCascadeType(string $cascade, array $cascadeTypes): UnknownCascadeTypeException
     {
-        return new UnknownCascadeTypeException("The cascade type is '{$cascade}', but must be one of these: '" . implode("', '", $cascadeTypes) . "'");
+        return new UnknownCascadeTypeException("The cascade type is '{$cascade}', but must be one of these: ['" . implode("', '", $cascadeTypes) . "']");
     }
     
     public static function UnknownFetchType(string $fetch, array $fetchTypes): UnknownFetchTypeException
     {
-        return new UnknownFetchTypeException("The cascade type is '{$fetch}', but must be one of these: '" . implode("', '", $fetchTypes) . "'");
+        return new UnknownFetchTypeException("The cascade type is '{$fetch}', but must be one of these: ['" . implode("', '", $fetchTypes) . "']");
     }
     
     public static function NotSerializable(string $mappedClass): NotSerializableException
@@ -95,6 +100,29 @@ final class ExceptionFactory
         return new AlreadyExistentInOriginsMapException(sprintf("'{$classname}' with key '{$key}' already in OriginsMap.", $classname, $key));
     }
     
+    public static function NotADirectory(string $path): NotADirectoryException
+    {
+        return new NotADirectoryException(sprintf("Path '%s' is not a directory.", $path));
+    }
+    
+    public static function TypeDirectoryAlreadyConsidered(string $path): TypeDirectoryAlreadyConsideredException
+    {
+        return new TypeDirectoryAlreadyConsideredException(sprintf("Type directory '%s' is already considered.", $path));
+    }
+    
+    public static function ColumnDataypeDoesNotExist(string $datatype): ColumnDataypeDoesNotExistException
+    {
+        $message = "Column datatype '%s' does not exist. Practically, there should be a class named '%s'."
+                 . " \n" . "You can create your own datatype(s) by extending class '%s' and register the directory that contains the datatype(s) by calling 'TypeMapper::registerTypeDirectory()'."
+                ;
+        
+        return new ColumnDataypeDoesNotExistException(sprintf($message, $datatype, "Type".ucfirst($datatype), AbstractType::class));
+    }
+    
+    public static function UnknownInternalDatatype(string $datatype, string $parameterName, string $annotationClass): UnknownInternalDatatypeException
+    {
+        return new UnknownInternalDatatypeException(sprintf("Unknown internal datatype '%s' defined for parameter '%s' in Annotation '@%s'. Can only be of of these: %s", $datatype, $parameterName, $annotationClass, "['" . implode("', '", Annotation::INTERNAL_DATATYPES) . "']"));
+    }
 }
 
 ?>
