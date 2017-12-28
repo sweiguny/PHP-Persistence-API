@@ -70,7 +70,7 @@ class Connection
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function connect()
+    public function connect(): void
     {
         $dataSourceName  = $this->getDataSourceName();
         $connectionEvent = new ConnectionEvent($this->driver, $dataSourceName, $this->username);
@@ -98,7 +98,7 @@ class Connection
         ]);
     }
     
-    public function disconnect()
+    public function disconnect(): void
     {
         $this->pdo = null;
     }
@@ -118,17 +118,17 @@ class Connection
         return $this->pdo;
     }
 
-    public function getHostname()
+    public function getHostname(): string
     {
         return $this->hostname;
     }
 
-    public function getDatabase()
+    public function getDatabase(): string
     {
         return $this->database;
     }
 
-    public function getPort()
+    public function getPort(): int
     {
         return $this->port;
     }

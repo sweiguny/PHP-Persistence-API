@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "044128d653a0d15b16db1ccec0fac331",
+    "content-hash": "6f07e401abb218f0bc96bc81c0b5d04e",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -609,6 +609,51 @@
                 "orm"
             ],
             "time": "2016-12-18T15:42:34+00:00"
+        },
+        {
+            "name": "latitude/latitude",
+            "version": "2.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shadowhand/latitude.git",
+                "reference": "d52d5a79ffb6dd1bc914f0b33abbb5d6562c1616"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/shadowhand/latitude/zipball/d52d5a79ffb6dd1bc914f0b33abbb5d6562c1616",
+                "reference": "d52d5a79ffb6dd1bc914f0b33abbb5d6562c1616",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "eloquent/liberator": "^2.0",
+                "phpunit/phpunit": "^5.7",
+                "spatie/7to5": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "Latitude\\QueryBuilder\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Woody Gilk",
+                    "email": "woody.gilk@gmail.com",
+                    "homepage": "https://github.com/shadowhand"
+                }
+            ],
+            "description": "A SQL query builder with zero dependencies",
+            "time": "2017-12-13T15:50:14+00:00"
         },
         {
             "name": "psr/container",

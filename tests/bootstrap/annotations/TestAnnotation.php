@@ -10,28 +10,28 @@ use PPA\orm\mapping\Annotation;
 class TestAnnotation implements Annotation
 {
     /**
-     * @Parameter
+     * @Parameter(datatype="integer")
      * 
      * @var int
      */
     private $value1;
     
     /**
-     * @Parameter
+     * @Parameter(datatype="integer")
      * 
      * @var int
      */
     private $value2;
     
     /**
-     * @Parameter(required="true")
+     * @Parameter(required="true", datatype="integer")
      * 
      * @var int
      */
     private $value3;
     
     /**
-     * @Parameter
+     * @Parameter(datatype="integer")
      * 
      * @var int
      */

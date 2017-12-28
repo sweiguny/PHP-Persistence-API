@@ -10,7 +10,7 @@ use PPA\orm\mapping\Annotation;
 class Table implements Annotation
 {
     /**
-     * @Parameter(default="%classname%", required="true", datatype="integer")
+     * @Parameter(default="%classname%", required="true", datatype="string")
      * 
      * @var string
      */
@@ -21,7 +21,7 @@ class Table implements Annotation
         $this->name = $name;
     }
     
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }

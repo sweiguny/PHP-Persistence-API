@@ -10,6 +10,8 @@ class QueryBuilder
      */
     private $driver;
     
+    
+    
 }
 
 ?>

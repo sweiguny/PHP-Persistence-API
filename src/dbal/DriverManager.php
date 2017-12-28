@@ -11,10 +11,10 @@ class DriverManager
      *
      * @var array
      */
-    private static $driverMap = array(
+    private static $driverMap = [
          "mysql" => '\PPA\dbal\drivers\concrete\MySQLDriver',
          "pgsql" => '\PPA\dbal\drivers\concrete\PgSQLDriver'
-    );
+    ];
     
     public static function getConnection(string $driverName, array $driverOptions, string $username, string $password, string $hostname, string $database, int $port = null): Connection
     {

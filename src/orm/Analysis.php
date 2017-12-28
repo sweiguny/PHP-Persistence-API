@@ -44,7 +44,7 @@ class Analysis
      */
 //    private $relations;
     
-    public function __construct(string $classname, EntityProperty $primaryProperty, $tableName, $propertiesByName, $propertiesByColumn)
+    public function __construct(string $classname, EntityProperty $primaryProperty, string $tableName, array $propertiesByName, array $propertiesByColumn)
     {
         $this->classname          = $classname;
         $this->primaryProperty    = $primaryProperty;
@@ -54,7 +54,7 @@ class Analysis
 //        $this->relations          = $relations;
     }
 
-    public function getClassname()
+    public function getClassname(): string
     {
         return $this->classname;
     }
@@ -64,17 +64,17 @@ class Analysis
         return $this->primaryProperty;
     }
 
-    public function getTableName()
+    public function getTableName(): string
     {
         return $this->tableName;
     }
 
-    public function getPropertiesByName()
+    public function getPropertiesByName(): array
     {
         return $this->propertiesByName;
     }
 
-    public function getPropertiesByColumn()
+    public function getPropertiesByColumn(): array
     {
         return $this->propertiesByColumn;
     }

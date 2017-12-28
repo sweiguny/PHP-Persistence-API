@@ -20,7 +20,7 @@ class EntityAnalyserTest extends TestCase
      */
     private $entityAnalyser;
     
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->entityAnalyser = new EntityAnalyser();
     }
@@ -30,7 +30,7 @@ class EntityAnalyserTest extends TestCase
      * 
      * @dataProvider provideEntities
      */
-    public function testAnalyse(Serializable $entity, ?string $expectedException, string $primaryPropertyName)
+    public function testAnalyse(Serializable $entity, ?string $expectedException, string $primaryPropertyName): void
     {
         if ($expectedException != null)
         {
@@ -42,7 +42,7 @@ class EntityAnalyserTest extends TestCase
         $this->assertEquals($primaryPropertyName, $analysis->getPrimaryProperty()->getName());
     }
     
-    public function provideEntities()
+    public function provideEntities(): array
     {
         return [
             [new Customer(1, "John", "Doe", "at home"), null, "customerNo"],

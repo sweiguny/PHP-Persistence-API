@@ -61,14 +61,14 @@ class EntityManager implements EventSubscriberInterface
         return $this->repositoryFactory->getRepository($classname);
     }
     
-    public function persist(Serializable $entity)
+    public function persist(Serializable $entity): void
     {
         $event = new EntityPersistEvent($this, $entity);
         
         $this->eventDispatcher->dispatch(EntityPersistEvent::NAME, $event);
     }
     
-    public function remove(Serializable $entity)
+    public function remove(Serializable $entity): void
     {
         $event = new EntityRemoveEvent($this, $entity);
         
@@ -80,12 +80,12 @@ class EntityManager implements EventSubscriberInterface
         return $this->unitOfWork->getChangeSet($entity);
     }
     
-    public function flush()
+    public function flush(): void
     {
         $this->eventDispatcher->dispatch(FlushEvent::NAME, new FlushEvent());
     }
     
-    private function doFlush(TransactionCommitEvent $event)
+    private function doFlush(TransactionCommitEvent $event): void
     {
         $this->flush();
     }

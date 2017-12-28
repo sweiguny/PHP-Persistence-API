@@ -29,7 +29,7 @@ class OriginsMap
         $this->analyser = $analyser;
     }
 
-    public function add(Serializable $entity, $key)
+    public function add(Serializable $entity, $key): void
     {
         $classname = get_class($entity);
         
@@ -58,7 +58,7 @@ class OriginsMap
         }
     }
     
-    public function remove(Serializable $entity, $key)
+    public function remove(Serializable $entity, $key): void
     {
         $classname = get_class($entity);
         

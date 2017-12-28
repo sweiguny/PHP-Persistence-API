@@ -5,8 +5,9 @@ namespace PPA\core\exceptions;
 use PPA\core\exceptions\io\NotADirectoryException;
 use PPA\core\exceptions\logic\AlreadyExistentInIdentityMapException;
 use PPA\core\exceptions\logic\AlreadyExistentInOriginsMapException;
-use PPA\core\exceptions\logic\ColumnDataypeDoesNotExistException;
 use PPA\core\exceptions\logic\CouldNotLoadAnnotationException;
+use PPA\core\exceptions\logic\DatatypeDoesNotExistException;
+use PPA\core\exceptions\logic\InvalidArgumentException;
 use PPA\core\exceptions\logic\NotExistentInIdentityMapException;
 use PPA\core\exceptions\logic\NotExistentInOriginsMapException;
 use PPA\core\exceptions\logic\NotSerializableException;
@@ -16,7 +17,6 @@ use PPA\core\exceptions\logic\TargetAnnotationNotExistentException;
 use PPA\core\exceptions\logic\TypeDirectoryAlreadyConsideredException;
 use PPA\core\exceptions\logic\UnknownCascadeTypeException;
 use PPA\core\exceptions\logic\UnknownFetchTypeException;
-use PPA\core\exceptions\logic\UnknownInternalDatatypeException;
 use PPA\core\exceptions\logic\UnknownParametersException;
 use PPA\core\exceptions\logic\WrongTargetClassException;
 use PPA\core\exceptions\logic\WrongTargetPropertyException;
@@ -110,19 +110,24 @@ final class ExceptionFactory
         return new TypeDirectoryAlreadyConsideredException(sprintf("Type directory '%s' is already considered.", $path));
     }
     
-    public static function ColumnDataypeDoesNotExist(string $datatype): ColumnDataypeDoesNotExistException
+    public static function DatatypeDoesNotExist(string $datatype): DatatypeDoesNotExistException
     {
         $message = "Column datatype '%s' does not exist. Practically, there should be a class named '%s'."
                  . " \n" . "You can create your own datatype(s) by extending class '%s' and register the directory that contains the datatype(s) by calling 'TypeMapper::registerTypeDirectory()'."
                 ;
         
-        return new ColumnDataypeDoesNotExistException(sprintf($message, $datatype, "Type".ucfirst($datatype), AbstractType::class));
+        return new DatatypeDoesNotExistException(sprintf($message, $datatype, "Type".ucfirst($datatype), AbstractType::class));
     }
     
-    public static function UnknownInternalDatatype(string $datatype, string $parameterName, string $annotationClass): UnknownInternalDatatypeException
+    public static function InvalidArgument(string $message)
     {
-        return new UnknownInternalDatatypeException(sprintf("Unknown internal datatype '%s' defined for parameter '%s' in Annotation '@%s'. Can only be of of these: %s", $datatype, $parameterName, $annotationClass, "['" . implode("', '", Annotation::INTERNAL_DATATYPES) . "']"));
+        return new InvalidArgumentException($message);
     }
+    
+//    public static function UnknownInternalDatatype(string $datatype, string $parameterName, string $annotationClass): UnknownInternalDatatypeException
+//    {
+//        return new UnknownInternalDatatypeException(sprintf("Unknown internal datatype '%s' defined for parameter '%s' in Annotation '@%s'. Can only be of of these: %s", $datatype, $parameterName, $annotationClass, "['" . implode("', '", Annotation::INTERNAL_DATATYPES) . "']"));
+//    }
 }
 
 ?>

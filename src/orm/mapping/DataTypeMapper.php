@@ -3,6 +3,7 @@
 namespace PPA\orm\mapping;
 
 use PPA\core\exceptions\ExceptionFactory;
+use PPA\orm\mapping\types\AbstractDatatype;
 use Symfony\Component\Finder\Finder;
 
 class DataTypeMapper
@@ -21,7 +22,7 @@ class DataTypeMapper
      */
     private static $datatypeMap = [];
 
-    public static function mapDatatype(string $datatype)
+    public static function mapDatatype(string $datatype): AbstractDatatype
     {
         if (empty(self::$datatypeMap))
         {
@@ -30,13 +31,13 @@ class DataTypeMapper
         
         if (!isset(self::$datatypeMap[$datatype]))
         {
-            throw ExceptionFactory::ColumnTypeDoesNotExist($datatype);
+            throw ExceptionFactory::DatatypeDoesNotExist($datatype);
         }
         
         return self::$datatypeMap[$datatype];
     }
     
-    private static function loadDatatypes()
+    private static function loadDatatypes(): void
     {
         $finder = new Finder();
         $finder->files()->in(self::$datatypeDirectories)->notName("Abstract*");
@@ -55,7 +56,7 @@ class DataTypeMapper
         }
     }
     
-    public static function registerTypeDirectory(string $path)
+    public static function registerTypeDirectory(string $path): void
     {
         if (!is_dir($path))
         {

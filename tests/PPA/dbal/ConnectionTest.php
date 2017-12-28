@@ -2,7 +2,6 @@
 
 namespace PPA\tests\dbal;
 
-use PHPUnit\DbUnit\DataSet\IDataSet;
 use PHPUnit\Framework\TestCase;
 use PPA\dbal\Connection;
 use PPA\dbal\DriverManager;
@@ -19,7 +18,7 @@ class ConnectionTest extends TestCase
     private $connection;
 
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if ($this->connection == null)
         {
@@ -37,7 +36,7 @@ class ConnectionTest extends TestCase
     /**
      * @covers ::isConnected
      */
-    public function testIsConnected()
+    public function testIsConnected(): void
     {
         $connection = $this->connection;
         

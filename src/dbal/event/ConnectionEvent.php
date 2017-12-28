@@ -29,7 +29,7 @@ class ConnectionEvent extends Event
      */
     private $username;
     
-    public function __construct(DriverInterface $driver, $dataSourceName, $username)
+    public function __construct(DriverInterface $driver, string $dataSourceName, string $username)
     {
         $this->driver         = $driver;
         $this->dataSourceName = $dataSourceName;
@@ -41,12 +41,12 @@ class ConnectionEvent extends Event
         return $this->driver;
     }
 
-    public function getDataSourceName()
+    public function getDataSourceName(): string
     {
         return $this->dataSourceName;
     }
 
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->username;
     }

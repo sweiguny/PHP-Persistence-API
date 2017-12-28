@@ -45,7 +45,7 @@ class UnitOfWorkTest extends TestCase
      */
     private static $originsMap;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $connection = TestDriverManager::getConnectionByGlobals();
         $connection->connect();
@@ -74,7 +74,7 @@ class UnitOfWorkTest extends TestCase
      * 
      * @dataProvider provideEntitiesToAdd
      */
-    public function testAddEntity(Serializable $entity, string $expectedException = null): Serializable
+    public function testAddEntity(Serializable $entity, string $expectedException = null): void
     {
         if ($expectedException != null)
         {
@@ -88,8 +88,6 @@ class UnitOfWorkTest extends TestCase
         
         $this->assertTrue($result1 === $entity);
         $this->assertNotNull($result2);
-        
-        return $entity;
     }
     
     /**
@@ -99,10 +97,9 @@ class UnitOfWorkTest extends TestCase
      * @covers PPA\orm\OriginsMap::remove
      * @covers PPA\orm\OriginsMap::retrieve
      * 
-     * @depends testAddEntity
      * @dataProvider provideEntitiesToRemove
      */
-    public function testRemoveEntity(Serializable $entity, string $expectedException = null)
+    public function testRemoveEntity(Serializable $entity, string $expectedException = null): void
     {
         if ($expectedException != null)
         {
@@ -118,7 +115,7 @@ class UnitOfWorkTest extends TestCase
         $this->assertNull($result2);
     }
     
-    public function provideEntitiesToAdd()
+    public function provideEntitiesToAdd(): array
     {
         $reflectionClass   = new ReflectionClass(Customer::class);
         $constructorParams = [1, "John", "Doe", "at home"];
@@ -131,7 +128,7 @@ class UnitOfWorkTest extends TestCase
         ];
     }
     
-    public function provideEntitiesToRemove()
+    public function provideEntitiesToRemove(): array
     {
         $reflectionClass   = new ReflectionClass(Customer::class);
         $constructorParams = [1, "John", "Doe", "at home"];
@@ -152,7 +149,7 @@ class UnitOfWorkTest extends TestCase
      * 
      * @depends testAddEntity
      */
-    public function testGetChangeset()
+    public function testGetChangeset(): Serializable
     {
         $entity = new Customer(2, "Jane", "Doe", "over there");
         
@@ -173,7 +170,7 @@ class UnitOfWorkTest extends TestCase
      * 
      * @depends testGetChangeset
      */
-    public function testWriteChanges(Customer $entity)
+    public function testWriteChanges(Customer $entity): void
     {
         $reflector = new ReflectionClass(self::$unitOfWork);
         

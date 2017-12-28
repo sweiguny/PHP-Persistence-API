@@ -32,7 +32,7 @@ class AnnotationLoaderTest extends TestCase
      * Set up one instance of AnnotationLoader to avoid countless intatiations in one test.
      * Make private methods accessible.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->annotationLoader = new AnnotationLoader();
         
@@ -47,7 +47,7 @@ class AnnotationLoaderTest extends TestCase
      * 
      * @dataProvider provideEntities
      */
-    public function testLoad(Serializable $entity)
+    public function testLoad(Serializable $entity): void
     {
         $annotationReader = new AnnotationReader();
         $annotationLoader = new AnnotationLoader();
@@ -80,7 +80,7 @@ class AnnotationLoaderTest extends TestCase
     /**
      * @dataProvider provideClassnames
      */
-    public function testHasNamespace(string $classname, bool $expected)
+    public function testHasNamespace(string $classname, bool $expected): void
     {
         $result = $this->methodHasNamespace->invoke($this->annotationLoader, $classname);
         

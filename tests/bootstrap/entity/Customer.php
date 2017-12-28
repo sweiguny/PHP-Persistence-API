@@ -41,7 +41,7 @@ class Customer implements Serializable
      */
     private $address;
     
-    public function __construct($customerNo, $firstname, $lastname, $address)
+    public function __construct(int $customerNo, string $firstname, string $lastname, string $address)
     {
         $this->customerNo = $customerNo;
         $this->firstname  = $firstname;
@@ -49,28 +49,27 @@ class Customer implements Serializable
         $this->address    = $address;
     }
     
-    public function getCustomerNo()
+    public function getCustomerNo(): int
     {
         return $this->customerNo;
     }
 
-    public function getFirstname()
+    public function getFirstname(): string
     {
         return $this->firstname;
     }
     
-    public function setFirstname($firstname)
+    public function setFirstname(string $firstname)
     {
         $this->firstname = $firstname;
-        return $this;
     }
 
-    public function getLastname()
+    public function getLastname(): string
     {
         return $this->lastname;
     }
 
-    public function getAddress()
+    public function getAddress(): string
     {
         return $this->address;
     }

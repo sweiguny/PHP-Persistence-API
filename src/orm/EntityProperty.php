@@ -16,7 +16,7 @@ class EntityProperty extends ReflectionProperty
 //    protected $relation;
     protected $isPrimary;
 
-    public function __construct($class, $name)
+    public function __construct(string $class, string $name)
     {
         parent::__construct($class, $name);
     }

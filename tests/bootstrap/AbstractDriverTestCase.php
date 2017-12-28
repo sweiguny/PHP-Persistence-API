@@ -15,7 +15,7 @@ abstract class AbstractDriverTestCase extends TestCase
     public abstract function getCharset(): string;
     public abstract function getDefaultOptions(): array;
     
-    public function testDriver()
+    public function testDriver(): void
     {
         $driver = $this->getDriver();
         

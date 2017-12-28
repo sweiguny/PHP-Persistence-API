@@ -12,7 +12,7 @@ class MetaDataMap
      */
     private $map = [];
     
-    public function add($classname, Analysis $metadata)
+    public function add($classname, Analysis $metadata): void
     {
         if (isset($this->map[$classname]))
         {
@@ -36,7 +36,7 @@ class MetaDataMap
         }
     }
     
-    public function remove($classname)
+    public function remove($classname): void
     {
         if (isset($this->map[$classname]))
         {

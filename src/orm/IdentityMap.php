@@ -18,7 +18,7 @@ class IdentityMap
         
     }
     
-    public function add(Serializable $entity, $key)
+    public function add(Serializable $entity, $key): void
     {
         $classname = get_class($entity);
         
@@ -48,7 +48,7 @@ class IdentityMap
         }
     }
     
-    public function remove(Serializable $entity, $key)
+    public function remove(Serializable $entity, $key): void
     {
         $classname = get_class($entity);
         

@@ -24,7 +24,7 @@ class AnnotationReaderTest extends TestCase
      */
     private $reflectionClass;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->annotationReader = new AnnotationReader();
         $this->reflectionClass  = new ReflectionClass($this->annotationReader);
@@ -37,7 +37,7 @@ class AnnotationReaderTest extends TestCase
      * 
      * @dataProvider getDocComments
      */
-    public function testFetchAnnotations(string $testname, string $docComment, array $expected)
+    public function testFetchAnnotations(string $testname, string $docComment, array $expected): void
     {
         $reflectionMethod = $this->reflectionClass->getMethod("fetchAnnotations");
         $reflectionMethod->setAccessible(true);

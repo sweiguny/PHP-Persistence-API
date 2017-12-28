@@ -27,7 +27,7 @@ class AnnotationLoader
     private static $unqualifiedClasses = [];
 
 
-    public static function addIncludePath(string $path)
+    public static function addIncludePath(string $path): void
     {
         if (is_dir($path))
         {

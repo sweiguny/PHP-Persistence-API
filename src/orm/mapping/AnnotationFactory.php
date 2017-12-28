@@ -131,7 +131,7 @@ class AnnotationFactory
         foreach ($propertyAnnotations as $parameterName => $value)
         {
             $parameter = $value["Parameter"];
-            $datatype  = $parameter["datatype"];
+            $datatype  = DataTypeMapper::mapDatatype($parameter["datatype"]);
             
             if (isset($parameter["required"]) && !isset($annotationParameters[$parameterName]))
             {
@@ -145,30 +145,7 @@ class AnnotationFactory
             
             if (isset($annotationParameters[$parameterName]))
             {
-                if (!in_array($datatype, Annotation::INTERNAL_DATATYPES))
-                {
-                    throw ExceptionFactory::UnknownInternalDatatype($datatype, $parameterName, $annotationClass);
-                }
-                
-                $result = settype($annotationParameters[$parameterName], $datatype);
-                var_dump($result);
-//                use ctype!
-                
-//                $value = $annotationParameters[$parameterName];
-//                
-//                switch ($datatype)
-//                {
-//                    case Annotation::DATATYPE_STRING:
-//                        $value = (string)$value;
-//                        break;
-//                    case Annotation::DATATYPE_INTEGER:
-//                        $value = (integer)$value;
-//                    default:
-//                        throw ExceptionFactory::UnknownInternalDatatype($datatype, $parameterName, $annotationClass);
-//                        break;
-//                }
-//                
-//                $annotationParameters[$parameterName] = $value;
+                $datatype->convertValue($annotationParameters[$parameterName]);
             }
         }
         

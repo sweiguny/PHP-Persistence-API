@@ -35,7 +35,7 @@ class TransactionManager
         $this->eventDispatcher = $eventDispatcher;
     }
     
-    public function begin()
+    public function begin(): void
     {
         if ($this->inTransaction())
         {
@@ -48,7 +48,7 @@ class TransactionManager
         $this->pdo->beginTransaction();
     }
 
-    public function commit()
+    public function commit(): void
     {
         if (!$this->inTransaction())
         {
@@ -61,7 +61,7 @@ class TransactionManager
         $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
     }
 
-    public function rollback()
+    public function rollback(): void
     {
         if (!$this->inTransaction())
         {

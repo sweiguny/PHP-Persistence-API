@@ -59,7 +59,7 @@ class AnnotationReader
         "startuml", "enduml"
     ];
     
-    public static function addIgnore(string $annotation)
+    public static function addIgnore(string $annotation): void
     {
         if (!in_array($annotation, self::$ignoredAnnotations))
         {

@@ -10,7 +10,7 @@ use PPA\orm\mapping\Annotation;
 class UnknownParametersAnnotation implements Annotation
 {
     /**
-     * @Parameter
+     * @Parameter(datatype="integer")
      * 
      * @var int
      */

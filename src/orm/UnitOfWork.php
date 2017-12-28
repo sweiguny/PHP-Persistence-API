@@ -112,25 +112,17 @@ class UnitOfWork implements EventSubscriberInterface
                     
                     $column   = $change->getProperty()->getColumn();
                     $dataType = $column->getDatatype();
-                    
-                    if (get_class($dataType) == TypeString::class)
-                    {
-                        $value = "'{$change->getToValue()}'";
-                    }
-                    else
-                    {
-                        $value = $change->getToValue();
-                    }
+                    $value    = $dataType->quoteValueForQuery($change->getToValue());
                     
                     $query .= "`{$column->getName()}` = {$value}";
                 }
                 
-                var_dump($query);
+//                var_dump($query);
             }
             
         }
         
-        die();
+//        die();
     }
 
     public function addEntity(EntityPersistEvent $event)

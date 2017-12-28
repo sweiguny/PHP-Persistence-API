@@ -15,7 +15,7 @@ class AbstractDriverTest extends TestCase
      * @covers ::__construct
      * @covers ::getOptions
      */
-    public function testOptions()
+    public function testOptions(): void
     {
         $abstractDefaultOptions = [
             PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION,

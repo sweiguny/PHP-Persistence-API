@@ -48,7 +48,7 @@ class AnnotationFactoryTest extends TestCase
      */
     private $annotationLoader;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->dummyEntity       = new class() implements Serializable {};
         $this->annotationFactory = new AnnotationFactory();
@@ -56,7 +56,7 @@ class AnnotationFactoryTest extends TestCase
         $this->annotationLoader  = new AnnotationLoader();
     }
     
-    public function testInstantiateNormal()
+    public function testInstantiateNormal(): void
     {
         $parameters = [
             "value1" => 1, // shall be set by constructor
@@ -74,7 +74,7 @@ class AnnotationFactoryTest extends TestCase
         $this->assertEquals($testAnnotation->getValue4(), 0);
     }
     
-    public function testInstatiateUnknownParameters()
+    public function testInstatiateUnknownParameters(): void
     {
         $parameters = [
             "value1" => 1,
@@ -86,7 +86,7 @@ class AnnotationFactoryTest extends TestCase
         $this->annotationFactory->instantiate($this->dummyEntity, UnknownParametersAnnotation::class, $parameters);
     }
     
-    public function testRequiredParameter()
+    public function testRequiredParameter(): void
     {
         $parameters = [
             "value1" => 1,
@@ -98,7 +98,7 @@ class AnnotationFactoryTest extends TestCase
         $this->annotationFactory->instantiate($this->dummyEntity, TestAnnotation::class, $parameters);
     }
     
-    public function testDefaults()
+    public function testDefaults(): void
     {
         $entity = new TestDefaultsEntity();
         $fqcn   = explode("\\", get_class($entity));
@@ -111,14 +111,14 @@ class AnnotationFactoryTest extends TestCase
         $this->assertEquals($entity->getColumn(), $propertyAnnotations["column"][Column::class]->getName());
     }
     
-    public function testWrongTargetProperty()
+    public function testWrongTargetProperty(): void
     {
         $this->expectException(WrongTargetPropertyException::class);
         
         $this->annotationLoader->load($this->annotationReader->read(new TargetClassWrong()));
     }
     
-    public function testWrongTargetClass()
+    public function testWrongTargetClass(): void
     {
         $this->expectException(WrongTargetClassException::class);
         
