@@ -9,7 +9,7 @@ class TypeInteger extends AbstractDatatype
         parent::__construct(self::TYPE_INTEGER);
     }
     
-    protected function doConversion(&$value)
+    protected function doConversion(&$value): void
     {
         settype($value, $this->getName());
     }

@@ -9,6 +9,7 @@ use PPA\core\exceptions\logic\NotExistentInIdentityMapException;
 use PPA\dbal\TransactionManager;
 use PPA\orm\entity\Serializable;
 use PPA\orm\EntityManager;
+use PPA\orm\event\entityManagement\FlushEvent;
 use PPA\orm\IdentityMap;
 use PPA\orm\OriginsMap;
 use PPA\orm\UnitOfWork;
@@ -176,7 +177,9 @@ class UnitOfWorkTest extends TestCase
         
         $writeChanges = $reflector->getMethod("writeChanges");
         $writeChanges->setAccessible(true);
-        $writeChanges->invoke(self::$unitOfWork, new \PPA\orm\event\entityManagement\FlushEvent(self::$entityManager, $entity));
+        $numStmts = $writeChanges->invoke(self::$unitOfWork, new FlushEvent(self::$entityManager, $entity));
+        
+        $this->assertEquals(1, $numStmts);
     }
     
     

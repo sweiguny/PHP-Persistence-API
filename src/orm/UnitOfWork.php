@@ -91,20 +91,41 @@ class UnitOfWork implements EventSubscriberInterface
         return $changeSet;
     }
     
-    protected function writeChanges(FlushEvent $event)
+    protected function writeChanges(FlushEvent $event): int
+    {
+        $statements = $this->gatherStatements();
+        $this->entityManager->getTransactionManager()->getConnection()->getPdo();
+        
+        foreach ($statements as $statement)
+        {
+            /* @var $statement \Latitude\QueryBuilder\Statement */
+            $statement->sql();
+            
+        }
+    }
+
+    private function gatherStatements(): array
     {
         $managedEntities = $this->identityMap->dumpMapByObjectId();
+        $queryBuilder    = new QueryBuilder($this->entityManager->getTransactionManager()->getConnection()->getDriver());
+        $statements      = [];
         
         foreach ($managedEntities as $oid => $entity)
         {
             /* @var $entity Serializable */
             
-            $analysis   = $this->analyser->getMetaData($entity);
-            $statements = (new QueryBuilder($this->entityManager->getTransactionManager()->getConnection()->getDriver()))->createStatementsForChangeSet($entity, $analysis);
+            $changeSet = $this->getChangeSet($entity);
+            $analysis  = $this->analyser->getMetaData($entity);
             
+            if (!empty($changeSet))
+            {
+                $statements[] = $queryBuilder->createStatementsForChangeSet($entity, $analysis, $changeSet);
+            }
         }
         
-//        die();
+        var_dump($statements);
+        
+        return $statements;
     }
 
     public function addEntity(EntityPersistEvent $event)

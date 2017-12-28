@@ -7,6 +7,7 @@ use Latitude\QueryBuilder\QueryFactory;
 use PPA\dbal\drivers\DriverInterface;
 use PPA\orm\Analysis;
 use PPA\orm\entity\Change;
+use PPA\orm\entity\ChangeSet;
 use PPA\orm\entity\Serializable;
 
 class QueryBuilder
@@ -26,32 +27,27 @@ class QueryBuilder
         $this->factory = new QueryFactory($this->driver->getDriverName());
     }
     
-    public function createStatementsForChangeSet(Serializable $entity, Analysis $analysis): array
+    public function createStatementsForChangeSet(Serializable $entity, Analysis $analysis, ChangeSet $changeSet): string
     {
-        $map = [];
-        
-//        $analysis  = $this->analyser->getMetaData($entity);
-        $changeSet = $this->getChangeSet($entity);
+        $columnList = [];
+        $primProp   = $analysis->getPrimaryProperty();
+        $primValue  = $primProp->getColumn()->getDatatype()->quoteValueForQuery($primProp->getValue($entity));
         
         foreach ($changeSet as $change)
         {
             /* @var $change Change */
 
-            $primProp = $analysis->getPrimaryProperty();
             $column   = $change->getProperty()->getColumn();
             $dataType = $column->getDatatype();
             $value    = $dataType->quoteValueForQuery($change->getToValue());
-
-//            $query .= "`{$column->getName()}` = {$value}";
             
-            
-            $map[$column->getName()] = $value;
+            $columnList[$column->getName()] = $value;
         }
         
-        $statement = $this->factory->update($analysis->getTableName(), $map);
-        $statement->where(Conditions::make("{$primProp->getName()} = ?", $primProp->getValue($entity)));
+        $statement = $this->factory->update($analysis->getTableName(), $columnList);
+        $statement->where(Conditions::make("{$primProp->getName()} = ?", $primValue));
 
-        var_dump($statement->sql());
+        return $statement;
     }
     
 }

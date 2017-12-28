@@ -54,6 +54,7 @@ class EntityManager implements EventSubscriberInterface
         $this->unitOfWork         = new UnitOfWork($this);
         $this->repositoryFactory  = new RepositoryFactory($this->unitOfWork);
         
+        $this->eventDispatcher->addSubscriber($this);
         $this->eventDispatcher->addSubscriber($this->unitOfWork);
     }
     

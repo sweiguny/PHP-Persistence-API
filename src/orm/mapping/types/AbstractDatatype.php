@@ -34,7 +34,7 @@ abstract class AbstractDatatype
 
     public abstract function proveValue($value): bool;
     
-    protected abstract function doConversion(&$value);
+    protected abstract function doConversion(&$value): void;
     
     public function getName(): string
     {

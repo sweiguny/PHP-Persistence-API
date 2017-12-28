@@ -9,7 +9,7 @@ class TypeString extends AbstractDatatype
         parent::__construct(self::TYPE_STRING);
     }
 
-    protected function doConversion(&$value)
+    protected function doConversion(&$value): void
     {
         // Nothing to do here, because we except a string
     }
