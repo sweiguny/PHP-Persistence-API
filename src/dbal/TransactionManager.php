@@ -79,6 +79,11 @@ class TransactionManager
         return (bool) $this->pdo->inTransaction();
     }
     
+    public function getConnection(): Connection
+    {
+        return $this->connection;
+    }
+    
 }
 
 ?>

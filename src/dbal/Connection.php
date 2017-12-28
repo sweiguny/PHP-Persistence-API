@@ -117,6 +117,11 @@ class Connection
         
         return $this->pdo;
     }
+    
+    public function getDriver(): AbstractDriver
+    {
+        return $this->driver;
+    }
 
     public function getHostname(): string
     {

@@ -3,13 +3,13 @@
 namespace PPA\orm;
 
 use Exception;
+use PPA\dbal\query\QueryBuilder;
 use PPA\orm\entity\Change;
 use PPA\orm\entity\ChangeSet;
 use PPA\orm\entity\Serializable;
 use PPA\orm\event\entityManagement\EntityPersistEvent;
 use PPA\orm\event\entityManagement\EntityRemoveEvent;
 use PPA\orm\event\entityManagement\FlushEvent;
-use PPA\orm\mapping\types\TypeString;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class UnitOfWork implements EventSubscriberInterface
@@ -99,26 +99,8 @@ class UnitOfWork implements EventSubscriberInterface
         {
             /* @var $entity Serializable */
             
-            $analysis  = $this->analyser->getMetaData($entity);
-            $changeSet = $this->getChangeSet($entity);
-            
-            if (!empty($changeSet))
-            {
-                $query = "UPDATE `{$analysis->getTableName()}` SET ";
-                
-                foreach ($changeSet as $change)
-                {
-                    /* @var $change Change */
-                    
-                    $column   = $change->getProperty()->getColumn();
-                    $dataType = $column->getDatatype();
-                    $value    = $dataType->quoteValueForQuery($change->getToValue());
-                    
-                    $query .= "`{$column->getName()}` = {$value}";
-                }
-                
-//                var_dump($query);
-            }
+            $analysis   = $this->analyser->getMetaData($entity);
+            $statements = (new QueryBuilder($this->entityManager->getTransactionManager()->getConnection()->getDriver()))->createStatementsForChangeSet($entity, $analysis);
             
         }
         

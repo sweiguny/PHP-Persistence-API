@@ -4,6 +4,7 @@ namespace PPA\orm;
 
 use PPA\core\EventDispatcher;
 use PPA\dbal\TransactionManager;
+use PPA\orm\entity\ChangeSet;
 use PPA\orm\entity\Serializable;
 use PPA\orm\event\entityManagement\EntityPersistEvent;
 use PPA\orm\event\entityManagement\EntityRemoveEvent;
@@ -75,7 +76,7 @@ class EntityManager implements EventSubscriberInterface
         $this->eventDispatcher->dispatch(EntityRemoveEvent::NAME, $event);
     }
     
-    public function getChangeSet(Serializable $entity)
+    public function getChangeSet(Serializable $entity): ChangeSet
     {
         return $this->unitOfWork->getChangeSet($entity);
     }
@@ -88,6 +89,11 @@ class EntityManager implements EventSubscriberInterface
     private function doFlush(TransactionCommitEvent $event): void
     {
         $this->flush();
+    }
+    
+    public function getTransactionManager(): TransactionManager
+    {
+        return $this->transactionManager;
     }
 
 }
