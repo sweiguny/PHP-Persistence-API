@@ -3,7 +3,11 @@
 namespace PPA\orm;
 
 use Exception;
-use PPA\dbal\query\QueryBuilder;
+use Latitude\QueryBuilder\Statement;
+use PPA\dbal\query\builder\parts\Condition;
+use PPA\dbal\query\builder\parts\On;
+use PPA\dbal\query\builder\parts\SelectList;
+use PPA\dbal\query\builder\QueryBuilder;
 use PPA\orm\entity\Change;
 use PPA\orm\entity\ChangeSet;
 use PPA\orm\entity\Serializable;
@@ -96,12 +100,16 @@ class UnitOfWork implements EventSubscriberInterface
         $statements = $this->gatherStatements();
         $this->entityManager->getTransactionManager()->getConnection()->getPdo();
         
+//        \Doctrine\ORM\Repository\RepositoryFactory::class;
+        
         foreach ($statements as $statement)
         {
-            /* @var $statement \Latitude\QueryBuilder\Statement */
-            $statement->sql();
+            /* @var $statement Statement */
+            echo $statement->sql();
             
         }
+        
+        return count($statements);
     }
 
     private function gatherStatements(): array
@@ -123,7 +131,7 @@ class UnitOfWork implements EventSubscriberInterface
             }
         }
         
-        var_dump($statements);
+//        var_dump($statements);
         
         return $statements;
     }

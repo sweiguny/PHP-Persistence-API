@@ -20,6 +20,9 @@ use PPA\core\exceptions\logic\UnknownFetchTypeException;
 use PPA\core\exceptions\logic\UnknownParametersException;
 use PPA\core\exceptions\logic\WrongTargetClassException;
 use PPA\core\exceptions\logic\WrongTargetPropertyException;
+use PPA\core\exceptions\runtime\CollectionStateException;
+use PPA\core\exceptions\runtime\InvalidQueryBuilderStateException;
+use PPA\core\exceptions\runtime\InvalidQueryBuilderTypeException;
 use PPA\orm\entity\Serializable;
 use PPA\orm\mapping\Annotation;
 use PPA\orm\mapping\types\AbstractType;
@@ -119,9 +122,24 @@ final class ExceptionFactory
         return new DatatypeDoesNotExistException(sprintf($message, $datatype, "Type".ucfirst($datatype), AbstractType::class));
     }
     
-    public static function InvalidArgument(string $message)
+    public static function InvalidArgument(string $message): InvalidArgumentException
     {
         return new InvalidArgumentException($message);
+    }
+    
+    public static function InvalidQueryBuilderState(int $requestedState, int $currentState, string $additionalMessage = null): InvalidQueryBuilderStateException
+    {
+        return new InvalidQueryBuilderStateException(sprintf("QueryBuilder is not in required state '%s', but is '%s'.", $requestedState, $currentState) . ($additionalMessage == null ? "" : " " . $additionalMessage));
+    }
+    
+    public static function InvalidQueryBuilderType(string $requestedType, string $currentType): InvalidQueryBuilderTypeException
+    {
+        return new InvalidQueryBuilderTypeException(sprintf("QueryBuilder does not work on required type '%s', but on '%s'.", $requestedType, $currentType));
+    }
+    
+    public static function CollectionState(string $message): CollectionStateException
+    {
+        return new CollectionStateException($message);
     }
     
 //    public static function UnknownInternalDatatype(string $datatype, string $parameterName, string $annotationClass): UnknownInternalDatatypeException
