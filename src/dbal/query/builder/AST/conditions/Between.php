@@ -6,7 +6,6 @@ use PPA\dbal\query\builder\AST\expressions\Expression;
 use PPA\dbal\query\builder\AST\expressions\NamedParameter;
 use PPA\dbal\query\builder\AST\expressions\sources\Literal;
 use PPA\dbal\query\builder\AST\expressions\UnnamedParameter;
-use PPA\dbal\query\builder\CriteriaBuilder;
 use PPA\dbal\statement\SelectStatement;
 
 class Between extends Expression
@@ -20,21 +19,21 @@ class Between extends Expression
         $this->parent = $parent;
     }
 
-    public function andLiteral($to): CriteriaBuilder
+    public function andLiteral($to): CriteriaCollection
     {
         $this->to = new Literal($to, gettype($to));
         
         return $this->parent->end();
     }
 
-    public function andSubquery(SelectStatement $to): CriteriaBuilder
+    public function andSubquery(SelectStatement $to): CriteriaCollection
     {
         $this->to = $to;
         
         return $this->parent->end();
     }
 
-    public function andParameter(string $name = null): CriteriaBuilder
+    public function andParameter(string $name = null): CriteriaCollection
     {
         $this->to = $name == null ? new UnnamedParameter() : new NamedParameter($name);;
         

@@ -9,7 +9,7 @@ class NamedParameter extends UnnamedParameter
     
     public function __construct($name)
     {
-        parent::__construct();
+//        parent::__construct();
         
         $this->name = $name;
     }

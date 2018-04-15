@@ -1,6 +1,6 @@
 <?php
 
-namespace PPA\dbal\query\builder\AST\expressions\sources;
+namespace PPA\dbal\query\builder\AST\expressions\properties;
 
 use PPA\orm\mapping\DataTypeMapper;
 use PPA\orm\mapping\types\AbstractDatatype;

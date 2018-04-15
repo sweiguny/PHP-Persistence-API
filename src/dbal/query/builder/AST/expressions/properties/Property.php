@@ -1,11 +1,16 @@
 <?php
 
-namespace PPA\dbal\query\builder\AST\expressions\sources;
+namespace PPA\dbal\query\builder\AST\expressions\properties;
 
 use PPA\dbal\query\builder\AST\expressions\Alias;
 use PPA\dbal\query\builder\AST\expressions\Expression;
 
-abstract class Source extends Expression
+/**
+ * Description of Property
+ *
+ * @author siwe
+ */
+abstract class Property extends Expression
 {
     use Alias;
     
@@ -13,7 +18,6 @@ abstract class Source extends Expression
     {
         $this->alias = $alias;
     }
-
 }
 
 ?>

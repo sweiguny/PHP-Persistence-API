@@ -8,6 +8,7 @@ use PPA\dbal\query\builder\AST\conditions\Criteria;
 use PPA\dbal\query\builder\AST\conditions\CriteriaCollection;
 use PPA\dbal\query\builder\AST\LogicalOperator;
 use PPA\dbal\query\builder\AST\SQLElementInterface;
+use PPA\dbal\statements\DQL\helper\Helper1;
 
 class CriteriaBuilder implements SQLElementInterface
 {
@@ -28,28 +29,58 @@ class CriteriaBuilder implements SQLElementInterface
     
     private $parent;
 
-    public function __construct(DriverInterface $driver, QueryBuilder $queryBuilder)
+    public function __construct(DriverInterface $driver/*, \PPA\dbal\statements\DQL\helper\BaseHelper $helper*/)
     {
         $this->driver = $driver;
-        $this->parent = $queryBuilder;
+//        $this->parent = $helper;
         
         $this->initialCriteriaCollection = new CriteriaCollection($this);
 //        $this->currentCriteriaCollection = $this->initialCriteriaCollection;
     }
     
-    public function with($expression): Criteria
+    public function withParameter(string $name = null): Criteria
     {
-        return $this->initialCriteriaCollection->with($expression);
+        return $this->initialCriteriaCollection->withParameter($name);
     }
     
-    public function andWith($expression): Criteria
+    public function andWithParameter(string $name = null): Criteria
     {
-        return $this->initialCriteriaCollection->andWith($expression);
+        return $this->initialCriteriaCollection->andWithParameter($name);
     }
     
-    public function orWith($expression): Criteria
+    public function orWithParameter(string $name = null): Criteria
     {
-        return $this->initialCriteriaCollection->orWith($expression);
+        return $this->initialCriteriaCollection->orWithParameter($name);
+    }
+    
+    public function withField(string $fieldName, string $tableOrAliasIndicator = null): Criteria
+    {
+        return $this->initialCriteriaCollection->withField($fieldName, $tableOrAliasIndicator);
+    }
+    
+    public function andWithField(string $fieldName, string $tableOrAliasIndicator = null): Criteria
+    {
+        return $this->initialCriteriaCollection->andWithField($fieldName, $tableOrAliasIndicator);
+    }
+    
+    public function orWithField(string $fieldName, string $tableOrAliasIndicator = null): Criteria
+    {
+        return $this->initialCriteriaCollection->orWithField($fieldName, $tableOrAliasIndicator);
+    }
+    
+    public function withLiteral($literal): Criteria
+    {
+        return $this->initialCriteriaCollection->withLiteral($literal);
+    }
+    
+    public function andWithLiteral($literal): Criteria
+    {
+        return $this->initialCriteriaCollection->andWithLiteral($literal);
+    }
+    
+    public function orWithLiteral($literal): Criteria
+    {
+        return $this->initialCriteriaCollection->orWithLiteral($literal);
     }
     
     public function group(): CriteriaCollection
@@ -97,14 +128,18 @@ class CriteriaBuilder implements SQLElementInterface
         return $this->currentCriteriaCollection;
     }
     
-    public function end(): QueryBuilder
+    public function end(): Helper1
     {
 //        if (!$this->initialCriteriaCollection->isEmpty())
 //        {
 //            $this->ASTCollection = array_merge($this->initialCriteriaCollection->export(), $this->ASTCollection);
 //        }
+        $helper = new Helper1($this->driver);
         
-        return $this->parent->end();
+        $this->ASTCollection[] = $helper;
+        
+        return $helper;
+//        return $this->parent->end();
     }
     
     public function isEmpty(): bool

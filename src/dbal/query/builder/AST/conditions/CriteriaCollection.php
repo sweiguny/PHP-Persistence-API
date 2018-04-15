@@ -3,10 +3,13 @@
 namespace PPA\dbal\query\builder\AST\conditions;
 
 use PPA\core\exceptions\ExceptionFactory;
+use PPA\dbal\query\builder\AST\expressions\FieldReference;
+use PPA\dbal\query\builder\AST\expressions\NamedParameter;
+use PPA\dbal\query\builder\AST\expressions\properties\Literal;
+use PPA\dbal\query\builder\AST\expressions\UnnamedParameter;
 use PPA\dbal\query\builder\AST\LogicalOperator;
 use PPA\dbal\query\builder\AST\SQLElementInterface;
 use PPA\dbal\query\builder\CriteriaBuilder;
-use PPA\dbal\query\builder\QueryBuilder;
 
 class CriteriaCollection implements SQLElementInterface
 {
@@ -27,17 +30,19 @@ class CriteriaCollection implements SQLElementInterface
         $this->state  = self::STATE_CLEAN;
     }
     
-    public function with($expression): Criteria
+    public function withParameter(string $name = null): Criteria
     {
         if (!$this->isEmpty())
         {
             throw ExceptionFactory::CollectionState("Collection is not empty. Therefore please use methods andWith() or orWith().");
         }
         
-        return $this->processExpression($expression, self::STATE_CLEAN, self::STATE_DIRTY);
+        $this->ASTCollection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
+        
+        return $this->postProcess(self::STATE_CLEAN, self::STATE_DIRTY);
     }
     
-    public function andWith($expression): Criteria
+    public function andWithParameter(string $name = null): Criteria
     {
         if ($this->isEmpty())
         {
@@ -45,11 +50,12 @@ class CriteriaCollection implements SQLElementInterface
         }
         
         $this->ASTCollection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
+        $this->ASTCollection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
         
-        return $this->processExpression($expression, self::STATE_CLEAN, self::STATE_DIRTY);
+        return $this->postProcess(self::STATE_CLEAN, self::STATE_DIRTY);
     }
     
-    public function orWith($expression): Criteria
+    public function orWithParameter(string $name = null): Criteria
     {
         if ($this->isEmpty())
         {
@@ -57,22 +63,96 @@ class CriteriaCollection implements SQLElementInterface
         }
         
         $this->ASTCollection[] = new LogicalOperator(LogicalOperator::DISJUNCTION);
+        $this->ASTCollection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
         
-        return $this->processExpression($expression, self::STATE_CLEAN, self::STATE_DIRTY);
+        return $this->postProcess(self::STATE_CLEAN, self::STATE_DIRTY);
     }
     
-    private function processExpression($expression, int $demandedState, int $newState): Criteria
+    public function withField(string $fieldName, string $tableOrAliasIndicator = null): Criteria
     {
-        if ($this->state != $demandedState)
+        if (!$this->isEmpty())
         {
-            throw ExceptionFactory::CollectionState("CriteriaCollection is not in state '{$demandedState}', but is '{$this->state}'.");
+            throw ExceptionFactory::CollectionState("Collection is not empty. Therefore please use methods andWith() or orWith().");
         }
         
+        $this->ASTCollection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
+        
+        return $this->postProcess(self::STATE_CLEAN, self::STATE_DIRTY);
+    }
+    
+    public function andWithField(string $fieldName, string $tableOrAliasIndicator = null): Criteria
+    {
+        if ($this->isEmpty())
+        {
+            throw ExceptionFactory::CollectionState("Collection is empty. Therefore please use method with().");
+        }
+        
+        $this->ASTCollection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
+        $this->ASTCollection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
+        
+        return $this->postProcess(self::STATE_CLEAN, self::STATE_DIRTY);
+    }
+    
+    public function orWithField(string $fieldName, string $tableOrAliasIndicator = null): Criteria
+    {
+        if ($this->isEmpty())
+        {
+            throw ExceptionFactory::CollectionState("Collection is empty. Therefore please use method with().");
+        }
+        
+        $this->ASTCollection[] = new LogicalOperator(LogicalOperator::DISJUNCTION);
+        $this->ASTCollection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
+        
+        return $this->postProcess(self::STATE_CLEAN, self::STATE_DIRTY);
+    }
+    
+    public function withLiteral($literal): Criteria
+    {
+        if (!$this->isEmpty())
+        {
+            throw ExceptionFactory::CollectionState("Collection is not empty. Therefore please use methods andWith() or orWith().");
+        }
+        
+        $this->ASTCollection[] = new Literal($literal, gettype($literal));
+        
+        return $this->postProcess(self::STATE_CLEAN, self::STATE_DIRTY);
+    }
+    
+    public function andWithLiteral($literal): Criteria
+    {
+        if ($this->isEmpty())
+        {
+            throw ExceptionFactory::CollectionState("Collection is empty. Therefore please use method with().");
+        }
+        
+        $this->ASTCollection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
+        $this->ASTCollection[] = new Literal($literal, gettype($literal));
+        
+        return $this->postProcess(self::STATE_CLEAN, self::STATE_DIRTY);
+    }
+    
+    public function orWithLiteral($literal): Criteria
+    {
+        if ($this->isEmpty())
+        {
+            throw ExceptionFactory::CollectionState("Collection is empty. Therefore please use method with().");
+        }
+        
+        $this->ASTCollection[] = new LogicalOperator(LogicalOperator::DISJUNCTION);
+        $this->ASTCollection[] = new Literal($literal, gettype($literal));
+        
+        return $this->postProcess(self::STATE_CLEAN, self::STATE_DIRTY);
+    }
+    
+    private function postProcess(int $demandedState, int $newState): Criteria
+    {
+//        if ($this->state != $demandedState)
+//        {
+//            throw ExceptionFactory::CollectionState("CriteriaCollection is not in state '{$demandedState}', but is '{$this->state}'. Current SQL: " . $this->toString());
+//        }
+        
         $this->state = $newState;
-        
-        $this->ASTCollection[] = QueryBuilder::processExpression($expression);
-        
-        $criteria = new Criteria($this);
+        $criteria    = new Criteria($this);
         
         $this->ASTCollection[] = $criteria;
 

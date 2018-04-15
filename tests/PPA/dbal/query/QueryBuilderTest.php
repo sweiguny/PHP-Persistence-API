@@ -40,19 +40,29 @@ class QueryBuilderTest extends TestCase
         $qb = new QueryBuilder(new MySQLDriver());
         $qb->select()->fromTable("customer", "c")
                 ->join("order", "o")->on()
-                    ->with("age")->betweenLiteral(10)->andParameter()
-                    ->andWith("x")->inLiterals([1,2,3])
-                    ->andWith("c.id")->equals("o.cid")
-                    ->end()
+                    ->withField("age", "c")->betweenLiteral(10)->andParameter()
+                    ->andWithField("order", "x")->inLiterals([1,2,3])
+                    ->andWithField("id", "c")->equals("cid", "o")
+                    ->end()->end()
                 ->where()
-                    ->with("'hudriwudri'")->equals("'hudriwudri'")
-                    ->end();
+                    ->withLiteral("hudriwudri")->equals("hudriwudri")
+                    ->andWithParameter()->equals("test")
+                    ->andWithParameter("nameIT")->equals("test2")
+                    ->end()
+                    ->group()
+                        ->withField("test")->equals(10)
+                        ->orWithLiteral(100)->betweenParameter()->andParameter()
+                        ->end()
+                    
+                    ->end()
                 ;
+        
+//        $qb->select()->fromTable($tableName)->where()->end();
         
         $sql = $qb->sql();
         
         
-        echo "******" . $sql;
+        echo "******\n\n\n" . $sql . "\n\n\n";
     }
 
 }

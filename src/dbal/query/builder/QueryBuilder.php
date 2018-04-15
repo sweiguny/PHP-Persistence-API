@@ -2,19 +2,19 @@
 
 namespace PPA\dbal\query\builder;
 
-use Exception;
 use Latitude\QueryBuilder\Conditions;
 use Latitude\QueryBuilder\QueryFactory;
 use Latitude\QueryBuilder\Statement;
 use PPA\core\exceptions\ExceptionFactory;
 use PPA\dbal\drivers\DriverInterface;
 use PPA\dbal\query\builder\AST\expressions\Expression;
-use PPA\dbal\query\builder\AST\expressions\sources\AsteriskWildcard;
-use PPA\dbal\query\builder\AST\expressions\sources\Field;
-use PPA\dbal\query\builder\AST\expressions\sources\Literal;
-use PPA\dbal\query\builder\AST\expressions\sources\Source;
+use PPA\dbal\query\builder\AST\expressions\properties\AsteriskWildcard;
+use PPA\dbal\query\builder\AST\expressions\properties\Field;
+use PPA\dbal\query\builder\AST\expressions\properties\Literal;
+use PPA\dbal\query\builder\AST\expressions\properties\Property;
 use PPA\dbal\query\builder\AST\expressions\UnnamedParameter;
 use PPA\dbal\query\builder\sub\SelectBuilder;
+use PPA\dbal\statements\DQL\SelectStatement;
 use PPA\orm\Analysis;
 use PPA\orm\entity\Change;
 use PPA\orm\entity\ChangeSet;
@@ -47,7 +47,7 @@ class QueryBuilder
 
     private $type;
 
-    private $ASTCollection;
+    private $ASTCollection = [];
 
 
     /**
@@ -62,12 +62,12 @@ class QueryBuilder
         $this->factory = new QueryFactory($this->driver->getDriverName());
         $this->state   = self::STATE_INITIAL;
         
-        $this->ASTCollection = [
-            "select" => [],
-            "from"   => [],
-            "join"   => [],
-            "where"  => []
-        ];
+//        $this->ASTCollection = [
+//            "select" => [],
+//            "from"   => [],
+//            "join"   => [],
+//            "where"  => []
+//        ];
     }
     
 //    public function buildSelect(string $fromTable, parts\SelectList $selectList = null, string $alias = null): self
@@ -195,123 +195,56 @@ class QueryBuilder
         return $this->type == self::TYPE_DELETE;
     }
     
-    public function select(Source ...$sources): self
+    public function select(Property ...$properties): SelectStatement
     {
         if (!$this->stateIsInitial())
         {
             throw ExceptionFactory::InvalidQueryBuilderState(self::STATE_INITIAL, $this->state);
         }
         
-        if (empty($sources))
+        if (empty($properties))
         {
-            $sources[] = new AsteriskWildcard();
+            $properties[] = new AsteriskWildcard();
         }
+        
+        
+        $selectStatement = new SelectStatement($this->driver, ...$properties);
+        
+        $this->ASTCollection[] = $selectStatement;
         
         $this->setTypeSelet();
         $this->setStateDirty();
-        $this->ASTCollection["select"] = $sources;
+//        $this->ASTCollection["select"] = $sources;
         
-        return $this;
+        return $selectStatement;
     }
     
-    public function fromTable(string $tableName, string $alias = null): self
-    {
-        if (!$this->typeIsSelect())
-        {
-            throw ExceptionFactory::InvalidQueryBuilderType(self::TYPE_SELECT, $this->type);
-        }
-        if (!$this->stateIsDirty())
-        {
-            throw ExceptionFactory::InvalidQueryBuilderState(self::STATE_DIRTY, $this->type, "Method from() can only be called after select().");
-        }
-        
-        $this->setStateClean();
-        $this->ASTCollection["from"] = [$tableName, $alias];
-        
-        return $this;
-    }
-    
-    public function fromSubquery(\PPA\dbal\statement\SelectStatement $stmt, string $alias = null): self
-    {
-        if (!$this->typeIsSelect())
-        {
-            throw ExceptionFactory::InvalidQueryBuilderType(self::TYPE_SELECT, $this->type);
-        }
-        if (!$this->stateIsDirty())
-        {
-            throw ExceptionFactory::InvalidQueryBuilderState(self::STATE_DIRTY, $this->type, "Method from() can only be called after select().");
-        }
-        
-        $this->setStateClean();
-        $this->ASTCollection["from"] = [$stmt, $alias];
-        
-        return $this;
-    }
-    
-    public function join(string $joinTable, string $alias = null): self
-    {
-        $this->ASTCollection["join"][] = [$joinTable, $alias];
-        
-        return $this;
-    }
-    
-    public function on(): CriteriaBuilder
-    {
-        if (!$this->stateIsClean())
-        {
-            throw ExceptionFactory::CollectionState("QueryBuilder is not in a clean state.");
-        }
-        
-        $this->setStateDirty();
-        $criteriaBuilder = new CriteriaBuilder($this->driver, $this);
-
-//        print_r($this->ASTCollection["join"]);
-        $this->ASTCollection["join"][count($this->ASTCollection["join"]) - 1][] = $criteriaBuilder;
-//        print_r($this->ASTCollection["join"]);
-
-        return $criteriaBuilder;
-    }
-    
-    public function where(): CriteriaBuilder
-    {
-        if (!$this->stateIsClean())
-        {
-            throw ExceptionFactory::CollectionState("QueryBuilder is not in a clean state.");
-        }
-        
-        $this->setStateDirty();
-        $criteriaBuilder = new CriteriaBuilder($this->driver, $this);
-
-        $this->ASTCollection["where"] = $criteriaBuilder;
-
-        return $criteriaBuilder;
-    }
-    
-    public function end(): self
-    {
-        if (!$this->stateIsDirty())
-        {
-            throw ExceptionFactory::CollectionState("QueryBuilder is not in a dirty state.");
-        }
-        
-        $this->setStateClean();
-        
-        return $this;
-    }
+//    
+//    public function end(): self
+//    {
+//        if (!$this->stateIsDirty())
+//        {
+//            throw ExceptionFactory::CollectionState("QueryBuilder is not in a dirty state.");
+//        }
+//        
+//        $this->setStateClean();
+//        
+//        return $this;
+//    }
     
     public function sql(): string
     {
-        if (!$this->stateIsClean())
-        {
-            throw ExceptionFactory::InvalidQueryBuilderState(self::STATE_CLEAN, $this->state);
-        }
+//        if (!$this->stateIsClean())
+//        {
+//            throw ExceptionFactory::InvalidQueryBuilderState(self::STATE_CLEAN, $this->state);
+//        }
         
         if ($this->typeIsSelect())
         {
-            $from   = $this->ASTCollection["from"];
-            $select = $this->ASTCollection["select"];
-            $where  = $this->ASTCollection["where"];
-            $string = "SELECT ";
+//            $from   = $this->ASTCollection["from"];
+//            $select = $this->ASTCollection["select"];
+//            $where  = $this->ASTCollection["where"];
+//            $string = "SELECT ";
             
 //            print_r($from);
 //            foreach ($this->ASTCollection["select"] as $element)
@@ -324,29 +257,29 @@ class QueryBuilder
 //            }
             
             
-            array_walk($select, function(&$element) {
+            array_walk($this->ASTCollection, function(&$element) {
                 $element = $element->toString();
             });
 //            print_r($select);
-            $string .= implode(", ", $select);
+            $string = implode(" ", $this->ASTCollection);
             
-            $string .= " FROM `{$from[0]}`" . ($from[1] == null ? : "" . " AS '{$from[1]}'");
+//            $string .= " FROM `{$from[0]}`" . ($from[1] == null ? : "" . " AS '{$from[1]}'");
             
             
-            foreach ($this->ASTCollection["join"] as $element)
-            {
-                $string .= " JOIN `{$element[0]}`" . ($element[1] == null ? "" : " AS '{$element[1]}'");
-                
-                if (isset($element[2]))
-                {
-                    $string .= " ON(" . $element[2]->toString() . ")";
-                }
-            }
-            
-            if (!empty($where))
-            {
-                $string .= " WHERE " . $where->toString();
-            }
+//            foreach ($this->ASTCollection["join"] as $element)
+//            {
+//                $string .= " JOIN `{$element[0]}`" . ($element[1] == null ? "" : " AS '{$element[1]}'");
+//                
+//                if (isset($element[2]))
+//                {
+//                    $string .= " ON(" . $element[2]->toString() . ")";
+//                }
+//            }
+//            
+//            if (!empty($where))
+//            {
+//                $string .= " WHERE " . $where->toString();
+//            }
         }
         
         return $string;

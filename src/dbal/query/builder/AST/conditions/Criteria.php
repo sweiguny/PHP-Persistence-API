@@ -3,7 +3,7 @@
 namespace PPA\dbal\query\builder\AST\conditions;
 
 use PPA\dbal\query\builder\AST\expressions\NamedParameter;
-use PPA\dbal\query\builder\AST\expressions\sources\Literal;
+use PPA\dbal\query\builder\AST\expressions\properties\Literal;
 use PPA\dbal\query\builder\AST\expressions\UnnamedParameter;
 use PPA\dbal\query\builder\AST\LogicalOperator;
 use PPA\dbal\query\builder\AST\Operator;
@@ -64,12 +64,12 @@ class Criteria implements SQLElementInterface
         return $between;
     }
     
-    public function equals($expression): CriteriaBuilder
+    public function equals($expression): CriteriaCollection
     {
         $this->ASTCollection[] = new Operator(Operator::EQUALS);
         $this->ASTCollection[] = QueryBuilder::processExpression($expression);
         
-        return $this->parent->end();
+        return $this->end();
     }
     
     public function lowerEquals($expression): CriteriaBuilder
@@ -82,7 +82,7 @@ class Criteria implements SQLElementInterface
         
     }
     
-    public function inLiterals(array $literals): CriteriaBuilder
+    public function inLiterals(array $literals): CriteriaCollection
     {
         foreach ($literals as &$literal)
         {
@@ -92,14 +92,14 @@ class Criteria implements SQLElementInterface
         
         $this->ASTCollection[] = new InLiterals($literals);
         
-        return $this->parent->end();
+        return $this->end();
     }
     
-    public function inSubquery(SelectStatement $subquery): CriteriaBuilder
+    public function inSubquery(SelectStatement $subquery): CriteriaCollection
     {
         $this->ASTCollection[] = new InSubquery($subquery);
         
-        return $this->parent->end();
+        return $this->end();
     }
 
     public function toString(): string
@@ -115,9 +115,10 @@ class Criteria implements SQLElementInterface
         return $string;
     }
     
-    public function end(): CriteriaBuilder
+    public function end(): CriteriaCollection
     {
-        return $this->parent->end();
+//        return $this->parent->end();
+        return $this->parent;
     }
     
 }
