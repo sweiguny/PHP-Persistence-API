@@ -4,6 +4,9 @@ namespace PPA\dbal\query\builder\AST;
 
 class Operator implements SQLElementInterface
 {
+    const OPEN_GROUP     = "(";
+    const CLOSE_GROUP    = ")";
+    
     const LIKE           = "LIKE";
     const EQUALS         = "=";
     const NOT_EQUALS     = "!=";

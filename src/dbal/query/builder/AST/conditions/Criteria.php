@@ -18,7 +18,7 @@ class Criteria implements SQLElementInterface
     private $ASTCollection = [];
     private $parent;
 
-    public function __construct(CriteriaCollection $parent)
+    public function __construct(CriteriaBuilder $parent)
     {
         $this->parent = $parent;
     }
@@ -64,7 +64,7 @@ class Criteria implements SQLElementInterface
         return $between;
     }
     
-    public function equals($expression): CriteriaCollection
+    public function equals($expression): CriteriaBuilder
     {
         $this->ASTCollection[] = new Operator(Operator::EQUALS);
         $this->ASTCollection[] = QueryBuilder::processExpression($expression);
@@ -82,7 +82,7 @@ class Criteria implements SQLElementInterface
         
     }
     
-    public function inLiterals(array $literals): CriteriaCollection
+    public function inLiterals(array $literals): CriteriaBuilder
     {
         foreach ($literals as &$literal)
         {
@@ -95,7 +95,7 @@ class Criteria implements SQLElementInterface
         return $this->end();
     }
     
-    public function inSubquery(SelectStatement $subquery): CriteriaCollection
+    public function inSubquery(SelectStatement $subquery): CriteriaBuilder
     {
         $this->ASTCollection[] = new InSubquery($subquery);
         
@@ -115,9 +115,10 @@ class Criteria implements SQLElementInterface
         return $string;
     }
     
-    public function end(): CriteriaCollection
+    public function end(): CriteriaBuilder
     {
-//        return $this->parent->end();
+        $this->parent->setStateClean();
+        
         return $this->parent;
     }
     
