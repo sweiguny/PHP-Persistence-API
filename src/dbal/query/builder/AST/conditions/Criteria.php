@@ -2,6 +2,7 @@
 
 namespace PPA\dbal\query\builder\AST\conditions;
 
+use PPA\dbal\query\builder\AST\expressions\FieldReference;
 use PPA\dbal\query\builder\AST\expressions\NamedParameter;
 use PPA\dbal\query\builder\AST\expressions\properties\Literal;
 use PPA\dbal\query\builder\AST\expressions\UnnamedParameter;
@@ -9,7 +10,6 @@ use PPA\dbal\query\builder\AST\LogicalOperator;
 use PPA\dbal\query\builder\AST\Operator;
 use PPA\dbal\query\builder\AST\SQLElementInterface;
 use PPA\dbal\query\builder\CriteriaBuilder;
-use PPA\dbal\query\builder\QueryBuilder;
 use PPA\dbal\statement\SelectStatement;
 
 class Criteria implements SQLElementInterface
@@ -64,10 +64,34 @@ class Criteria implements SQLElementInterface
         return $between;
     }
     
-    public function equals($expression): CriteriaBuilder
+    public function equalsParameter(string $name = null): CriteriaBuilder
     {
         $this->ASTCollection[] = new Operator(Operator::EQUALS);
-        $this->ASTCollection[] = QueryBuilder::processExpression($expression);
+        $this->ASTCollection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
+        
+        return $this->end();
+    }
+    
+    public function equalsField(string $fieldName, string $tableOrAliasIndicator = null): CriteriaBuilder
+    {
+        $this->ASTCollection[] = new Operator(Operator::EQUALS);
+        $this->ASTCollection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
+        
+        return $this->end();
+    }
+    
+    public function equalsLiteral($literal): CriteriaBuilder
+    {
+        $this->ASTCollection[] = new Operator(Operator::EQUALS);
+        $this->ASTCollection[] = new Literal($literal, gettype($literal));
+        
+        return $this->end();
+    }
+    
+    public function equalsSubquery(SelectStatement $query): CriteriaBuilder
+    {
+        $this->ASTCollection[] = new Operator(Operator::EQUALS);
+        $this->ASTCollection[] = $query;
         
         return $this->end();
     }
@@ -110,7 +134,7 @@ class Criteria implements SQLElementInterface
             $element = $element->toString();
         });
 //            print_r($select);
-        $string .= implode(" ", $this->ASTCollection);
+        $string .= implode(" ", array_filter($this->ASTCollection));
         
         return $string;
     }
