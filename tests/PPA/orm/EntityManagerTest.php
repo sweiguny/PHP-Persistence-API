@@ -9,7 +9,7 @@ class EntityManagerTest extends TestCase
     
     public function testX()
     {
-        $this->assertTrue(true);
+        $this->markTestIncomplete("not yet implemented");
     }
     
 }

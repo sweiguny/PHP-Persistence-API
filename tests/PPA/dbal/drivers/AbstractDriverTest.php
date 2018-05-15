@@ -4,7 +4,7 @@ namespace PPA\tests\dbal\drivers;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use PPA\dbal\drivers\AbstractDriver;
+use PPA\tests\bootstrap\DummyDriver;
 
 /**
  * @coversDefaultClass PPA\dbal\drivers\AbstractDriver
@@ -25,28 +25,7 @@ class AbstractDriverTest extends TestCase
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
         ];
         
-        $driver = new class($testOptions) extends AbstractDriver {
-
-            public function getCharset(): string
-            {
-                
-            }
-
-            public function getDefaultOptions(): array
-            {
-                return [];
-            }
-
-            public function getDefaultPort(): int
-            {
-                
-            }
-
-            public function getDriverName(): string
-            {
-                
-            }
-        };
+        $driver = new DummyDriver($testOptions);
 
         $expectedOptions = array_merge($abstractDefaultOptions, $driver->getDefaultOptions(), $testOptions);
         

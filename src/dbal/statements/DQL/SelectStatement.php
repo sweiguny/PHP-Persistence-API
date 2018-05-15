@@ -82,7 +82,12 @@ class SelectStatement extends Property
             $element = ($element instanceof SelectStatement) ? "({$element->toString()})" : $element->toString();
         });
         
-        return implode(" ", $collection);
+        array_filter($collection);
+        
+        var_dump($this->ASTCollection);
+        var_dump($collection);
+        
+        return implode(" ", array_filter($collection));
     }
 
 }

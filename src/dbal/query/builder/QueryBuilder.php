@@ -260,9 +260,9 @@ class QueryBuilder
             array_walk($this->ASTCollection, function(&$element) {
                 $element = $element->toString();
             });
-//            print_r($select);
+//            var_dump($this->ASTCollection);
             $string = implode(" ", $this->ASTCollection);
-            
+//            var_dump($string);
 //            $string .= " FROM `{$from[0]}`" . ($from[1] == null ? : "" . " AS '{$from[1]}'");
             
             

@@ -74,6 +74,11 @@ class BaseHelper
     {
         $collection = $this->ASTCollection;
         
+//        if (empty($collection))
+//        {
+//            return "";
+//        }
+        
         array_walk($collection, function(&$element) {
             $element = ($element instanceof SelectStatement) ? "({$element->toString()})" : $element->toString();
         });

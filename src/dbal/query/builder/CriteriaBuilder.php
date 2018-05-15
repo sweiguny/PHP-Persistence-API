@@ -253,7 +253,7 @@ class CriteriaBuilder implements SQLElementInterface
         array_walk($this->ASTCollection, function(&$element) {
             $element = $element->toString();
         });
-//            print_r($select);
+        
         $string .= implode(" ", $this->ASTCollection);
         
         return $string;

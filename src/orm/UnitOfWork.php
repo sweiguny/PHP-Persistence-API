@@ -105,7 +105,7 @@ class UnitOfWork implements EventSubscriberInterface
         foreach ($statements as $statement)
         {
             /* @var $statement Statement */
-            echo $statement->sql();
+//            var_dump($statement->sql());
             
         }
         

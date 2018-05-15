@@ -1,0 +1,3 @@
+TestCase;Type;Description;MySQL;Postgres
+testSelect;select;Tests a simple Select Statement;SELECT * FROM `test` AS c;
+testJoin;select;Tests an inner join select;SELECT * FROM `test` AS c;
