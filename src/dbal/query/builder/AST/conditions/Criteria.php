@@ -2,24 +2,25 @@
 
 namespace PPA\dbal\query\builder\AST\conditions;
 
+use PPA\dbal\query\builder\AST\ASTCollection;
 use PPA\dbal\query\builder\AST\expressions\FieldReference;
 use PPA\dbal\query\builder\AST\expressions\NamedParameter;
 use PPA\dbal\query\builder\AST\expressions\properties\Literal;
 use PPA\dbal\query\builder\AST\expressions\UnnamedParameter;
 use PPA\dbal\query\builder\AST\LogicalOperator;
 use PPA\dbal\query\builder\AST\Operator;
-use PPA\dbal\query\builder\AST\SQLElementInterface;
 use PPA\dbal\query\builder\CriteriaBuilder;
 use PPA\dbal\statement\SelectStatement;
 
-class Criteria implements SQLElementInterface
+class Criteria extends ASTCollection
 {
     
-    private $ASTCollection = [];
     private $parent;
 
     public function __construct(CriteriaBuilder $parent)
     {
+        parent::__construct();
+        
         $this->parent = $parent;
     }
 
@@ -32,10 +33,10 @@ class Criteria implements SQLElementInterface
     {
         $between = new Between($this);
         
-        $this->ASTCollection[] = new Operator(Operator::BETWEEN);
-        $this->ASTCollection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
-        $this->ASTCollection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
-        $this->ASTCollection[] = $between;
+        $this->collection[] = new Operator(Operator::BETWEEN);
+        $this->collection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
+        $this->collection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
+        $this->collection[] = $between;
         
         return $between;
     }
@@ -44,10 +45,10 @@ class Criteria implements SQLElementInterface
     {
         $between = new Between($this);
         
-        $this->ASTCollection[] = new Operator(Operator::BETWEEN);
-        $this->ASTCollection[] = new Literal($from, gettype($from));
-        $this->ASTCollection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
-        $this->ASTCollection[] = $between;
+        $this->collection[] = new Operator(Operator::BETWEEN);
+        $this->collection[] = new Literal($from, gettype($from));
+        $this->collection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
+        $this->collection[] = $between;
         
         return $between;
     }
@@ -56,42 +57,42 @@ class Criteria implements SQLElementInterface
     {
         $between = new Between($this);
         
-        $this->ASTCollection[] = new Operator(Operator::BETWEEN);
-        $this->ASTCollection[] = $from;
-        $this->ASTCollection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
-        $this->ASTCollection[] = $between;
+        $this->collection[] = new Operator(Operator::BETWEEN);
+        $this->collection[] = $from;
+        $this->collection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
+        $this->collection[] = $between;
         
         return $between;
     }
     
     public function equalsParameter(string $name = null): CriteriaBuilder
     {
-        $this->ASTCollection[] = new Operator(Operator::EQUALS);
-        $this->ASTCollection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
+        $this->collection[] = new Operator(Operator::EQUALS);
+        $this->collection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
         
         return $this->end();
     }
     
     public function equalsField(string $fieldName, string $tableOrAliasIndicator = null): CriteriaBuilder
     {
-        $this->ASTCollection[] = new Operator(Operator::EQUALS);
-        $this->ASTCollection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
+        $this->collection[] = new Operator(Operator::EQUALS);
+        $this->collection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
         
         return $this->end();
     }
     
     public function equalsLiteral($literal): CriteriaBuilder
     {
-        $this->ASTCollection[] = new Operator(Operator::EQUALS);
-        $this->ASTCollection[] = new Literal($literal, gettype($literal));
+        $this->collection[] = new Operator(Operator::EQUALS);
+        $this->collection[] = new Literal($literal, gettype($literal));
         
         return $this->end();
     }
     
     public function equalsSubquery(SelectStatement $query): CriteriaBuilder
     {
-        $this->ASTCollection[] = new Operator(Operator::EQUALS);
-        $this->ASTCollection[] = $query;
+        $this->collection[] = new Operator(Operator::EQUALS);
+        $this->collection[] = $query;
         
         return $this->end();
     }
@@ -114,34 +115,21 @@ class Criteria implements SQLElementInterface
         }
         
         
-        $this->ASTCollection[] = new InLiterals($literals);
+        $this->collection[] = new InLiterals($literals);
         
         return $this->end();
     }
     
     public function inSubquery(SelectStatement $subquery): CriteriaBuilder
     {
-        $this->ASTCollection[] = new InSubquery($subquery);
+        $this->collection[] = new InSubquery($subquery);
         
         return $this->end();
-    }
-
-    public function toString(): string
-    {
-        $string = "";
-        
-        array_walk($this->ASTCollection, function(&$element) {
-            $element = $element->toString();
-        });
-//            print_r($select);
-        $string .= implode(" ", array_filter($this->ASTCollection));
-        
-        return $string;
     }
     
     public function end(): CriteriaBuilder
     {
-        $this->parent->setStateClean();
+        $this->parent->getState()->setStateClean();
         
         return $this->parent;
     }

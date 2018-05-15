@@ -16,6 +16,8 @@ abstract class Property extends Expression
     
     public function __construct(string $alias = null)
     {
+        parent::__construct();
+        
         $this->alias = $alias;
     }
 }

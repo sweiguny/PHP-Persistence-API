@@ -10,18 +10,18 @@ namespace PPA\dbal\query\builder\AST\expressions;
 class FieldReference extends Expression
 {
     private $fieldName;
-    private $tableOrAliasIndicator;
+    private $indicator;
 
     public function __construct(string $fieldName, string $tableOrAliasIndicator = null)
     {
         $this->fieldName = $fieldName;
-        $this->tableOrAliasIndicator = $tableOrAliasIndicator;
+        $this->indicator = $tableOrAliasIndicator;
     }
     
     
     public function toString(): string
     {
-        return ($this->tableOrAliasIndicator == null ? "" : "{$this->tableOrAliasIndicator}.") . "`{$this->fieldName}`";
+        return ($this->indicator == null ? "" : "{$this->indicator}.") . "`{$this->fieldName}`";
     }
 
 }

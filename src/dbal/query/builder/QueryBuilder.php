@@ -7,6 +7,7 @@ use Latitude\QueryBuilder\QueryFactory;
 use Latitude\QueryBuilder\Statement;
 use PPA\core\exceptions\ExceptionFactory;
 use PPA\dbal\drivers\DriverInterface;
+use PPA\dbal\query\builder\AST\ASTCollection;
 use PPA\dbal\query\builder\AST\expressions\Expression;
 use PPA\dbal\query\builder\AST\expressions\properties\AsteriskWildcard;
 use PPA\dbal\query\builder\AST\expressions\properties\Field;
@@ -47,8 +48,11 @@ class QueryBuilder
 
     private $type;
 
-    private $ASTCollection = [];
-
+    /**
+     *
+     * @var ASTCollection
+     */
+    private $ASTCollection;
 
     /**
      *
@@ -62,12 +66,8 @@ class QueryBuilder
         $this->factory = new QueryFactory($this->driver->getDriverName());
         $this->state   = self::STATE_INITIAL;
         
-//        $this->ASTCollection = [
-//            "select" => [],
-//            "from"   => [],
-//            "join"   => [],
-//            "where"  => []
-//        ];
+//        $this->ASTCollection = [];
+        $this->ASTCollection = new ASTCollection();
     }
     
 //    public function buildSelect(string $fromTable, parts\SelectList $selectList = null, string $alias = null): self
@@ -241,45 +241,7 @@ class QueryBuilder
         
         if ($this->typeIsSelect())
         {
-//            $from   = $this->ASTCollection["from"];
-//            $select = $this->ASTCollection["select"];
-//            $where  = $this->ASTCollection["where"];
-//            $string = "SELECT ";
-            
-//            print_r($from);
-//            foreach ($this->ASTCollection["select"] as $element)
-//            {
-//                if (is_string($element))
-//                {
-//                    die($element);
-//                }
-//                $string .= $element->toString();
-//            }
-            
-            
-            array_walk($this->ASTCollection, function(&$element) {
-                $element = $element->toString();
-            });
-//            var_dump($this->ASTCollection);
-            $string = implode(" ", $this->ASTCollection);
-//            var_dump($string);
-//            $string .= " FROM `{$from[0]}`" . ($from[1] == null ? : "" . " AS '{$from[1]}'");
-            
-            
-//            foreach ($this->ASTCollection["join"] as $element)
-//            {
-//                $string .= " JOIN `{$element[0]}`" . ($element[1] == null ? "" : " AS '{$element[1]}'");
-//                
-//                if (isset($element[2]))
-//                {
-//                    $string .= " ON(" . $element[2]->toString() . ")";
-//                }
-//            }
-//            
-//            if (!empty($where))
-//            {
-//                $string .= " WHERE " . $where->toString();
-//            }
+            $string = $this->ASTCollection->toString();
         }
         
         return $string;

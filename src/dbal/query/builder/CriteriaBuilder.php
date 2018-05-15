@@ -5,6 +5,7 @@ namespace PPA\dbal\query\builder;
 use Exception;
 use PPA\core\exceptions\ExceptionFactory;
 use PPA\dbal\drivers\DriverInterface;
+use PPA\dbal\query\builder\AST\ASTCollection;
 use PPA\dbal\query\builder\AST\conditions\Criteria;
 use PPA\dbal\query\builder\AST\expressions\FieldReference;
 use PPA\dbal\query\builder\AST\expressions\NamedParameter;
@@ -12,13 +13,12 @@ use PPA\dbal\query\builder\AST\expressions\properties\Literal;
 use PPA\dbal\query\builder\AST\expressions\UnnamedParameter;
 use PPA\dbal\query\builder\AST\LogicalOperator;
 use PPA\dbal\query\builder\AST\Operator;
-use PPA\dbal\query\builder\AST\SQLElementInterface;
 use PPA\dbal\statements\DQL\helper\Helper1;
 
-class CriteriaBuilder implements SQLElementInterface
+class CriteriaBuilder extends ASTCollection
 {
-    const STATE_CLEAN = 0;
-    const STATE_DIRTY = -1;
+//    const STATE_CLEAN = 0;
+//    const STATE_DIRTY = -1;
     
     /**
      *
@@ -26,12 +26,12 @@ class CriteriaBuilder implements SQLElementInterface
      */
     private $driver;
     private $parent;
-    private $state = self::STATE_CLEAN;
+//    private $state = self::STATE_CLEAN;
     
-    private $ASTCollection = [];
-
     public function __construct(DriverInterface $driver, CriteriaBuilder $parent = null)
     {
+        parent::__construct();
+        
         $this->driver = $driver;
         $this->parent = $parent;
     }
@@ -44,9 +44,10 @@ class CriteriaBuilder implements SQLElementInterface
         }
         
         $cb = new CriteriaBuilder($this->driver, $this);
+        $this->getState()->setStateDirty("Group open and not closed.");
         
-        $this->ASTCollection[] = new Operator(Operator::OPEN_GROUP);
-        $this->ASTCollection[] = $cb;
+        $this->collection[] = new Operator(Operator::OPEN_GROUP);
+        $this->collection[] = $cb;
         
         return $cb;
     }
@@ -59,10 +60,11 @@ class CriteriaBuilder implements SQLElementInterface
         }
         
         $cb = new CriteriaBuilder($this->driver, $this);
+        $this->getState()->setStateDirty("Group open and not closed.");
 
-        $this->ASTCollection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
-        $this->ASTCollection[] = new Operator(Operator::OPEN_GROUP);
-        $this->ASTCollection[] = $cb;
+        $this->collection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
+        $this->collection[] = new Operator(Operator::OPEN_GROUP);
+        $this->collection[] = $cb;
         
         return $cb;
     }
@@ -75,10 +77,11 @@ class CriteriaBuilder implements SQLElementInterface
         }
         
         $cb = new CriteriaBuilder($this->driver, $this);
+        $this->getState()->setStateDirty("Group open and not closed.");
 
-        $this->ASTCollection[] = new LogicalOperator(LogicalOperator::DISJUNCTION);
-        $this->ASTCollection[] = new Operator(Operator::OPEN_GROUP);
-        $this->ASTCollection[] = $cb;
+        $this->collection[] = new LogicalOperator(LogicalOperator::DISJUNCTION);
+        $this->collection[] = new Operator(Operator::OPEN_GROUP);
+        $this->collection[] = $cb;
         
         return $cb;
     }
@@ -90,9 +93,9 @@ class CriteriaBuilder implements SQLElementInterface
             throw ExceptionFactory::CollectionState("Collection is not empty. Therefore please use methods andWith() or orWith().");
         }
         
-        $this->ASTCollection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
+        $this->collection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
         
-        return $this->postProcess(self::STATE_CLEAN, self::STATE_DIRTY);
+        return $this->postProcess();
     }
     
     public function andWithParameter(string $name = null): Criteria
@@ -102,10 +105,10 @@ class CriteriaBuilder implements SQLElementInterface
             throw ExceptionFactory::CollectionState("Collection is empty. Therefore please use method with().");
         }
         
-        $this->ASTCollection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
-        $this->ASTCollection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
+        $this->collection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
+        $this->collection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
         
-        return $this->postProcess(self::STATE_CLEAN, self::STATE_DIRTY);
+        return $this->postProcess();
     }
     
     public function orWithParameter(string $name = null): Criteria
@@ -115,10 +118,10 @@ class CriteriaBuilder implements SQLElementInterface
             throw ExceptionFactory::CollectionState("Collection is empty. Therefore please use method with().");
         }
         
-        $this->ASTCollection[] = new LogicalOperator(LogicalOperator::DISJUNCTION);
-        $this->ASTCollection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
+        $this->collection[] = new LogicalOperator(LogicalOperator::DISJUNCTION);
+        $this->collection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
         
-        return $this->postProcess(self::STATE_CLEAN, self::STATE_DIRTY);
+        return $this->postProcess();
     }
     
     public function withField(string $fieldName, string $tableOrAliasIndicator = null): Criteria
@@ -128,9 +131,9 @@ class CriteriaBuilder implements SQLElementInterface
             throw ExceptionFactory::CollectionState("Collection is not empty. Therefore please use methods andWith() or orWith().");
         }
         
-        $this->ASTCollection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
+        $this->collection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
         
-        return $this->postProcess(self::STATE_CLEAN, self::STATE_DIRTY);
+        return $this->postProcess();
     }
     
     public function andWithField(string $fieldName, string $tableOrAliasIndicator = null): Criteria
@@ -140,10 +143,10 @@ class CriteriaBuilder implements SQLElementInterface
             throw ExceptionFactory::CollectionState("Collection is empty. Therefore please use method with().");
         }
         
-        $this->ASTCollection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
-        $this->ASTCollection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
+        $this->collection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
+        $this->collection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
         
-        return $this->postProcess(self::STATE_CLEAN, self::STATE_DIRTY);
+        return $this->postProcess();
     }
     
     public function orWithField(string $fieldName, string $tableOrAliasIndicator = null): Criteria
@@ -153,10 +156,10 @@ class CriteriaBuilder implements SQLElementInterface
             throw ExceptionFactory::CollectionState("Collection is empty. Therefore please use method with().");
         }
         
-        $this->ASTCollection[] = new LogicalOperator(LogicalOperator::DISJUNCTION);
-        $this->ASTCollection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
+        $this->collection[] = new LogicalOperator(LogicalOperator::DISJUNCTION);
+        $this->collection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
         
-        return $this->postProcess(self::STATE_CLEAN, self::STATE_DIRTY);
+        return $this->postProcess();
     }
     
     public function withLiteral($literal): Criteria
@@ -166,9 +169,9 @@ class CriteriaBuilder implements SQLElementInterface
             throw ExceptionFactory::CollectionState("Collection is not empty. Therefore please use methods andWith() or orWith().");
         }
         
-        $this->ASTCollection[] = new Literal($literal, gettype($literal));
+        $this->collection[] = new Literal($literal, gettype($literal));
         
-        return $this->postProcess(self::STATE_CLEAN, self::STATE_DIRTY);
+        return $this->postProcess();
     }
     
     public function andWithLiteral($literal): Criteria
@@ -178,10 +181,10 @@ class CriteriaBuilder implements SQLElementInterface
             throw ExceptionFactory::CollectionState("Collection is empty. Therefore please use method with().");
         }
         
-        $this->ASTCollection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
-        $this->ASTCollection[] = new Literal($literal, gettype($literal));
+        $this->collection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
+        $this->collection[] = new Literal($literal, gettype($literal));
         
-        return $this->postProcess(self::STATE_CLEAN, self::STATE_DIRTY);
+        return $this->postProcess();
     }
     
     public function orWithLiteral($literal): Criteria
@@ -191,37 +194,42 @@ class CriteriaBuilder implements SQLElementInterface
             throw ExceptionFactory::CollectionState("Collection is empty. Therefore please use method with().");
         }
         
-        $this->ASTCollection[] = new LogicalOperator(LogicalOperator::DISJUNCTION);
-        $this->ASTCollection[] = new Literal($literal, gettype($literal));
+        $this->collection[] = new LogicalOperator(LogicalOperator::DISJUNCTION);
+        $this->collection[] = new Literal($literal, gettype($literal));
         
-        return $this->postProcess(self::STATE_CLEAN, self::STATE_DIRTY);
+        return $this->postProcess();
     }
     
-    private function postProcess(int $demandedState, int $newState): Criteria
+    private function postProcess(): Criteria
     {
-        if ($this->state != $demandedState)
-        {
-            throw ExceptionFactory::CollectionState("CriteriaCollection is not in state '{$demandedState}', but is '{$this->state}'. Current SQL: " . $this->toString());
-        }
+//        if ($this->getState() != $demandedState)
+//        {
+//            throw ExceptionFactory::CollectionState("CriteriaCollection is not in state '{$demandedState}', but is '{$this->getState()}'. Current SQL: " . $this->toString());
+//        }
         
-        $this->state = $newState;
+        $this->getState()->setStateClean();
         $criteria    = new Criteria($this);
         
-        $this->ASTCollection[] = $criteria;
+        $this->collection[] = $criteria;
 
         return $criteria;
     }
 
     public function endGroup(): CriteriaBuilder
     {
+        if ($this->getState()->stateIsClean())
+        {
+            throw ExceptionFactory::CollectionState("CriteriaCollection is not in a dirty state.");
+        }
+        
         if ($this->parent == null)
         {
             throw new Exception("TODO: parent is null");
-//            throw ExceptionFactory::CollectionState("CriteriaCollection is not in a dirty state.");
         }
         
-        $this->ASTCollection[] = new Operator(Operator::CLOSE_GROUP);
-        $this->state = self::STATE_CLEAN;
+        $this->collection[] = new Operator(Operator::CLOSE_GROUP);
+        $this->getState()->setStateClean();
+//        $this->state = self::STATE_CLEAN;
         
         return $this->parent;
     }
@@ -236,39 +244,16 @@ class CriteriaBuilder implements SQLElementInterface
         
         $helper = new Helper1($this->driver);
         
-        $this->ASTCollection[] = $helper;
+        $this->collection[] = $helper;
         
         return $helper;
     }
     
     public function isEmpty(): bool
     {
-        return count($this->ASTCollection) == 0;
+        return count($this->collection) == 0;
     }
 
-    public function toString(): string
-    {
-        $string = "";
-        
-        array_walk($this->ASTCollection, function(&$element) {
-            $element = $element->toString();
-        });
-        
-        $string .= implode(" ", $this->ASTCollection);
-        
-        return $string;
-    }
-
-    public function setStateClean(): void
-    {
-        $this->state = self::STATE_CLEAN;
-    }
-
-    public function setStateDirty(): void
-    {
-        $this->state = self::STATE_DIRTY;
-    }
-    
 }
 
 ?>

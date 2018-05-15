@@ -3,19 +3,16 @@
 namespace PPA\dbal\statements\DQL\helper;
 
 use PPA\dbal\drivers\DriverInterface;
-use PPA\dbal\query\builder\AST\SQLElementInterface;
-use PPA\dbal\query\builder\CriteriaBuilder;
+use PPA\dbal\query\builder\AST\ASTCollection;
 
 /**
  * Description of First
  *
  * @author siwe
  */
-class Helper3 implements SQLElementInterface
+class Helper3 extends ASTCollection
 {
     
-    
-    private $ASTCollection = [];
     
     /**
      *
@@ -25,6 +22,8 @@ class Helper3 implements SQLElementInterface
     
     public function __construct(DriverInterface $driver)
     {
+        parent::__construct();
+        
         $this->driver = $driver;
     }
     
@@ -38,10 +37,6 @@ class Helper3 implements SQLElementInterface
         
     }
     
-    public function toString(): string
-    {
-        
-    }
 
 }
 

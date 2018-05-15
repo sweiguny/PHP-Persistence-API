@@ -13,9 +13,6 @@ use PPA\dbal\statements\DQL\helper\Helper1;
 
 class SelectStatement extends Property
 {
-    const STATE_DIRTY = -1;
-    const STATE_CLEAN = 1;
-    
     private $properties;
     
     /**
@@ -24,72 +21,74 @@ class SelectStatement extends Property
      */
     private $driver;
     
-    private $ASTCollection = [];
+//    private $collection = [];
 
     private $state;
     
     public function __construct(DriverInterface $driver, Property ...$properties)
     {
+        parent::__construct();
+        
         $this->driver = $driver;
-        $this->state  = self::STATE_DIRTY;
+//        $this->state  = self::STATE_DIRTY;
+        
+        $this->getState()->setStateDirty("Only the SELECT part was done now.");
         
         array_unshift($properties, new Select());
-        $this->ASTCollection = $properties;
-        $this->ASTCollection[] = new From();
+        $this->collection = $properties;
+        $this->collection[] = new From();
     }
 
     public function fromTable(string $tableName, string $alias = null): Helper1
     {
-        if ($this->state != self::STATE_DIRTY)
+//        if ($this->state != self::STATE_DIRTY)
+        if ($this->getState()->stateIsClean())
         {
 //            throw ExceptionFactory::InvalidQueryBuilderState(self::STATE_DIRTY, $this->type, "Method from() can only be called after select().");
             throw new Exception("TODO");
         }
         
-        $this->state = self::STATE_CLEAN;
+//        $this->state = self::STATE_CLEAN;
+        $this->getState()->setStateClean();
         $helper      = new Helper1($this->driver);
         
-        $this->ASTCollection[] = new Table($tableName, $alias);
-        $this->ASTCollection[] = $helper;
+        $this->collection[] = new Table($tableName, $alias);
+        $this->collection[] = $helper;
         
         return $helper;
     }
     
     public function fromSubselect(SelectStatement $stmt): self
     {
-        if ($this->state != self::STATE_DIRTY)
+//        if ($this->state != self::STATE_DIRTY)
+        if ($this->getState()->stateIsClean())
         {
 //            throw ExceptionFactory::InvalidQueryBuilderState(self::STATE_DIRTY, $this->type, "Method from() can only be called after select().");
             throw new Exception("TODO");
         }
         
-        $this->state = self::STATE_CLEAN;
-        $this->ASTCollection[] = $stmt;
+//        $this->state = self::STATE_CLEAN;
+        $this->getState()->setStateClean();
+        $this->collection[] = $stmt;
         
         return $this;
     }
     
-    public function toString(): string
-    {
-        if ($this->state != self::STATE_CLEAN)
-        {
-            throw new Exception("TODO");
-        }
-        
-        $collection = $this->ASTCollection;
-        
-        array_walk($collection, function(&$element) {
-            $element = ($element instanceof SelectStatement) ? "({$element->toString()})" : $element->toString();
-        });
-        
-        array_filter($collection);
-        
-        var_dump($this->ASTCollection);
-        var_dump($collection);
-        
-        return implode(" ", array_filter($collection));
-    }
+//    public function toString(): string
+//    {
+////        if ($this->state != self::STATE_CLEAN)
+//        if ($this->stateIsDirty())
+//        {
+//            throw new Exception("TODO");
+//        }
+//        
+//        return parent::toString();
+//    }
 
+    protected function workOnElement(\PPA\dbal\query\builder\AST\SQLElementInterface $element): string
+    {
+        return ($element instanceof SelectStatement) ? "(" . parent::workOnElement($element) . ")" : parent::workOnElement($element);
+    }
 }
 
 ?>

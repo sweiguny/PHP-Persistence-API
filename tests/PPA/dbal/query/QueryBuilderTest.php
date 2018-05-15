@@ -94,17 +94,58 @@ class QueryBuilderTest extends TestCase
         $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
     }
     
-    public function testJoin(): void
+    /**
+     * @covers ::select
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testJoin(int $index, QueryBuilder $queryBuilder): void
     {
-        $qb = new QueryBuilder(new DummyDriver());
-        $qb->select()->fromTable("customer", "c");
+        $queryBuilder->select()->fromTable("customer", "c")
+                ->join("order", "o")
+                ;
         
-        $this->markTestIncomplete("not yet implemented");
+        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
     }
     
-    public function testOn(): void
+    /**
+     * @covers ::select
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testOnSimple(int $index, QueryBuilder $queryBuilder): void
     {
-        $this->markTestIncomplete("not yet implemented");
+        $queryBuilder->select()->fromTable("customer", "c")
+                ->join("order", "o")->on()
+                    ->withField("id", "c")->equalsField("id", "o")
+                    ->andWithParameter("name")->equalsLiteral(10)
+                ;
+        
+        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
+    }
+    
+    /**
+     * @covers ::select
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testOnGroup(int $index, QueryBuilder $queryBuilder): void
+    {
+        $queryBuilder->select()->fromTable("customer", "c")
+                ->join("order", "o")->on()
+                    ->group()
+                        ->withField("id", "o")->betweenLiteral(0)->andLiteral(1)
+                        ->andWithField("id", "o")->betweenLiteral("")->andLiteral(1)
+                    ->endGroup()
+                    ->orGroup()
+                        ->withField("id", "o")->betweenLiteral(0)->andLiteral(1)
+                        ->andWithField("id", "o")->betweenLiteral(0)->andLiteral(1)
+                    ->endGroup()
+                ;
+        
+//        var_dump($queryBuilder->sql());
+        
+        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
     }
     
     public function testSQL(): void

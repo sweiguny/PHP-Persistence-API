@@ -3,18 +3,18 @@
 namespace PPA\dbal\statements\DQL\helper;
 
 use PPA\dbal\drivers\DriverInterface;
+use PPA\dbal\query\builder\AST\ASTCollection;
 use PPA\dbal\query\builder\AST\clauses\join\Join;
 use PPA\dbal\query\builder\AST\expressions\On;
 use PPA\dbal\query\builder\AST\expressions\Where;
 use PPA\dbal\query\builder\CriteriaBuilder;
-use PPA\dbal\statements\DQL\SelectStatement;
 
 /**
  * Description of BaseHelper
  *
  * @author siwe
  */
-class BaseHelper
+class BaseHelper extends ASTCollection
 {
     /**
      *
@@ -22,10 +22,12 @@ class BaseHelper
      */
     private $driver;
     
-    private $ASTCollection = [];
+//    private $collection = [];
     
     public function __construct(DriverInterface $driver)
     {
+        parent::__construct();
+        
         $this->driver = $driver;
     }
     
@@ -33,8 +35,8 @@ class BaseHelper
     {
         $helper2 = new Helper2($this->driver);
         
-        $this->ASTCollection[] = new Join($joinTable, $alias);
-        $this->ASTCollection[] = $helper2;
+        $this->collection[] = new Join($joinTable, $alias);
+        $this->collection[] = $helper2;
         
         return $helper2;
     }
@@ -43,8 +45,8 @@ class BaseHelper
     {
         $cb = new CriteriaBuilder($this->driver);
         
-        $this->ASTCollection[] = new On();
-        $this->ASTCollection[] = $cb;
+        $this->collection[] = new On();
+        $this->collection[] = $cb;
         
         return $cb;
     }
@@ -64,27 +66,27 @@ class BaseHelper
     {
         $criteriaBuilder = new CriteriaBuilder($this->driver);
 
-        $this->ASTCollection[] = new Where();
-        $this->ASTCollection[] = $criteriaBuilder;
+        $this->collection[] = new Where();
+        $this->collection[] = $criteriaBuilder;
 
         return $criteriaBuilder;
     }
 
-    public function toString(): string
-    {
-        $collection = $this->ASTCollection;
-        
-//        if (empty($collection))
-//        {
-//            return "";
-//        }
-        
-        array_walk($collection, function(&$element) {
-            $element = ($element instanceof SelectStatement) ? "({$element->toString()})" : $element->toString();
-        });
-        
-        return implode(" ", $collection);
-    }
+//    public function toString(): string
+//    {
+//        $collection = $this->collection;
+//        
+////        if (empty($collection))
+////        {
+////            return "";
+////        }
+//        
+//        array_walk($collection, function(&$element) {
+//            $element = ($element instanceof SelectStatement) ? "({$element->toString()})" : $element->toString();
+//        });
+//        
+//        return implode(" ", array_filter($collection));
+//    }
     
 }
 

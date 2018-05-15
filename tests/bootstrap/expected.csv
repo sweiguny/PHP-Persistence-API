@@ -1,3 +1,5 @@
 TestCase;Type;Description;MySQL;Postgres
 testSelect;select;Tests a simple Select Statement;SELECT * FROM `test` AS c;
-testJoin;select;Tests an inner join select;SELECT * FROM `test` AS c;
+testJoin;select;Tests a join with an on-clause;SELECT * FROM `customer` AS c JOIN `order` AS o;
+testOnSimple;select;Tests a simple inner join select withon-clause;SELECT * FROM `customer` AS c JOIN `order` AS o ON c.`id` = o.`id` AND :name = 10;
+testOnGroup;select;Tests an inner join select with a complex on-clause;SELECT * FROM `customer` AS c JOIN `order` AS o ON c.`id` = o.`id`;
