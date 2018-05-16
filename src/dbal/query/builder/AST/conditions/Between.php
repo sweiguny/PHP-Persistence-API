@@ -11,12 +11,16 @@ use PPA\dbal\statement\SelectStatement;
 
 class Between extends Expression
 {
-    
+    /**
+     *
+     * @var Criteria
+     */
     private $parent;
-//    private $to;
 
     public function __construct(Criteria $parent)
     {
+        parent::__construct();
+        
         $this->parent = $parent;
     }
 
@@ -40,11 +44,6 @@ class Between extends Expression
         
         return $this->parent->end();
     }
-    
-//    public function toString(): string
-//    {
-//        return $this->to->toString();
-//    }
     
 }
 

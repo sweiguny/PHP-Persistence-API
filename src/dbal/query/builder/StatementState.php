@@ -39,6 +39,8 @@ class StatementState
 
     public function setState(int $state, ?string $reason)
     {
+//        print_r(array_slice(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), 0, 4));
+        
 //        var_dump($this->allowedStates[$state]);
 //        
 //        if (!isset($this->allowedStates[$state]));
@@ -49,7 +51,7 @@ class StatementState
 ////            print_r($this->allowedStates);
 //            throw new \PPA\core\exceptions\logic\DomainException("State '{$state}' is not an allowed value.");
 //        }
-//        
+        
         $this->reason = $reason;
         $this->state  = $state;
     }

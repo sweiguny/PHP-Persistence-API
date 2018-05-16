@@ -17,16 +17,17 @@ use PPA\dbal\statements\DQL\helper\Helper1;
 
 class CriteriaBuilder extends ASTCollection
 {
-//    const STATE_CLEAN = 0;
-//    const STATE_DIRTY = -1;
-    
     /**
      *
      * @var DriverInterface
      */
     private $driver;
+    
+    /**
+     *
+     * @var CriteriaBuilder
+     */
     private $parent;
-//    private $state = self::STATE_CLEAN;
     
     public function __construct(DriverInterface $driver, CriteriaBuilder $parent = null)
     {
@@ -40,11 +41,14 @@ class CriteriaBuilder extends ASTCollection
     {
         if (!$this->isEmpty())
         {
-            throw ExceptionFactory::CollectionState("Collection is not empty. Therefore please use method andGroup() or orGroup().");
+            throw ExceptionFactory::CollectionState("CriteriaBuilder is not empty. Therefore please use method andGroup() or orGroup().");
         }
         
         $cb = new CriteriaBuilder($this->driver, $this);
         $this->getState()->setStateDirty("Group open and not closed.");
+        
+//        var_dump(spl_object_hash($this->getState()));
+//        var_dump($this->getState()->getState());
         
         $this->collection[] = new Operator(Operator::OPEN_GROUP);
         $this->collection[] = $cb;
@@ -56,7 +60,7 @@ class CriteriaBuilder extends ASTCollection
     {
         if ($this->isEmpty())
         {
-            throw ExceptionFactory::CollectionState("Collection is empty. Therefore please use method group().");
+            throw ExceptionFactory::CollectionState("CriteriaBuilder is empty. Therefore please use method group().");
         }
         
         $cb = new CriteriaBuilder($this->driver, $this);
@@ -73,12 +77,12 @@ class CriteriaBuilder extends ASTCollection
     {
         if ($this->isEmpty())
         {
-            throw ExceptionFactory::CollectionState("Collection is empty. Therefore please use method group().");
+            throw ExceptionFactory::CollectionState("CriteriaBuilder is empty. Therefore please use method group().");
         }
         
         $cb = new CriteriaBuilder($this->driver, $this);
         $this->getState()->setStateDirty("Group open and not closed.");
-
+        
         $this->collection[] = new LogicalOperator(LogicalOperator::DISJUNCTION);
         $this->collection[] = new Operator(Operator::OPEN_GROUP);
         $this->collection[] = $cb;
@@ -86,12 +90,9 @@ class CriteriaBuilder extends ASTCollection
         return $cb;
     }
     
-     public function withParameter(string $name = null): Criteria
+    public function withParameter(string $name = null): Criteria
     {
-        if (!$this->isEmpty())
-        {
-            throw ExceptionFactory::CollectionState("Collection is not empty. Therefore please use methods andWith() or orWith().");
-        }
+        $this->preProcess(false);
         
         $this->collection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
         
@@ -100,10 +101,7 @@ class CriteriaBuilder extends ASTCollection
     
     public function andWithParameter(string $name = null): Criteria
     {
-        if ($this->isEmpty())
-        {
-            throw ExceptionFactory::CollectionState("Collection is empty. Therefore please use method with().");
-        }
+        $this->preProcess(true);
         
         $this->collection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
         $this->collection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
@@ -113,10 +111,7 @@ class CriteriaBuilder extends ASTCollection
     
     public function orWithParameter(string $name = null): Criteria
     {
-        if ($this->isEmpty())
-        {
-            throw ExceptionFactory::CollectionState("Collection is empty. Therefore please use method with().");
-        }
+        $this->preProcess(true);
         
         $this->collection[] = new LogicalOperator(LogicalOperator::DISJUNCTION);
         $this->collection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
@@ -126,10 +121,7 @@ class CriteriaBuilder extends ASTCollection
     
     public function withField(string $fieldName, string $tableOrAliasIndicator = null): Criteria
     {
-        if (!$this->isEmpty())
-        {
-            throw ExceptionFactory::CollectionState("Collection is not empty. Therefore please use methods andWith() or orWith().");
-        }
+        $this->preProcess(false);
         
         $this->collection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
         
@@ -138,10 +130,7 @@ class CriteriaBuilder extends ASTCollection
     
     public function andWithField(string $fieldName, string $tableOrAliasIndicator = null): Criteria
     {
-        if ($this->isEmpty())
-        {
-            throw ExceptionFactory::CollectionState("Collection is empty. Therefore please use method with().");
-        }
+        $this->preProcess(true);
         
         $this->collection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
         $this->collection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
@@ -151,10 +140,7 @@ class CriteriaBuilder extends ASTCollection
     
     public function orWithField(string $fieldName, string $tableOrAliasIndicator = null): Criteria
     {
-        if ($this->isEmpty())
-        {
-            throw ExceptionFactory::CollectionState("Collection is empty. Therefore please use method with().");
-        }
+        $this->preProcess(true);
         
         $this->collection[] = new LogicalOperator(LogicalOperator::DISJUNCTION);
         $this->collection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
@@ -164,10 +150,7 @@ class CriteriaBuilder extends ASTCollection
     
     public function withLiteral($literal): Criteria
     {
-        if (!$this->isEmpty())
-        {
-            throw ExceptionFactory::CollectionState("Collection is not empty. Therefore please use methods andWith() or orWith().");
-        }
+        $this->preProcess(false);
         
         $this->collection[] = new Literal($literal, gettype($literal));
         
@@ -176,10 +159,7 @@ class CriteriaBuilder extends ASTCollection
     
     public function andWithLiteral($literal): Criteria
     {
-        if ($this->isEmpty())
-        {
-            throw ExceptionFactory::CollectionState("Collection is empty. Therefore please use method with().");
-        }
+        $this->preProcess(true);
         
         $this->collection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
         $this->collection[] = new Literal($literal, gettype($literal));
@@ -189,10 +169,7 @@ class CriteriaBuilder extends ASTCollection
     
     public function orWithLiteral($literal): Criteria
     {
-        if ($this->isEmpty())
-        {
-            throw ExceptionFactory::CollectionState("Collection is empty. Therefore please use method with().");
-        }
+        $this->preProcess(true);
         
         $this->collection[] = new LogicalOperator(LogicalOperator::DISJUNCTION);
         $this->collection[] = new Literal($literal, gettype($literal));
@@ -200,15 +177,29 @@ class CriteriaBuilder extends ASTCollection
         return $this->postProcess();
     }
     
+    private function preProcess(bool $checkForEmtpiness): void
+    {
+        if (true == $checkForEmtpiness && $this->isEmpty())
+        {
+            throw ExceptionFactory::CollectionState("CriteriaBuilder is empty. Therefore please use one of the methods starting like 'with'.");
+        }
+        else if (false == $checkForEmtpiness && !$this->isEmpty())
+        {
+            throw ExceptionFactory::CollectionState("CriteriaBuilder is not empty. Therefore please use one of the methods starting like 'andWith' or 'orWith'.");
+        }
+        
+        
+        if ($this->getState()->stateIsDirty())
+        {
+            throw ExceptionFactory::CollectionState("CriteriaBuilder is not in a clean state.");
+        }
+        
+        $this->getState()->setStateDirty("Criteria is in process");
+    }
+    
     private function postProcess(): Criteria
     {
-//        if ($this->getState() != $demandedState)
-//        {
-//            throw ExceptionFactory::CollectionState("CriteriaCollection is not in state '{$demandedState}', but is '{$this->getState()}'. Current SQL: " . $this->toString());
-//        }
-        
-        $this->getState()->setStateClean();
-        $criteria    = new Criteria($this);
+        $criteria = new Criteria($this);
         
         $this->collection[] = $criteria;
 
@@ -217,29 +208,38 @@ class CriteriaBuilder extends ASTCollection
 
     public function endGroup(): CriteriaBuilder
     {
-        if ($this->getState()->stateIsClean())
-        {
-            throw ExceptionFactory::CollectionState("CriteriaCollection is not in a dirty state.");
-        }
-        
         if ($this->parent == null)
         {
-            throw new Exception("TODO: parent is null");
+            throw new \Exception("TODO: parent is null");
         }
         
+//        var_dump($this->parent->getState()->getState());
+//        var_dump(spl_object_hash($this->parent->getState()));
+        
+        if ($this->parent->getState()->stateIsClean())
+        {
+            throw ExceptionFactory::CollectionState("CriteriaBuilder is not in a dirty state.");
+        }
+        
+        $this->parent->getState()->setStateClean();
+        
         $this->collection[] = new Operator(Operator::CLOSE_GROUP);
-        $this->getState()->setStateClean();
-//        $this->state = self::STATE_CLEAN;
         
         return $this->parent;
     }
     
     public function end(): Helper1
     {
+        if ($this->getState()->stateIsClean())
+        {
+            throw ExceptionFactory::CollectionState("CriteriaBuilder is not in a dirty state.");
+        }
+        
+        $this->getState()->setStateClean();
+        
         if ($this->parent != null)
         {
-            throw new Exception("TODO: parent isn't null");
-//            throw ExceptionFactory::CollectionState("CriteriaCollection is not in a dirty state.");
+            throw new \Exception("TODO: parent isn't null");
         }
         
         $helper = new Helper1($this->driver);

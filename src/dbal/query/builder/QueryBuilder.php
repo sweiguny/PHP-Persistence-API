@@ -53,6 +53,8 @@ class QueryBuilder
      * @var ASTCollection
      */
     private $ASTCollection;
+    
+    private $statement;
 
     /**
      *
@@ -210,7 +212,8 @@ class QueryBuilder
         
         $selectStatement = new SelectStatement($this->driver, ...$properties);
         
-        $this->ASTCollection[] = $selectStatement;
+        $this->statement = $selectStatement;
+//        $this->ASTCollection[] = $selectStatement;
         
         $this->setTypeSelet();
         $this->setStateDirty();
@@ -239,12 +242,13 @@ class QueryBuilder
 //            throw ExceptionFactory::InvalidQueryBuilderState(self::STATE_CLEAN, $this->state);
 //        }
         
-        if ($this->typeIsSelect())
-        {
-            $string = $this->ASTCollection->toString();
-        }
-        
-        return $string;
+//        if ($this->typeIsSelect())
+//        {
+//            $string = $this->ASTCollection->toString();
+//        }
+//        
+//        return $string;
+        return $this->statement->toString();
     }
     
     public static function processExpression($expression): Expression

@@ -97,14 +97,132 @@ class Criteria extends ASTCollection
         return $this->end();
     }
     
-    public function lowerEquals($expression): CriteriaBuilder
+    public function lowerEqualsParameter(string $name = null): CriteriaBuilder
     {
+        $this->collection[] = new Operator(Operator::LOWER_EQUALS);
+        $this->collection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
         
+        return $this->end();
     }
     
-    public function greaterEquals($expression): CriteriaBuilder
+    public function lowerEqualsField(string $fieldName, string $tableOrAliasIndicator = null): CriteriaBuilder
     {
+        $this->collection[] = new Operator(Operator::LOWER_EQUALS);
+        $this->collection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
         
+        return $this->end();
+    }
+    
+    public function lowerEqualsLiteral($literal): CriteriaBuilder
+    {
+        $this->collection[] = new Operator(Operator::LOWER_EQUALS);
+        $this->collection[] = new Literal($literal, gettype($literal));
+        
+        return $this->end();
+    }
+    
+    public function lowerEqualsSubquery(SelectStatement $query): CriteriaBuilder
+    {
+        $this->collection[] = new Operator(Operator::LOWER_EQUALS);
+        $this->collection[] = $query;
+        
+        return $this->end();
+    }
+    
+    public function greaterEqualsParameter(string $name = null): CriteriaBuilder
+    {
+        $this->collection[] = new Operator(Operator::GREATER_EQUALS);
+        $this->collection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
+        
+        return $this->end();
+    }
+    
+    public function greaterEqualsField(string $fieldName, string $tableOrAliasIndicator = null): CriteriaBuilder
+    {
+        $this->collection[] = new Operator(Operator::GREATER_EQUALS);
+        $this->collection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
+        
+        return $this->end();
+    }
+    
+    public function greaterEqualsLiteral($literal): CriteriaBuilder
+    {
+        $this->collection[] = new Operator(Operator::GREATER_EQUALS);
+        $this->collection[] = new Literal($literal, gettype($literal));
+        
+        return $this->end();
+    }
+    
+    public function greaterEqualsSubquery(SelectStatement $query): CriteriaBuilder
+    {
+        $this->collection[] = new Operator(Operator::GREATER_EQUALS);
+        $this->collection[] = $query;
+        
+        return $this->end();
+    }
+    
+    public function greaterParameter(string $name = null): CriteriaBuilder
+    {
+        $this->collection[] = new Operator(Operator::GREATER);
+        $this->collection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
+        
+        return $this->end();
+    }
+    
+    public function greaterField(string $fieldName, string $tableOrAliasIndicator = null): CriteriaBuilder
+    {
+        $this->collection[] = new Operator(Operator::GREATER);
+        $this->collection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
+        
+        return $this->end();
+    }
+    
+    public function greaterLiteral($literal): CriteriaBuilder
+    {
+        $this->collection[] = new Operator(Operator::GREATER);
+        $this->collection[] = new Literal($literal, gettype($literal));
+        
+        return $this->end();
+    }
+    
+    public function greaterSubquery(SelectStatement $query): CriteriaBuilder
+    {
+        $this->collection[] = new Operator(Operator::GREATER);
+        $this->collection[] = $query;
+        
+        return $this->end();
+    }
+    
+    public function lowerParameter(string $name = null): CriteriaBuilder
+    {
+        $this->collection[] = new Operator(Operator::LOWER);
+        $this->collection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);
+        
+        return $this->end();
+    }
+    
+    public function lowerField(string $fieldName, string $tableOrAliasIndicator = null): CriteriaBuilder
+    {
+        $this->collection[] = new Operator(Operator::LOWER);
+        $this->collection[] = new FieldReference($fieldName, $tableOrAliasIndicator);
+        
+        return $this->end();
+    }
+    
+    public function lowerLiteral($literal): CriteriaBuilder
+    {
+        $this->collection[] = new Operator(Operator::LOWER);
+        $this->collection[] = new Literal($literal, gettype($literal));
+        
+        return $this->end();
+    }
+    
+    public function lowerSubquery(SelectStatement $query): CriteriaBuilder
+    {
+        $this->collection[] = new Operator(Operator::LOWER);
+        $this->collection[] = $query;
+        
+        return $this->end();
     }
     
     public function inLiterals(array $literals): CriteriaBuilder
@@ -113,7 +231,6 @@ class Criteria extends ASTCollection
         {
             $literal = new Literal($literal, gettype($literal));
         }
-        
         
         $this->collection[] = new InLiterals($literals);
         

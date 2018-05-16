@@ -2,8 +2,10 @@
 
 namespace PPA\tests\dbal;
 
+use Generator;
 use PHPUnit\Framework\TestCase;
 use PPA\core\exceptions\io\IOException;
+use PPA\core\exceptions\runtime\CollectionStateException;
 use PPA\core\exceptions\runtime\InvalidQueryBuilderStateException;
 use PPA\dbal\drivers\concrete\MySQLDriver;
 use PPA\dbal\query\builder\QueryBuilder;
@@ -43,7 +45,7 @@ class QueryBuilderTest extends TestCase
         }
     }
     
-    private static function readExpectedCSv(string $filepath): \Generator
+    private static function readExpectedCSv(string $filepath): Generator
     {
         $handle = fopen($filepath, "r");
         
@@ -64,27 +66,20 @@ class QueryBuilderTest extends TestCase
     
     private function checkResult(string $testCase, int $index, string $sql): void
     {
-        $offset = 1;
+        $offset   = 1;
+        $expected = self::$expectedCsvData;
         
-        $this->assertEquals(self::$expectedCsvData[$testCase][$offset + $index], $sql);
+        if (!isset($expected[$testCase]))
+        {
+            throw new \Exception("Test case '{$testCase}' not defined in expected.csv. If you are sure, the test case is defined, please check the delimiter. It should be ';'.");
+        }
+        
+        $this->assertEquals($expected[$testCase][$offset + $index], $sql);
     }
     
     /**
      * @covers ::select
-     */
-    public function testDoubleSelect(): void
-    {
-        $this->expectException(InvalidQueryBuilderStateException::class);
-        
-        $queryBuilder = new QueryBuilder(new DummyDriver());
-        $queryBuilder->select()->fromTable("table", "c");
-        
-        $queryBuilder->select();
-    }
-    
-    /**
-     * @covers ::select
-     * 
+     * @group singleton
      * @dataProvider provideQueryBuilder
      */
     public function testSelect(int $index, QueryBuilder $queryBuilder): void
@@ -117,7 +112,7 @@ class QueryBuilderTest extends TestCase
     {
         $queryBuilder->select()->fromTable("customer", "c")
                 ->join("order", "o")->on()
-                    ->withField("id", "c")->equalsField("id", "o")
+                    ->withField("id", "c")->equalsField("customer", "o")
                     ->andWithParameter("name")->equalsLiteral(10)
                 ;
         
@@ -133,13 +128,14 @@ class QueryBuilderTest extends TestCase
     {
         $queryBuilder->select()->fromTable("customer", "c")
                 ->join("order", "o")->on()
-                    ->group()
-                        ->withField("id", "o")->betweenLiteral(0)->andLiteral(1)
-                        ->andWithField("id", "o")->betweenLiteral("")->andLiteral(1)
+                    ->withField("id", "c")->equalsField("customer", "o")
+                    ->andGroup()
+                        ->withField("id", "o")->greaterLiteral(100)
+                        ->andWithField("id", "o")->lowerLiteral(1000)
                     ->endGroup()
                     ->orGroup()
-                        ->withField("id", "o")->betweenLiteral(0)->andLiteral(1)
-                        ->andWithField("id", "o")->betweenLiteral(0)->andLiteral(1)
+                        ->withField("id", "c")->betweenLiteral(1)->andLiteral(10)
+                        ->andWithField("id", "o")->betweenLiteral(0)->andLiteral(100)
                     ->endGroup()
                 ;
         
