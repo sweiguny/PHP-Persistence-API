@@ -2,6 +2,7 @@
 
 namespace PPA\dbal\query\builder\AST\conditions;
 
+use PPA\core\exceptions\runtime\CollectionStateException;
 use PPA\dbal\query\builder\AST\ASTCollection;
 use PPA\dbal\query\builder\AST\expressions\FieldReference;
 use PPA\dbal\query\builder\AST\expressions\NamedParameter;
@@ -22,6 +23,8 @@ class Criteria extends ASTCollection
         parent::__construct();
         
         $this->parent = $parent;
+        
+        $this->getState()->setStateDirty(CollectionStateException::CODE_CRITERIA_DIRTY, "Condition unfinished.");
     }
 
     public function not(): self
@@ -246,6 +249,8 @@ class Criteria extends ASTCollection
     
     public function end(): CriteriaBuilder
     {
+        
+        $this->getState()->setStateClean();
         $this->parent->getState()->setStateClean();
         
         return $this->parent;

@@ -3,6 +3,7 @@
 namespace PPA\dbal\statements\DQL;
 
 use Exception;
+use PPA\core\exceptions\runtime\CollectionStateException;
 use PPA\dbal\drivers\DriverInterface;
 use PPA\dbal\query\builder\AST\expressions\From;
 use PPA\dbal\query\builder\AST\expressions\properties\Property;
@@ -31,7 +32,7 @@ class SelectStatement extends Property
         
         $this->driver = $driver;
         
-        $this->getState()->setStateDirty("Only the SELECT part was done now.");
+        $this->getState()->setStateDirty(CollectionStateException::CODE_STATEMENT_DIRTY, "Only the SELECT part was done now.");
         
         array_unshift($properties, new Select());
         $this->collection = $properties;

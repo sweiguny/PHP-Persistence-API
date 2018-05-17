@@ -31,7 +31,7 @@ class ASTCollection implements SQLElementInterface
     {
         if ($this->getState()->stateIsDirty())
         {
-            throw ExceptionFactory::CollectionState("State of class '" . get_class($this) . "' is dirty. Reason: " . $this->getState()->getReason());
+            throw ExceptionFactory::CollectionState($this->getState()->getCode(), "State of class '" . get_class($this) . "' is dirty. Reason: " . $this->getState()->getReason());
         }
         
         $collection = $this->collection;

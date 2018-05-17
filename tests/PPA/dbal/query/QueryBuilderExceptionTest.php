@@ -21,42 +21,51 @@ class QueryBuilderExceptionTest extends TestCase
     public function provideQueryBuilder(): array
     {
         return [
-            "mysql" => [1, new QueryBuilder(new MySQLDriver())]
+            [new QueryBuilder(new DummyDriver())]
         ];
     }
     
-    
     /**
      * @covers ::select
+     * 
+     * @dataProvider provideQueryBuilder
      */
-    public function testDoubleSelect(): void
+    public function testDoubleSelect(QueryBuilder $queryBuilder): void
     {
         $this->expectException(InvalidQueryBuilderStateException::class);
         
-        $queryBuilder = new QueryBuilder(new DummyDriver());
         $queryBuilder->select()->fromTable("table", "c");
         
         $queryBuilder->select();
     }
     
-    public function testOnGroupFailure(): void
+    /**
+     * @covers ::select
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testOnGroupFailure(QueryBuilder $queryBuilder): void
     {
-        $this->expectException(CollectionStateException::class);
+//        $this->expectException(CollectionStateException::class);
         
-        $queryBuilder = new QueryBuilder(new DummyDriver());
         $queryBuilder->select()->fromTable("customer", "c")
                 ->join("order", "o")->on()
-                    ->group()
+//                    ->group()
                 ;
         
-        $queryBuilder->sql();
+        echo $queryBuilder->sql();
     }
     
-    public function testCriteriaFailure(): void
+    /**
+     * @covers ::select
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testCriteriaFailure(QueryBuilder $queryBuilder): void
     {
         $this->expectException(CollectionStateException::class);
+        $this->expectExceptionCode(CollectionStateException::CODE_CRITERIA_DIRTY);
         
-        $queryBuilder = new QueryBuilder(new DummyDriver());
         $queryBuilder->select()->fromTable("customer", "c")
                 ->where()->withField("id")
                 ;

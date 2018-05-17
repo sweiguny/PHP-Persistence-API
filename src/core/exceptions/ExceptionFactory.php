@@ -137,9 +137,9 @@ final class ExceptionFactory
         return new InvalidQueryBuilderTypeException(sprintf("QueryBuilder does not work on required type '%s', but on '%s'.", $requestedType, $currentType));
     }
     
-    public static function CollectionState(string $message): CollectionStateException
+    public static function CollectionState(int $code, string $message): CollectionStateException
     {
-        return new CollectionStateException($message);
+        return new CollectionStateException($message, $code);
     }
     
 //    public static function UnknownInternalDatatype(string $datatype, string $parameterName, string $annotationClass): UnknownInternalDatatypeException

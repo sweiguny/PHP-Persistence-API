@@ -2,8 +2,8 @@
 
 namespace PPA\dbal\query\builder;
 
-use Exception;
 use PPA\core\exceptions\ExceptionFactory;
+use PPA\core\exceptions\runtime\CollectionStateException;
 use PPA\dbal\drivers\DriverInterface;
 use PPA\dbal\query\builder\AST\ASTCollection;
 use PPA\dbal\query\builder\AST\conditions\Criteria;
@@ -45,7 +45,7 @@ class CriteriaBuilder extends ASTCollection
         }
         
         $cb = new CriteriaBuilder($this->driver, $this);
-        $this->getState()->setStateDirty("Group open and not closed.");
+        $this->getState()->setStateDirty(CollectionStateException::CODE_GROUP_DIRTY, "Group open and not closed.");
         
 //        var_dump(spl_object_hash($this->getState()));
 //        var_dump($this->getState()->getState());
@@ -64,7 +64,7 @@ class CriteriaBuilder extends ASTCollection
         }
         
         $cb = new CriteriaBuilder($this->driver, $this);
-        $this->getState()->setStateDirty("Group open and not closed.");
+        $this->getState()->setStateDirty(CollectionStateException::CODE_GROUP_DIRTY, "Group open and not closed.");
 
         $this->collection[] = new LogicalOperator(LogicalOperator::CONJUNCTION);
         $this->collection[] = new Operator(Operator::OPEN_GROUP);
@@ -81,7 +81,7 @@ class CriteriaBuilder extends ASTCollection
         }
         
         $cb = new CriteriaBuilder($this->driver, $this);
-        $this->getState()->setStateDirty("Group open and not closed.");
+        $this->getState()->setStateDirty(CollectionStateException::CODE_GROUP_DIRTY, "Group open and not closed.");
         
         $this->collection[] = new LogicalOperator(LogicalOperator::DISJUNCTION);
         $this->collection[] = new Operator(Operator::OPEN_GROUP);
@@ -194,7 +194,7 @@ class CriteriaBuilder extends ASTCollection
             throw ExceptionFactory::CollectionState("CriteriaBuilder is not in a clean state.");
         }
         
-        $this->getState()->setStateDirty("Criteria is in process");
+        $this->getState()->setStateDirty(CollectionStateException::CODE_CRITERIA_DIRTY, "Criteria is in process");
     }
     
     private function postProcess(): Criteria

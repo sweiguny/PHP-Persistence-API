@@ -28,20 +28,25 @@ class Between extends Expression
     {
         $this->collection[] = new Literal($to, gettype($to));
         
-        return $this->parent->end();
+        return $this->end();
     }
 
     public function andSubquery(SelectStatement $to): CriteriaBuilder
     {
         $this->collection[] = $to;
         
-        return $this->parent->end();
+        return $this->end();
     }
 
     public function andParameter(string $name = null): CriteriaBuilder
     {
         $this->collection[] = $name == null ? new UnnamedParameter() : new NamedParameter($name);;
         
+        return $this->end();
+    }
+    
+    private function end(): CriteriaBuilder
+    {
         return $this->parent->end();
     }
     

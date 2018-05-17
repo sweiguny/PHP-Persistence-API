@@ -14,6 +14,13 @@ class StatementState
     private $state = self::STATE_CLEAN;
     
     /**
+     * CollectionStateException code
+     * 
+     * @var int
+     */
+    private $code = 0;
+
+    /**
      *
      * @var string
      */
@@ -37,7 +44,7 @@ class StatementState
         return $this->state;
     }
 
-    public function setState(int $state, ?string $reason)
+    public function setState(int $state, int $code, ?string $reason)
     {
 //        print_r(array_slice(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), 0, 4));
         
@@ -52,18 +59,19 @@ class StatementState
 //            throw new \PPA\core\exceptions\logic\DomainException("State '{$state}' is not an allowed value.");
 //        }
         
-        $this->reason = $reason;
         $this->state  = $state;
+        $this->code   = $code;
+        $this->reason = $reason;
     }
 
     public function setStateClean(): void
     {
-        $this->setState(self::STATE_CLEAN, null);
+        $this->setState(self::STATE_CLEAN, 0, null);
     }
 
-    public function setStateDirty(string $reason): void
+    public function setStateDirty(int $code, string $reason): void
     {
-        $this->setState(self::STATE_DIRTY, $reason);
+        $this->setState(self::STATE_DIRTY, $code, $reason);
     }
     
     public function stateIsDirty(): bool
@@ -76,9 +84,14 @@ class StatementState
         return $this->getState() == self::STATE_CLEAN;
     }
     
-    public function getReason(): string
+    public function getReason(): ?string
     {
         return $this->reason;
+    }
+    
+    public function getCode(): int
+    {
+        return $this->code;
     }
 
 }
