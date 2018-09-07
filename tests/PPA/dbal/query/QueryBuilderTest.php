@@ -71,7 +71,7 @@ class QueryBuilderTest extends TestCase
         
         if (!isset($expected[$testCase]))
         {
-            throw new \Exception("Test case '{$testCase}' not defined in expected.csv. If you are sure, the test case is defined, please check the delimiter. It should be ';'.");
+            throw new \Exception("Test case '{$testCase}' not defined in expected.csv. If you are sure, the test case is defined, please check the delimiter of the test file. It should be ';'.");
         }
         
         $this->assertEquals($expected[$testCase][$offset + $index], $sql);
@@ -94,7 +94,7 @@ class QueryBuilderTest extends TestCase
      * 
      * @dataProvider provideQueryBuilder
      */
-    public function testJoin(int $index, QueryBuilder $queryBuilder): void
+    public function testJoinClause(int $index, QueryBuilder $queryBuilder): void
     {
         $queryBuilder->select()->fromTable("customer", "c")
                 ->join("order", "o")
@@ -108,7 +108,7 @@ class QueryBuilderTest extends TestCase
      * 
      * @dataProvider provideQueryBuilder
      */
-    public function testOnSimple(int $index, QueryBuilder $queryBuilder): void
+    public function testSimpleJoinOnClause(int $index, QueryBuilder $queryBuilder): void
     {
         $queryBuilder->select()->fromTable("customer", "c")
                 ->join("order", "o")->on()
@@ -124,7 +124,7 @@ class QueryBuilderTest extends TestCase
      * 
      * @dataProvider provideQueryBuilder
      */
-    public function testOnGroup(int $index, QueryBuilder $queryBuilder): void
+    public function testOnClauseWithGroup(int $index, QueryBuilder $queryBuilder): void
     {
         $queryBuilder->select()->fromTable("customer", "c")
                 ->join("order", "o")->on()
@@ -132,11 +132,71 @@ class QueryBuilderTest extends TestCase
                     ->andGroup()
                         ->withField("id", "o")->greaterLiteral(100)
                         ->andWithField("id", "o")->lowerLiteral(1000)
-                    ->endGroup()
+                    ->closeGroup()
                     ->orGroup()
                         ->withField("id", "c")->betweenLiteral(1)->andLiteral(10)
                         ->andWithField("id", "o")->betweenLiteral(0)->andLiteral(100)
-                    ->endGroup()
+                    ->closeGroup()
+                ;
+        
+//        var_dump($queryBuilder->sql());
+        
+        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
+    }
+    
+    /**
+     * @covers ::select
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testSimpleWhereClause(int $index, QueryBuilder $queryBuilder): void
+    {
+        $queryBuilder->select()->fromTable("customer")
+                ->where()
+                    ->withField("id")->equalsField("old_identifier")
+                ;
+        
+//        var_dump($queryBuilder->sql());
+        
+        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
+    }
+    
+    /**
+     * @covers ::select
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testComplexWhereClause(int $index, QueryBuilder $queryBuilder): void
+    {
+        $queryBuilder->select()->fromTable("customer", "c")
+                ->where()
+                    ->withField("target_group", "c")->equalsLiteral(10)
+                    ->andGroup()
+                        ->withField("name")->equalsLiteral("jochen")
+                    ->closeGroup()
+                    ->orGroup()
+                        ->withParameter()->betweenLiteral(1)->andLiteral(2)
+                    ->closeGroup()
+                ;
+        
+//        var_dump($queryBuilder->sql());
+        
+        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
+    }
+    
+    /**
+     * @covers ::select
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testInClause(int $index, QueryBuilder $queryBuilder): void
+    {
+        $queryBuilder->select()->fromTable("customer", "c")
+                ->where()
+                    ->withField("id", "c")->inLiterals([10,20,30])
+//                    ->withField("age")->inSubquery(
+//                                $queryBuilder->select()
+//                            )
                 ;
         
 //        var_dump($queryBuilder->sql());

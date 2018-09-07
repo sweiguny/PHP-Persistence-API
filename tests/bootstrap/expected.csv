@@ -1,5 +1,8 @@
 TestCase;Type;Description;MySQL;Postgres
 testSelect;select;Tests a simple Select Statement;SELECT * FROM `test` AS c;
-testJoin;select;Tests a join with an on-clause;SELECT * FROM `customer` AS c JOIN `order` AS o;
-testOnSimple;select;Tests a simple inner join select withon-clause;SELECT * FROM `customer` AS c JOIN `order` AS o ON c.`id` = o.`customer` AND :name = 10;
-testOnGroup;select;Tests an inner join select with a complex on-clause;SELECT * FROM `customer` AS c JOIN `order` AS o ON c.`id` = o.`customer` AND ( o.`id` > 100 AND o.`id` < 1000 ) OR ( c.`id` BETWEEN 1 AND 10 AND o.`id` BETWEEN 0 AND 100 );
+testJoinClause;select;Tests a join with an on-clause;SELECT * FROM `customer` AS c JOIN `order` AS o;
+testSimpleJoinOnClause;select;Tests a simple inner join select with on-clause;SELECT * FROM `customer` AS c JOIN `order` AS o ON c.`id` = o.`customer` AND :name = 10;
+testOnClauseWithGroup;select;Tests an inner join select with a complex on-clause;SELECT * FROM `customer` AS c JOIN `order` AS o ON c.`id` = o.`customer` AND ( o.`id` > 100 AND o.`id` < 1000 ) OR ( c.`id` BETWEEN 1 AND 10 AND o.`id` BETWEEN 0 AND 100 );
+testSimpleWhereClause;select;Tests a select statement with a simple where-clause;SELECT * FROM `customer` WHERE `id` = `old_identifier`;
+testComplexWhereClause;select;Tests a select statement with a complex where-clause;SELECT * FROM `customer` AS c WHERE c.`target_group` = 10 AND ( `name` = "jochen" ) OR ( ? BETWEEN 1 AND 2 );
+testInClause;select;Tests a select statement with an in-clause;SELECT * FROM `customer` AS c WHERE c.`id` IN(10, 20, 30);

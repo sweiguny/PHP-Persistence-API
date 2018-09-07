@@ -41,7 +41,7 @@ class CriteriaBuilder extends ASTCollection
     {
         if (!$this->isEmpty())
         {
-            throw ExceptionFactory::CollectionState("CriteriaBuilder is not empty. Therefore please use method andGroup() or orGroup().");
+            throw ExceptionFactory::CollectionState(CollectionStateException::CODE_NOT_EMPTY, "CriteriaBuilder is not empty. Therefore please use method andGroup() or orGroup().");
         }
         
         $cb = new CriteriaBuilder($this->driver, $this);
@@ -77,7 +77,7 @@ class CriteriaBuilder extends ASTCollection
     {
         if ($this->isEmpty())
         {
-            throw ExceptionFactory::CollectionState("CriteriaBuilder is empty. Therefore please use method group().");
+            throw ExceptionFactory::CollectionState(CollectionStateException::CODE_EMPTY, "CriteriaBuilder is empty. Therefore please use method group().");
         }
         
         $cb = new CriteriaBuilder($this->driver, $this);
@@ -181,7 +181,7 @@ class CriteriaBuilder extends ASTCollection
     {
         if (true == $checkForEmtpiness && $this->isEmpty())
         {
-            throw ExceptionFactory::CollectionState("CriteriaBuilder is empty. Therefore please use one of the methods starting like 'with'.");
+            throw ExceptionFactory::CollectionState(CollectionStateException::CODE_EMPTY, "CriteriaBuilder is empty. Therefore please use one of the methods starting like 'with'.");
         }
         else if (false == $checkForEmtpiness && !$this->isEmpty())
         {
@@ -191,7 +191,7 @@ class CriteriaBuilder extends ASTCollection
         
         if ($this->getState()->stateIsDirty())
         {
-            throw ExceptionFactory::CollectionState("CriteriaBuilder is not in a clean state.");
+            throw ExceptionFactory::CollectionState(CollectionStateException::CODE_CRITERIA_DIRTY, "CriteriaBuilder is not in a clean state.");
         }
         
         $this->getState()->setStateDirty(CollectionStateException::CODE_CRITERIA_DIRTY, "Criteria is in process");
@@ -206,7 +206,7 @@ class CriteriaBuilder extends ASTCollection
         return $criteria;
     }
 
-    public function endGroup(): CriteriaBuilder
+    public function closeGroup(): CriteriaBuilder
     {
         if ($this->parent == null)
         {
@@ -218,7 +218,7 @@ class CriteriaBuilder extends ASTCollection
         
         if ($this->parent->getState()->stateIsClean())
         {
-            throw ExceptionFactory::CollectionState("CriteriaBuilder is not in a dirty state.");
+            throw ExceptionFactory::CollectionState(CollectionStateException::CODE_CRITERIA_CLEAN, "CriteriaBuilder is not in a dirty state.");
         }
         
         $this->parent->getState()->setStateClean();
@@ -232,7 +232,7 @@ class CriteriaBuilder extends ASTCollection
     {
         if ($this->getState()->stateIsClean())
         {
-            throw ExceptionFactory::CollectionState("CriteriaBuilder is not in a dirty state.");
+            throw ExceptionFactory::CollectionState(CollectionStateException::CODE_CRITERIA_CLEAN, "CriteriaBuilder is not in a dirty state.");
         }
         
         $this->getState()->setStateClean();

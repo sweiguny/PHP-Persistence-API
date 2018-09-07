@@ -2,12 +2,9 @@
 
 namespace PPA\tests\dbal;
 
-use Generator;
 use PHPUnit\Framework\TestCase;
-use PPA\core\exceptions\io\IOException;
 use PPA\core\exceptions\runtime\CollectionStateException;
 use PPA\core\exceptions\runtime\InvalidQueryBuilderStateException;
-use PPA\dbal\drivers\concrete\MySQLDriver;
 use PPA\dbal\query\builder\QueryBuilder;
 use PPA\tests\bootstrap\DummyDriver;
 
@@ -44,16 +41,16 @@ class QueryBuilderExceptionTest extends TestCase
      * 
      * @dataProvider provideQueryBuilder
      */
-    public function testOnGroupFailure(QueryBuilder $queryBuilder): void
+    public function testNotClosedGroupFailure(QueryBuilder $queryBuilder): void
     {
-//        $this->expectException(CollectionStateException::class);
+        $this->expectException(CollectionStateException::class);
         
         $queryBuilder->select()->fromTable("customer", "c")
                 ->join("order", "o")->on()
-//                    ->group()
+                    ->group()
                 ;
         
-        echo $queryBuilder->sql();
+        $queryBuilder->sql();
     }
     
     /**
