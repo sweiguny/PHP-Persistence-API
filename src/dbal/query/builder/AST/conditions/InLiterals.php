@@ -12,6 +12,8 @@ class InLiterals extends Expression
 
     public function __construct(array $literals)
     {
+        parent::__construct();
+        
         $this->literals = $literals;
     }
 

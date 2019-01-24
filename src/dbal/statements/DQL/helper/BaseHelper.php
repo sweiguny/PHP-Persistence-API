@@ -6,7 +6,6 @@ use PPA\dbal\drivers\DriverInterface;
 use PPA\dbal\query\builder\AST\ASTCollection;
 use PPA\dbal\query\builder\AST\clauses\join\Join;
 use PPA\dbal\query\builder\AST\expressions\On;
-use PPA\dbal\query\builder\AST\expressions\Where;
 use PPA\dbal\query\builder\CriteriaBuilder;
 
 /**
@@ -16,6 +15,8 @@ use PPA\dbal\query\builder\CriteriaBuilder;
  */
 class BaseHelper extends ASTCollection
 {
+    use WhereTrait, GroupByTrait;
+    
     /**
      *
      * @var DriverInterface
@@ -56,21 +57,27 @@ class BaseHelper extends ASTCollection
         
     }
     
-    public function groupBy()
-    {
-        
-    }
+//    public function groupBy(Property ...$properties): Helper3
+//    {
+//        $helper = new Helper3();
+//        
+//        array_unshift($properties, $helper);
+//        array_unshift($properties, new GroupBy());
+//        $this->collection = $properties;
+//        
+//        return $helper;
+//    }
     
 
-    public function where(): CriteriaBuilder
-    {
-        $criteriaBuilder = new CriteriaBuilder($this->driver);
-
-        $this->collection[] = new Where();
-        $this->collection[] = $criteriaBuilder;
-
-        return $criteriaBuilder;
-    }
+//    public function where(): CriteriaBuilder
+//    {
+//        $criteriaBuilder = new CriteriaBuilder($this->driver);
+//
+//        $this->collection[] = new Where();
+//        $this->collection[] = $criteriaBuilder;
+//
+//        return $criteriaBuilder;
+//    }
 
 //    public function toString(): string
 //    {

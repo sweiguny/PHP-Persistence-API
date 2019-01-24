@@ -5,11 +5,11 @@ namespace PPA\tests\dbal;
 use Generator;
 use PHPUnit\Framework\TestCase;
 use PPA\core\exceptions\io\IOException;
-use PPA\core\exceptions\runtime\CollectionStateException;
-use PPA\core\exceptions\runtime\InvalidQueryBuilderStateException;
 use PPA\dbal\drivers\concrete\MySQLDriver;
+use PPA\dbal\query\builder\AST\expressions\properties\Field;
+use PPA\dbal\query\builder\AST\expressions\properties\FieldDistinct;
+use PPA\dbal\query\builder\AST\expressions\properties\FieldSUM;
 use PPA\dbal\query\builder\QueryBuilder;
-use PPA\tests\bootstrap\DummyDriver;
 
 /**
  * @coversDefaultClass \PPA\dbal\query\builder\QueryBuilder
@@ -191,12 +191,14 @@ class QueryBuilderTest extends TestCase
      */
     public function testInClause(int $index, QueryBuilder $queryBuilder): void
     {
+        $subQB = clone $queryBuilder;
+        $subQuery = $subQB->select(new FieldDistinct("age"));
+        $subQuery->fromTable("order");
+        
         $queryBuilder->select()->fromTable("customer", "c")
                 ->where()
                     ->withField("id", "c")->inLiterals([10,20,30])
-//                    ->withField("age")->inSubquery(
-//                                $queryBuilder->select()
-//                            )
+                    ->andWithField("age")->inSubquery($subQuery)
                 ;
         
 //        var_dump($queryBuilder->sql());
@@ -204,41 +206,26 @@ class QueryBuilderTest extends TestCase
         $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
     }
     
-    public function testSQL(): void
+    /**
+     * @covers ::select
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testJoinWithGroupByAndAggregateFunctionAndHavingClause(int $index, QueryBuilder $queryBuilder): void
     {
-//        $qb = new QueryBuilder(new DummyDriver());
-//        $qb->select()->fromTable("customer", "c")
-//                ->join("order", "o")->on()
-//                    ->withField("age", "c")->betweenLiteral(10)->andParameter()
-//                    ->andWithField("order", "x")->inLiterals([1,2,3])
-//                    ->andWithField("id", "c")->equals("cid", "o")
-//                    ->andGroup()
-//                        ->withField("test")->equals(10)
-//                        ->orWithLiteral(100)->betweenParameter()->andParameter()
-//                        ->endGroup()
-//                    ->end()
-//                ->where()
-//                    ->withLiteral("hudriwudri")->equals("hudriwudri")
-//                    ->andWithParameter()->equals("test")
-//                    ->andWithParameter("nameIT")->equals("test2")
-//                    ->andGroup()
-//                        ->withField("test")->equals(10)
-//                        ->orWithLiteral(100)->betweenParameter()->andParameter()
-//                        ->orGroup()
-//                            ->withField("test1")->equals(10)
-//                            ->andWithField("test2")->equals(20)
-//                            ->andWithField("test3")->equals(30)
-//                            ->endGroup()
-//                        ->endGroup()
-//                    ->end()
-////                ->orderBy()
-//                ;
-//        
-////        $qb->select()->fromTable($tableName)->where()->end();
-//        
-//        $sql = $qb->sql();
-//        
-//        $this->markTestIncomplete("not yet implemented");
+        $queryBuilder->select(new FieldSUM("age"))->fromTable("customer")
+                ->join("order")->on()->withField("id", "customer")->equalsField("customer_id", "order")
+                ->where()
+                    ->withField("id")->inLiterals([10,20,30])
+                    ->andWithField("id2")->inLiterals([30,20,10])
+                ->groupBy(new Field("age"))
+                ->having()
+                    ->withField("test")->greaterEqualsLiteral(10)
+                ;
+        
+//        var_dump($queryBuilder->sql());
+        
+        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
     }
 
 }

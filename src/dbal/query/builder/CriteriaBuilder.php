@@ -13,10 +13,16 @@ use PPA\dbal\query\builder\AST\expressions\properties\Literal;
 use PPA\dbal\query\builder\AST\expressions\UnnamedParameter;
 use PPA\dbal\query\builder\AST\LogicalOperator;
 use PPA\dbal\query\builder\AST\Operator;
+use PPA\dbal\statements\DQL\helper\GroupByTrait;
 use PPA\dbal\statements\DQL\helper\Helper1;
+use PPA\dbal\statements\DQL\helper\WhereTrait;
 
 class CriteriaBuilder extends ASTCollection
 {
+    use 
+//    WhereTrait,
+            GroupByTrait;
+    
     /**
      *
      * @var DriverInterface
@@ -35,6 +41,16 @@ class CriteriaBuilder extends ASTCollection
         
         $this->driver = $driver;
         $this->parent = $parent;
+    }
+    
+    public function where(): CriteriaBuilder
+    {
+        $criteriaBuilder = new CriteriaBuilder($this->driver, $this);
+
+        $this->collection[] = new AST\expressions\Where();
+        $this->collection[] = $criteriaBuilder;
+
+        return $criteriaBuilder;
     }
     
     public function group(): CriteriaBuilder
@@ -185,7 +201,7 @@ class CriteriaBuilder extends ASTCollection
         }
         else if (false == $checkForEmtpiness && !$this->isEmpty())
         {
-            throw ExceptionFactory::CollectionState("CriteriaBuilder is not empty. Therefore please use one of the methods starting like 'andWith' or 'orWith'.");
+            throw ExceptionFactory::CollectionState(CollectionStateException::CODE_NOT_EMPTY, "CriteriaBuilder is not empty. Therefore please use one of the methods starting like 'andWith' or 'orWith'.");
         }
         
         

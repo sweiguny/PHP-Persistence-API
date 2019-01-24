@@ -3,7 +3,7 @@
 namespace PPA\dbal\query\builder\AST\conditions;
 
 use PPA\dbal\query\builder\AST\Operator;
-use PPA\dbal\statement\SelectStatement;
+use PPA\dbal\statements\DQL\SelectStatement;
 
 class InSubquery extends InLiterals
 {

@@ -16,12 +16,6 @@ class SelectStatement extends Property
 {
     /**
      *
-     * @var array
-     */
-    private $properties;
-    
-    /**
-     *
      * @var DriverInterface
      */
     private $driver;

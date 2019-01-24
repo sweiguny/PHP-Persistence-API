@@ -11,7 +11,7 @@ use PPA\dbal\query\builder\AST\expressions\UnnamedParameter;
 use PPA\dbal\query\builder\AST\LogicalOperator;
 use PPA\dbal\query\builder\AST\Operator;
 use PPA\dbal\query\builder\CriteriaBuilder;
-use PPA\dbal\statement\SelectStatement;
+use PPA\dbal\statements\DQL\SelectStatement;
 
 class Criteria extends ASTCollection
 {

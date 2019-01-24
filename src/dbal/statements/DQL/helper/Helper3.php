@@ -4,6 +4,8 @@ namespace PPA\dbal\statements\DQL\helper;
 
 use PPA\dbal\drivers\DriverInterface;
 use PPA\dbal\query\builder\AST\ASTCollection;
+use PPA\dbal\query\builder\AST\expressions\Having;
+use PPA\dbal\query\builder\CriteriaBuilder;
 
 /**
  * Description of First
@@ -12,13 +14,13 @@ use PPA\dbal\query\builder\AST\ASTCollection;
  */
 class Helper3 extends ASTCollection
 {
-    
-    
     /**
      *
      * @var DriverInterface
      */
     private $driver;
+    
+//    private $collection = [];
     
     public function __construct(DriverInterface $driver)
     {
@@ -27,16 +29,20 @@ class Helper3 extends ASTCollection
         $this->driver = $driver;
     }
     
-    public function orderBy()
+    public function having(): CriteriaBuilder
     {
+        $criteriaBuilder = new CriteriaBuilder($this->driver);
 
+        $this->collection[] = new Having();
+        $this->collection[] = $criteriaBuilder;
+
+        return $criteriaBuilder;
     }
     
-    public function groupBy()
+    public function orderBy()
     {
         
     }
-    
 
 }
 
