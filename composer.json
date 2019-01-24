@@ -1,7 +1,7 @@
 {
     "name": "sweiguny/php-persistence-api",
     "type": "library",
-    "description": "Interface for PHP-Applications to access Object-Relational data. ",
+    "description": "Interface for PHP-Applications to access Object-Relational data.",
     "keywords": ["orm", "dbal"],
     "homepage": "https://github.com/sweiguny/PHP-Persistence-API",
     "license": "MIT",

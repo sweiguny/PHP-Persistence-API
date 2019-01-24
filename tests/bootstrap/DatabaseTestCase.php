@@ -5,6 +5,7 @@ namespace PPA\tests\bootstrap;
 use PHPUnit\DbUnit\Database\DefaultConnection;
 use PHPUnit\DbUnit\TestCaseTrait;
 use PHPUnit\Framework\TestCase;
+use PPA\core\EventDispatcher;
 use PPA\dbal\Connection;
 use PPA\dbal\DriverManager;
 
@@ -35,7 +36,7 @@ abstract class DatabaseTestCase extends TestCase
             $hostname   = $GLOBALS["hostname"];
             $port       = isset($GLOBALS["port"]) ?: null;
 
-            self::$connection = DriverManager::getConnection($driverName, [], $username, $password, $hostname, $database, $port);
+            self::$connection = DriverManager::getConnection(new EventDispatcher(), $driverName, [], $username, $password, $hostname, $database, $port);
         }
         
         if ($this->defaultConnection == null)

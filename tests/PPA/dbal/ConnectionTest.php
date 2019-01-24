@@ -3,6 +3,7 @@
 namespace PPA\tests\dbal;
 
 use PHPUnit\Framework\TestCase;
+use PPA\core\EventDispatcher;
 use PPA\dbal\Connection;
 use PPA\dbal\DriverManager;
 
@@ -29,7 +30,7 @@ class ConnectionTest extends TestCase
             $hostname   = $GLOBALS["hostname"];
             $port       = isset($GLOBALS["port"]) ?: null;
 
-            $this->connection = DriverManager::getConnection($driverName, [], $username, $password, $hostname, $database, $port);
+            $this->connection = DriverManager::getConnection(new EventDispatcher(), $driverName, [], $username, $password, $hostname, $database, $port);
         }
     }
     

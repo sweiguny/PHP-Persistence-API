@@ -16,11 +16,17 @@ class DriverManager
          "pgsql" => '\PPA\dbal\drivers\concrete\PgSQLDriver'
     ];
     
-    public static function getConnection(string $driverName, array $driverOptions, string $username, string $password, string $hostname, string $database, int $port = null): Connection
+    public static function getConnection(
+            EventDispatcher $eventDispatcher,
+            string $driverName,
+            array  $driverOptions,
+            string $username, string $password,
+            string $hostname, string $database, int $port = null
+    ): Connection
     {
         $driver = self::createDriver(self::lookupDriver($driverName), $driverOptions);
         
-        return new Connection($driver, new EventDispatcher(), $username, $password, $hostname, $database, $port);
+        return new Connection($driver, $eventDispatcher, $username, $password, $hostname, $database, $port);
     }
     
     private static function createDriver(string $driverClass, array $driverOptions): AbstractDriver

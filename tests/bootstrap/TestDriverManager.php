@@ -2,6 +2,7 @@
 
 namespace PPA\tests\bootstrap;
 
+use PPA\core\EventDispatcher;
 use PPA\dbal\Connection;
 use PPA\dbal\DriverManager;
 
@@ -16,7 +17,7 @@ class TestDriverManager extends DriverManager
         $hostname   = $GLOBALS["hostname"];
         $port       = isset($GLOBALS["port"]) ?: null;
         
-        return self::getConnection($driverName, $driverOptions, $username, $password, $hostname, $database, $port);
+        return self::getConnection(new EventDispatcher(), $driverName, $driverOptions, $username, $password, $hostname, $database, $port);
     }
 
 }
