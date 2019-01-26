@@ -11,25 +11,19 @@ use PPA\dbal\query\builder\AST\expressions\Select;
 use PPA\dbal\query\builder\AST\expressions\sources\Table;
 use PPA\dbal\query\builder\AST\SQLElementInterface;
 use PPA\dbal\statements\DQL\helper\Helper1;
+use PPA\dbal\statements\SQLStatement;
 
-class SelectStatement extends Property
+class SelectStatement extends SQLStatement
 {
-    /**
-     *
-     * @var DriverInterface
-     */
-    private $driver;
     
     public function __construct(DriverInterface $driver, Property ...$properties)
     {
-        parent::__construct();
-        
-        $this->driver = $driver;
+        parent::__construct($driver);
         
         $this->getState()->setStateDirty(CollectionStateException::CODE_STATEMENT_DIRTY, "Only the SELECT part was done now.");
         
-        array_unshift($properties, new Select());
-        $this->collection = $properties;
+        $this->collection[] = new Select();
+        $this->collection[] = $this->prepareProperties($properties);
         $this->collection[] = new From();
     }
 
@@ -43,7 +37,7 @@ class SelectStatement extends Property
         
         $this->getState()->setStateClean();
         
-        $helper = new Helper1($this->driver);
+        $helper = new Helper1($this->getDriver());
         
         $this->collection[] = new Table($tableName, $alias);
         $this->collection[] = $helper;
@@ -74,6 +68,36 @@ class SelectStatement extends Property
         // which has to be covered in parentheses.
         return ($element instanceof SelectStatement) ? "({$string})" : $string;
     }
+    
+    /**
+     * This method does consolidate all properties that are to select and
+     * wraps an anonymous property class over the outcoming string, so that the
+     * ASTCollection can process it (naked strings are not allowed).
+     * 
+     * @param array $properties
+     * @return Property
+     */
+    private function prepareProperties(array $properties): Property
+    {
+        for ($i = 0, $count = count($properties), $strings = []; $i < $count; $i++)
+        {
+            $strings[] = $this->workOnElement($properties[$i]);
+        }
+        
+        $wrapper = new class($strings) extends Property {
+            private $strings;
+            public function __construct(array $strings) {
+                 $this->strings = $strings;
+            }
+            public function toString(): string
+            {
+                return implode(", ", $this->strings);
+            }
+        };
+        
+        return $wrapper;
+    }
+    
 }
 
 ?>

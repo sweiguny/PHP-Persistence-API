@@ -15,6 +15,7 @@ use PPA\dbal\query\builder\AST\expressions\properties\Literal;
 use PPA\dbal\query\builder\AST\expressions\properties\Property;
 use PPA\dbal\query\builder\AST\expressions\UnnamedParameter;
 use PPA\dbal\query\builder\sub\SelectBuilder;
+use PPA\dbal\statements\DML\UpdateStatement;
 use PPA\dbal\statements\DQL\SelectStatement;
 use PPA\orm\Analysis;
 use PPA\orm\entity\Change;
@@ -222,18 +223,22 @@ class QueryBuilder
         return $selectStatement;
     }
     
-//    
-//    public function end(): self
-//    {
-//        if (!$this->stateIsDirty())
-//        {
-//            throw ExceptionFactory::CollectionState("QueryBuilder is not in a dirty state.");
-//        }
-//        
-//        $this->setStateClean();
-//        
-//        return $this;
-//    }
+    public function update(): UpdateStatement
+    {
+        if (!$this->stateIsInitial())
+        {
+            throw ExceptionFactory::InvalidQueryBuilderState(self::STATE_INITIAL, $this->state);
+        }
+        
+        $updateStatement = new UpdateStatement($this->driver);
+        
+        $this->statement = $updateStatement;
+        
+        $this->setTypeUpdate();
+//        $this->setStateDirty();
+        
+        return $updateStatement;
+    }
     
     public function sql(): string
     {

@@ -18,6 +18,10 @@ class Operator implements SQLElementInterface
     const BETWEEN = "BETWEEN";
     const IN      = "IN";
     
+    /**
+     *
+     * @var string
+     */
     private $operator;
     
     public function __construct(string $operator)

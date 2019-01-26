@@ -213,12 +213,12 @@ class QueryBuilderTest extends TestCase
      */
     public function testJoinWithGroupByAndAggregateFunctionAndHavingClause(int $index, QueryBuilder $queryBuilder): void
     {
-        $queryBuilder->select(new FieldSUM("age"))->fromTable("customer")
+        $queryBuilder->select(new FieldSUM("age"), new Field("type"))->fromTable("customer")
                 ->join("order")->on()->withField("id", "customer")->equalsField("customer_id", "order")
                 ->where()
                     ->withField("id")->inLiterals([10,20,30])
                     ->andWithField("id2")->inLiterals([30,20,10])
-                ->groupBy(new Field("age"))
+                ->groupBy(new Field("type"))
                 ->having()
                     ->withField("test")->greaterEqualsLiteral(10)
                 ;
@@ -226,6 +226,35 @@ class QueryBuilderTest extends TestCase
 //        var_dump($queryBuilder->sql());
         
         $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
+    }
+    
+    /**
+     * @covers ::update
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testUpdateWithWhereClause(int $index, QueryBuilder $queryBuilder): void
+    {
+//        $queryBuilder->update()->table("customer")->set(["a", "?"], ["b", 10]);
+        $queryBuilder->update()->table("customer")
+                ->set("name")->toParameter()
+                ->set("zip")->toParameter()
+                ->where()
+                    ->withField("id")->equalsLiteral(1)
+                ;
+        
+        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
+    }
+    
+    /**
+     * @covers ::delete
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testDeleteWithWhereClause(int $index, QueryBuilder $queryBuilder): void
+    {
+        
+//        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
     }
 
 }

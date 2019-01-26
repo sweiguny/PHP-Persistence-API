@@ -15,7 +15,10 @@ use PPA\dbal\statements\DQL\SelectStatement;
 
 class Criteria extends ASTCollection
 {
-    
+    /**
+     *
+     * @var CriteriaBuilder
+     */
     private $parent;
 
     public function __construct(CriteriaBuilder $parent)

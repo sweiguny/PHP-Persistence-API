@@ -6,4 +6,6 @@ testOnClauseWithGroup;select;Tests an inner join select with a complex on-clause
 testSimpleWhereClause;select;Tests a select statement with a simple where-clause;SELECT * FROM `customer` WHERE `id` = `old_identifier`;
 testComplexWhereClause;select;Tests a select statement with a complex where-clause;SELECT * FROM `customer` AS c WHERE c.`target_group` = 10 AND ( `name` = "jochen" ) OR ( ? BETWEEN 1 AND 2 );
 testInClause;select;Tests a select statement with an in-clause;SELECT * FROM `customer` AS c WHERE c.`id` IN(10, 20, 30) AND `age` IN(SELECT DISTINCT `age` FROM `order`);
-testJoinWithGroupByAndAggregateFunctionAndHavingClause;select;Tests a select statement with a join and having;SELECT SUM(`age`) FROM `customer` JOIN `order` ON customer.`id` = order.`customer_id` WHERE `id` IN(10, 20, 30) AND `id2` IN(30, 20, 10) GROUP BY `age` HAVING `test` >= 10;
+testJoinWithGroupByAndAggregateFunctionAndHavingClause;select;Tests a select statement with a join and having;SELECT SUM(`age`), `type` FROM `customer` JOIN `order` ON customer.`id` = order.`customer_id` WHERE `id` IN(10, 20, 30) AND `id2` IN(30, 20, 10) GROUP BY `type` HAVING `test` >= 10;
+testUpdateWithWhereClause;update;Simple update statement with a single where clause;UPDATE `customer` SET `name` = ?, `zip` = ? WHERE `id` = 1;
+testDeleteWithWhereClause;delete;Simple delete statement with a single where clause;DELETE FROM `customer` WHERE `id` = 1;
