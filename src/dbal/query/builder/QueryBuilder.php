@@ -15,6 +15,8 @@ use PPA\dbal\query\builder\AST\expressions\properties\Literal;
 use PPA\dbal\query\builder\AST\expressions\properties\Property;
 use PPA\dbal\query\builder\AST\expressions\UnnamedParameter;
 use PPA\dbal\query\builder\sub\SelectBuilder;
+use PPA\dbal\statements\DML\DeleteStatement;
+use PPA\dbal\statements\DML\InsertStatement;
 use PPA\dbal\statements\DML\UpdateStatement;
 use PPA\dbal\statements\DQL\SelectStatement;
 use PPA\orm\Analysis;
@@ -238,6 +240,40 @@ class QueryBuilder
 //        $this->setStateDirty();
         
         return $updateStatement;
+    }
+    
+    public function delete(): DeleteStatement
+    {
+        if (!$this->stateIsInitial())
+        {
+            throw ExceptionFactory::InvalidQueryBuilderState(self::STATE_INITIAL, $this->state);
+        }
+        
+        $deleteStatement = new DeleteStatement($this->driver);
+        
+        $this->statement = $deleteStatement;
+        
+        $this->setTypeDelete();
+//        $this->setStateDirty();
+        
+        return $deleteStatement;
+    }
+    
+    public function insert(): InsertStatement
+    {
+        if (!$this->stateIsInitial())
+        {
+            throw ExceptionFactory::InvalidQueryBuilderState(self::STATE_INITIAL, $this->state);
+        }
+        
+        $insertStatement = new InsertStatement($this->driver);
+        
+        $this->statement = $insertStatement;
+        
+        $this->setTypeInsert();
+//        $this->setStateDirty();
+        
+        return $insertStatement;
     }
     
     public function sql(): string

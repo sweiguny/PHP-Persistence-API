@@ -9,7 +9,10 @@ use PPA\dbal\drivers\concrete\MySQLDriver;
 use PPA\dbal\query\builder\AST\expressions\properties\Field;
 use PPA\dbal\query\builder\AST\expressions\properties\FieldDistinct;
 use PPA\dbal\query\builder\AST\expressions\properties\FieldSUM;
+use PPA\dbal\query\builder\AST\expressions\properties\Literal;
+use PPA\dbal\query\builder\AST\expressions\properties\NullValue;
 use PPA\dbal\query\builder\QueryBuilder;
+use const PPA_BOOTSTRAP_PATH;
 
 /**
  * @coversDefaultClass \PPA\dbal\query\builder\QueryBuilder
@@ -235,7 +238,6 @@ class QueryBuilderTest extends TestCase
      */
     public function testUpdateWithWhereClause(int $index, QueryBuilder $queryBuilder): void
     {
-//        $queryBuilder->update()->table("customer")->set(["a", "?"], ["b", 10]);
         $queryBuilder->update()->table("customer")
                 ->set("name")->toParameter()
                 ->set("zip")->toParameter()
@@ -253,8 +255,59 @@ class QueryBuilderTest extends TestCase
      */
     public function testDeleteWithWhereClause(int $index, QueryBuilder $queryBuilder): void
     {
+        $queryBuilder->delete()->fromTable("customer")
+                ->where()
+                    ->withField("id")->equalsLiteral(1)
+                ;
         
-//        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
+        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
+    }
+    
+    /**
+     * @covers ::insert
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testInsertWithSetClause(int $index, QueryBuilder $queryBuilder): void
+    {
+        $queryBuilder->insert()->intoTable("customer")
+                ->set("name")->toLiteral("Simon Weiguny")
+                ->set("dateOfRegistry")->toLiteral("2018-10-10")
+                ;
+        
+        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
+    }
+    
+    /**
+     * @covers ::insert
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testInsertWithValues(int $index, QueryBuilder $queryBuilder): void
+    {
+        $queryBuilder->insert()->intoTable("customer")
+                ->values(new NullValue(), new Literal("Simon Weiguny", "string"), new Literal("2018-10-10", "string"))
+                ;
+        
+        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
+    }
+    
+    /**
+     * @covers ::insert
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testInsertWithQuery(int $index, QueryBuilder $queryBuilder): void
+    {
+        $subQB = clone $queryBuilder;
+        $subQuery = $subQB->select();
+        $subQuery->fromTable("customer")->where()->withField("id")->equalsLiteral(1);
+        
+        $queryBuilder->insert()->intoTable("customer")
+                ->query($subQuery)
+                ;
+        
+        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
     }
 
 }

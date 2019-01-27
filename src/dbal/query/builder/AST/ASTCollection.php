@@ -8,6 +8,9 @@ use Iterator;
 use PPA\core\exceptions\ExceptionFactory;
 use PPA\dbal\query\builder\StatementState;
 
+/**
+ * Abstract Syntax Tree
+ */
 class ASTCollection implements SQLElementInterface
 {
     /**

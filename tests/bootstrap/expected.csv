@@ -9,3 +9,6 @@ testInClause;select;Tests a select statement with an in-clause;SELECT * FROM `cu
 testJoinWithGroupByAndAggregateFunctionAndHavingClause;select;Tests a select statement with a join and having;SELECT SUM(`age`), `type` FROM `customer` JOIN `order` ON customer.`id` = order.`customer_id` WHERE `id` IN(10, 20, 30) AND `id2` IN(30, 20, 10) GROUP BY `type` HAVING `test` >= 10;
 testUpdateWithWhereClause;update;Simple update statement with a single where clause;UPDATE `customer` SET `name` = ?, `zip` = ? WHERE `id` = 1;
 testDeleteWithWhereClause;delete;Simple delete statement with a single where clause;DELETE FROM `customer` WHERE `id` = 1;
+testInsertWithSetClause;insert;Simple insert statement with set clause;INSERT INTO `customer` SET `name` = "Simon Weiguny", `dateOfRegistry` = "2018-10-10";
+testInsertWithValues;insert;Simple insert statement with values clause;INSERT INTO `customer` VALUES(NULL, "Simon Weiguny", "2018-10-10");
+testInsertWithQuery;insert;Insert statement with subquery for inserting data;INSERT INTO `customer` SELECT * FROM `customer` WHERE `id` = 1;

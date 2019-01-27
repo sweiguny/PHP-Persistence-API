@@ -6,7 +6,7 @@ use PPA\dbal\drivers\DriverInterface;
 use PPA\dbal\query\builder\AST\expressions\FieldReference;
 use PPA\dbal\query\builder\AST\expressions\properties\Property;
 use PPA\dbal\query\builder\AST\expressions\Set;
-use PPA\dbal\statements\DML\UpdateStatement;
+use PPA\dbal\statements\SQLStatement;
 
 class SetClauseHelper extends BaseHelper
 {
@@ -18,11 +18,11 @@ class SetClauseHelper extends BaseHelper
     
     /**
      *
-     * @var UpdateStatement
+     * @var SQLStatement
      */
-    private $parent;
+    protected $parent;
 
-    public function __construct(DriverInterface $driver, UpdateStatement $parent)
+    public function __construct(DriverInterface $driver, SQLStatement $parent)
     {
         parent::__construct($driver);
         
