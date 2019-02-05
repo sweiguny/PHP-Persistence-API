@@ -2,6 +2,7 @@
 
 namespace PPA\core\exceptions;
 
+use PPA\core\exceptions\error\TypeError;
 use PPA\core\exceptions\io\NotADirectoryException;
 use PPA\core\exceptions\logic\AlreadyExistentInIdentityMapException;
 use PPA\core\exceptions\logic\AlreadyExistentInOriginsMapException;
@@ -21,8 +22,12 @@ use PPA\core\exceptions\logic\UnknownParametersException;
 use PPA\core\exceptions\logic\WrongTargetClassException;
 use PPA\core\exceptions\logic\WrongTargetPropertyException;
 use PPA\core\exceptions\runtime\CollectionStateException;
+use PPA\core\exceptions\runtime\HasDriverException;
 use PPA\core\exceptions\runtime\InvalidQueryBuilderStateException;
 use PPA\core\exceptions\runtime\InvalidQueryBuilderTypeException;
+use PPA\core\exceptions\runtime\NoDriverException;
+use PPA\core\util\StacktraceAnalyzer;
+use PPA\dbal\query\builder\AST\ASTNode;
 use PPA\orm\entity\Serializable;
 use PPA\orm\mapping\Annotation;
 use PPA\orm\mapping\types\AbstractType;
@@ -140,6 +145,21 @@ final class ExceptionFactory
     public static function CollectionState(int $code, string $message): CollectionStateException
     {
         return new CollectionStateException($message, $code);
+    }
+    
+    public static function NoDriver(ASTNode $object, StacktraceAnalyzer $analyzer): NoDriverException
+    {
+        return new NoDriverException(sprintf("No driver set in '%s'. %s", get_class($object), $analyzer->getCaller()));
+    }
+    
+    public static function HasDriver(ASTNode $object, StacktraceAnalyzer $analyzer): HasDriverException
+    {
+        return new HasDriverException(sprintf("'%s' already has a driver. %s", get_class($object), $analyzer->getCaller()));
+    }
+    
+    public static function TypeError(string $message): TypeError
+    {
+        return new TypeError($message);
     }
     
 //    public static function UnknownInternalDatatype(string $datatype, string $parameterName, string $annotationClass): UnknownInternalDatatypeException

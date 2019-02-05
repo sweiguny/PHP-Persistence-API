@@ -27,7 +27,10 @@
     "autoload": {
         "psr-4": {
             "PPA\\": "src/"
-        }
+        },
+        "files": [
+            "src/dbal/query/builder/AST/AST_globFactories.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

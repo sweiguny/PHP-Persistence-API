@@ -32,6 +32,16 @@ class DummyDriver extends AbstractDriver
         return "";
     }
 
+    public function getCloseIdentifier(): string
+    {
+        return "";
+    }
+
+    public function getOpenIdentifier(): string
+    {
+        return "";
+    }
+
 }
 
 ?>

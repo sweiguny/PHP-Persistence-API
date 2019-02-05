@@ -173,6 +173,8 @@ class UnitOfWorkTest extends TestCase
      */
     public function testWriteChanges(Customer $entity): void
     {
+        $this->markTestSkipped("When switch to new AST is done, don't skip.");
+        
         $reflector = new ReflectionClass(self::$unitOfWork);
         
         $writeChanges = $reflector->getMethod("writeChanges");

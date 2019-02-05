@@ -1,5 +1,7 @@
 TestCase;Type;Description;MySQL;Postgres
-testSelect;select;Tests a simple Select Statement;SELECT * FROM `test` AS c;
+testSelectAll;select;Tests a simple Select Statement;SELECT * FROM `test` AS c;
+testSelectAllWithAsteriskWildcard;select;Tests a simple Select Statement;SELECT * FROM `test` AS c;
+testSelectWithProperties;select;Tests a simple Select Statement;SELECT COUNT(*), MAX(`id`) FROM `test` AS c;
 testJoinClause;select;Tests a join with an on-clause;SELECT * FROM `customer` AS c JOIN `order` AS o;
 testSimpleJoinOnClause;select;Tests a simple inner join select with on-clause;SELECT * FROM `customer` AS c JOIN `order` AS o ON c.`id` = o.`customer` AND :name = 10;
 testOnClauseWithGroup;select;Tests an inner join select with a complex on-clause;SELECT * FROM `customer` AS c JOIN `order` AS o ON c.`id` = o.`customer` AND ( o.`id` > 100 AND o.`id` < 1000 ) OR ( c.`id` BETWEEN 1 AND 10 AND o.`id` BETWEEN 0 AND 100 );

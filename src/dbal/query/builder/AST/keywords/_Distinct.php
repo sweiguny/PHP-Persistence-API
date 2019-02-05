@@ -1,8 +1,8 @@
 <?php
 
-namespace PPA\dbal\query\builder\AST\expressions;
+namespace PPA\dbal\query\builder\AST\keywords;
 
-class UnnamedParameter extends Expression
+class _Distinct extends Keyword
 {
     public function __construct()
     {
@@ -11,9 +11,9 @@ class UnnamedParameter extends Expression
     
     public function toString(): string
     {
-        return "?";
+        return "DISTINCT";
     }
-    
+
 }
 
 ?>

@@ -1,8 +1,8 @@
 <?php
 
-namespace PPA\dbal\query\builder\AST\expressions;
+namespace PPA\dbal\query\builder\AST\operators;
 
-class UnnamedParameter extends Expression
+class _AsteriskWildcard extends Operator
 {
     public function __construct()
     {
@@ -11,9 +11,9 @@ class UnnamedParameter extends Expression
     
     public function toString(): string
     {
-        return "?";
+        return "*";
     }
-    
+
 }
 
 ?>

@@ -2,13 +2,13 @@
 
 namespace PPA\dbal\query\builder\AST\expressions;
 
-use PPA\dbal\query\builder\AST\ASTCollection;
+use PPA\dbal\query\builder\AST\ASTNode;
 
-abstract class Expression extends ASTCollection
+abstract class Expression extends ASTNode
 {
-    public function __construct()
+    public function __construct(bool $needsDriver)
     {
-        parent::__construct();
+        parent::__construct($needsDriver);
     }
     
 }

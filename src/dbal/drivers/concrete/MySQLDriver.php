@@ -27,6 +27,16 @@ class MySQLDriver extends AbstractDriver
         return "mysql";
     }
 
+    public function getCloseIdentifier(): string
+    {
+        return $this->getOpenIdentifier();
+    }
+
+    public function getOpenIdentifier(): string
+    {
+        return "`";
+    }
+
 }
 
 ?>

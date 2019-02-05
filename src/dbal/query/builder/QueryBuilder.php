@@ -9,16 +9,15 @@ use PPA\core\exceptions\ExceptionFactory;
 use PPA\dbal\drivers\DriverInterface;
 use PPA\dbal\query\builder\AST\ASTCollection;
 use PPA\dbal\query\builder\AST\expressions\Expression;
-use PPA\dbal\query\builder\AST\expressions\properties\AsteriskWildcard;
 use PPA\dbal\query\builder\AST\expressions\properties\Field;
 use PPA\dbal\query\builder\AST\expressions\properties\Literal;
-use PPA\dbal\query\builder\AST\expressions\properties\Property;
 use PPA\dbal\query\builder\AST\expressions\UnnamedParameter;
+use PPA\dbal\query\builder\AST\keywords\_Distinct;
+use PPA\dbal\query\builder\AST\statements\DQL\SelectStatement;
 use PPA\dbal\query\builder\sub\SelectBuilder;
 use PPA\dbal\statements\DML\DeleteStatement;
 use PPA\dbal\statements\DML\InsertStatement;
 use PPA\dbal\statements\DML\UpdateStatement;
-use PPA\dbal\statements\DQL\SelectStatement;
 use PPA\orm\Analysis;
 use PPA\orm\entity\Change;
 use PPA\orm\entity\ChangeSet;
@@ -72,7 +71,7 @@ class QueryBuilder
         $this->state   = self::STATE_INITIAL;
         
 //        $this->ASTCollection = [];
-        $this->ASTCollection = new ASTCollection();
+//        $this->ASTCollection = new ASTCollection();
     }
     
 //    public function buildSelect(string $fromTable, parts\SelectList $selectList = null, string $alias = null): self
@@ -200,20 +199,36 @@ class QueryBuilder
         return $this->type == self::TYPE_DELETE;
     }
     
-    public function select(Property ...$properties): SelectStatement
+    // TODO: Refactor select + selectDistinct methods!
+    public function select(Expression ...$selectList): SelectStatement
     {
         if (!$this->stateIsInitial())
         {
             throw ExceptionFactory::InvalidQueryBuilderState(self::STATE_INITIAL, $this->state);
         }
         
-        if (empty($properties))
+        
+        $selectStatement = new SelectStatement($this->driver, null, ...$selectList);
+        
+        $this->statement = $selectStatement;
+//        $this->ASTCollection[] = $selectStatement;
+        
+        $this->setTypeSelet();
+        $this->setStateDirty();
+//        $this->ASTCollection["select"] = $sources;
+        
+        return $selectStatement;
+    }
+    
+    public function selectDistinct(Expression ...$selectList): SelectStatement
+    {
+        if (!$this->stateIsInitial())
         {
-            $properties[] = new AsteriskWildcard();
+            throw ExceptionFactory::InvalidQueryBuilderState(self::STATE_INITIAL, $this->state);
         }
         
         
-        $selectStatement = new SelectStatement($this->driver, ...$properties);
+        $selectStatement = new SelectStatement($this->driver, new _Distinct(), ...$selectList);
         
         $this->statement = $selectStatement;
 //        $this->ASTCollection[] = $selectStatement;

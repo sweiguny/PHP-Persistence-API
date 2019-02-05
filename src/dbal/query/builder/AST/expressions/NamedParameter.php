@@ -2,14 +2,17 @@
 
 namespace PPA\dbal\query\builder\AST\expressions;
 
-class NamedParameter extends UnnamedParameter
+class NamedParameter extends Expression
 {
-    
+    /**
+     *
+     * @var string
+     */
     private $name;
     
-    public function __construct($name)
+    public function __construct(string $name)
     {
-//        parent::__construct();
+        parent::__construct(false);
         
         $this->name = $name;
     }
@@ -18,7 +21,7 @@ class NamedParameter extends UnnamedParameter
     {
         return ":{$this->name}";
     }
-
+    
 }
 
 ?>
