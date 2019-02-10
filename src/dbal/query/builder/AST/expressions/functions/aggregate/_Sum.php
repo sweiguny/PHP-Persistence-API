@@ -2,17 +2,31 @@
 
 namespace PPA\dbal\query\builder\AST\expressions\functions\aggregate;
 
+use PPA\dbal\query\builder\AST\ASTNode;
+use PPA\dbal\query\builder\AST\expressions\Expression;
+
 class _Sum extends AggregateFn
 {
-    public function __construct()
+    /**
+     *
+     * @var ASTNode
+     */
+    private $expression;
+    
+    public function __construct(Expression $expression)
     {
-        parent::__construct();
+        parent::__construct(true);
         
-        
-        echo "<pre>";
-        print_r("in class ".__CLASS__);
-        echo "</pre>";
+        $this->expression = $expression;
     }
+    
+    public function toString(): string
+    {
+        $this->injectDriversWhereNecessary($this->expression);
+        
+        return "SUM({$this->expression->toString()})";
+    }
+
 }
 
 ?>

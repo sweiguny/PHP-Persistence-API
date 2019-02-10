@@ -2,20 +2,12 @@
 
 namespace PPA\dbal\query\builder\AST\statements\helper;
 
-use PPA\dbal\query\builder\AST\clauses\Where;
+use PPA\dbal\query\builder\AST\statements\helper\traits\WhereTrait;
 
-class WhereClauseHelper extends BaseHelper
+class WhereClauseHelper extends GroupByClauseHelper
 {
     
-    public function where(): CriteriaHelper
-    {
-        $helper = new CriteriaHelper($this->getDriver());
-        
-        $this->collection[] = new Where();
-        $this->collection[] = $helper;
-        
-        return $helper;
-    }
+    use WhereTrait;
     
 }
 

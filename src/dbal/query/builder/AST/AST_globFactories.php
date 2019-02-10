@@ -29,9 +29,9 @@ namespace PPA\dbal\query\builder\AST\expressions\functions\aggregate
 {
     use PPA\dbal\query\builder\AST\expressions\Expression;
 
-    function Sum(): _Sum
+    function Sum(Expression $expression): _Sum
     {
-        return new _Sum();
+        return new _Sum($expression);
     }
     
 

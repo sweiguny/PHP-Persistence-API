@@ -3,13 +3,14 @@
 namespace PPA\dbal\query\builder\AST\statements\helper;
 
 use PPA\dbal\query\builder\AST\clauses\On;
+use PPA\dbal\query\builder\AST\statements\helper\criteria\OnCriteriaHelper;
 
-class OnClauseHelper extends BaseHelper
+class OnClauseHelper extends WhereClauseHelper
 {
 
-    public function on(): CriteriaHelper
+    public function on(): OnCriteriaHelper
     {
-        $helper = new CriteriaHelper($this->getDriver());
+        $helper = new OnCriteriaHelper($this->getDriver());
         
         $this->collection[] = new On();
         $this->collection[] = $helper;
