@@ -1,22 +1,27 @@
 <?php
 
-namespace PPA\dbal\statements\DML\helper;
+namespace PPA\dbal\query\builder\AST\statements\helper;
 
-use PPA\dbal\query\builder\AST\expressions\properties\Property;
-use PPA\dbal\query\builder\AST\expressions\Values;
-use PPA\dbal\statements\DQL\SelectStatement;
+use PPA\dbal\query\builder\AST\clauses\Values;
+use PPA\dbal\query\builder\AST\expressions\Expression;
+use PPA\dbal\query\builder\AST\operators\Parenthesis;
+use PPA\dbal\query\builder\AST\statements\DQL\SelectStatement;
 
 class ValuesHelper extends SetClauseHelper
 {
     
-    public function values(Property ...$properties): void
+    public function values(Expression ...$expressions): void
     {
-        $this->parent->getState()->setStateClean();
+//        $this->parent->getState()->setStateClean();
         
-        $this->collection[] = new Values(...$properties);
-//        $this->collection[] = new Operator(Operator::OPEN_GROUP);
-//        $this->collection[] = $this->consolidateProperties($properties);
-//        $this->collection[] = new Operator(Operator::CLOSE_GROUP);
+        $collection = [
+            new Values(),
+            new Parenthesis(Parenthesis::OPEN),
+            self::consolidateNodes(", ", ...$expressions),
+            new Parenthesis(Parenthesis::CLOSE)
+        ];
+        
+        $this->collection[] = self::consolidateNodes("", ...$collection);
     }
     
     /**
@@ -26,7 +31,7 @@ class ValuesHelper extends SetClauseHelper
      */
     public function subQuery(SelectStatement $subquery)
     {
-        $this->parent->getState()->setStateClean();
+//        $this->parent->getState()->setStateClean();
         
         $this->collection[] = $subquery;
     }
@@ -40,27 +45,6 @@ class ValuesHelper extends SetClauseHelper
     {
         $this->subQuery($query);
     }
-    
-//    private function consolidateProperties(array $properties): Property
-//    {
-//        for ($i = 0, $count = count($properties), $strings = []; $i < $count; $i++)
-//        {
-//            $strings[] = $this->workOnElement($properties[$i]);
-//        }
-//        
-//        $wrapper = new class($strings) extends Property {
-//            private $strings;
-//            public function __construct(array $strings) {
-//                 $this->strings = $strings;
-//            }
-//            public function toString(): string
-//            {
-//                return implode(", ", $this->strings);
-//            }
-//        };
-//        
-//        return $wrapper;
-//    }
     
 }
 

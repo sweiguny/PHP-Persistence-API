@@ -5,7 +5,7 @@ namespace PPA\dbal\query\builder\AST\operators;
 use PPA\dbal\query\builder\AST\expressions\Expression;
 use PPA\dbal\query\builder\AST\SQLDataSource;
 
-class _Alias extends Operator implements SQLDataSource
+class _Alias extends AbstractOperator implements SQLDataSource
 {
     /**
      *

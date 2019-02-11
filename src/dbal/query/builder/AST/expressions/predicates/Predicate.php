@@ -4,6 +4,7 @@ namespace PPA\dbal\query\builder\AST\expressions\predicates;
 
 use PPA\dbal\query\builder\AST\ASTCollection;
 use PPA\dbal\query\builder\AST\expressions\Expression;
+use PPA\dbal\query\builder\AST\operators\AbstractOperator;
 use PPA\dbal\query\builder\AST\operators\Operator;
 
 abstract class Predicate extends Expression
@@ -28,7 +29,7 @@ abstract class Predicate extends Expression
         return $this->collection->toString();
     }
     
-    public static function makePredicate(Expression $left, Expression $right, Operator $operator): Predicate
+    public static function makePredicate(Expression $left, Expression $right, AbstractOperator $operator): Predicate
     {
         $predicate = new class($left, $right, $operator) extends Predicate
         {
@@ -43,7 +44,7 @@ abstract class Predicate extends Expression
              * @var Operator
              */
 //            private $operator;
-            public function __construct(Expression $left, Expression $right, Operator $operator)
+            public function __construct(Expression $left, Expression $right, AbstractOperator $operator)
             {
                 parent::__construct();
                 

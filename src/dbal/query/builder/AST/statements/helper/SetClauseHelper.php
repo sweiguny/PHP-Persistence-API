@@ -1,83 +1,78 @@
 <?php
 
-namespace PPA\dbal\statements\DML\helper;
+namespace PPA\dbal\query\builder\AST\statements\helper;
 
 use PPA\dbal\drivers\DriverInterface;
-use PPA\dbal\query\builder\AST\expressions\FieldReference;
-use PPA\dbal\query\builder\AST\expressions\properties\Property;
-use PPA\dbal\query\builder\AST\expressions\Set;
-use PPA\dbal\statements\SQLStatement;
+use PPA\dbal\query\builder\AST\ASTCollection;
+use PPA\dbal\query\builder\AST\ASTNode;
+use PPA\dbal\query\builder\AST\catalogObjects\_Field;
+use PPA\dbal\query\builder\AST\clauses\Set;
+use PPA\dbal\query\builder\AST\expressions\Expression;
+use PPA\dbal\query\builder\AST\operators\Comparison;
+use PPA\dbal\query\builder\AST\statements\helper\traits\WhereTrait;
 
 class SetClauseHelper extends BaseHelper
 {
+    use WhereTrait;
+    
     /**
-     *
+     * The counter here tells, whether the collection shall be consolidated.
+     * 
      * @var int
      */
     private $count = 0;
     
-    /**
-     *
-     * @var SQLStatement
-     */
-    protected $parent;
-
-    public function __construct(DriverInterface $driver, SQLStatement $parent)
+    public function set(string $fieldName, Expression $to): self
     {
-        parent::__construct($driver);
-        
-        $this->parent = $parent;
-    }
-    
-    public function set(string $fieldName): ToHelper
-    {
-        $this->parent->getState()->setStateClean();
-        $this->getState()->setStateDirty(0, "State of set-clause is dirty, because the assignment for field '{$fieldName}' is missing.");
-        
-        $helper = new ToHelper($this->driver, $this);
+        $this->injectDriversWhereNecessary($to);
         
         if ($this->count++ == 1)
         {
-            $this->collection = [$this->consolidateCurrentCollection($this->collection)];
+            $this->consolidateCurrentCollection();
         }
         else
         {
             $this->collection[] = new Set();
         }
         
-        $this->collection[] = new FieldReference($fieldName);
-        $this->collection[] = $helper;
+        $this->collection[] = new _Field($fieldName);
+        $this->collection[] = new Comparison(Comparison::EQUALS);
+        $this->collection[] = $to;
         
-        return $helper;
+        return $this;
     }
-
-    /**
-     * This method ensures, that after a set clause and the assinment expression
-     * the comma follows direct after the field name, so that there's no extra
-     * space character before the comma.
-     * 
-     * @param array $collection
-     * @return Property
-     */
-    private function consolidateCurrentCollection(array $collection): Property
+    
+    private function consolidateCurrentCollection(): void
     {
-        for ($i = 0, $count = count($collection), $strings = []; $i < $count; $i++)
-        {
-            $strings[] = $this->workOnElement($collection[$i]);
-        }
+        $newCollection   = new ASTCollection($this->getDriver());
+        $newCollection[] = $this->wrapCollection();
         
-        $wrapper = new class($strings) extends Property {
-            private $strings;
-            public function __construct(array $strings) {
-                 $this->strings = $strings;
+        $this->collection = $newCollection;
+    }
+    
+    private function wrapCollection(): ASTNode
+    {
+        return new class($this->getDriver(), $this->collection) extends ASTNode
+        {
+            /**
+             *
+             * @var ASTCollection
+             */
+            private $collection;
+
+            public function __construct(DriverInterface $driver, ASTCollection $collection)
+            {
+                parent::__construct(true);
+                
+                $this->injectDriver($driver);
+                $this->collection = $collection;
             }
+
             public function toString(): string
             {
-                return implode(" ", $this->strings) . ",";
+                return $this->collection->toString() . ",";
             }
         };
-        
-        return $wrapper;
     }
     
 }

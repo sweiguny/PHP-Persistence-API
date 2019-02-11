@@ -2,7 +2,7 @@
 
 namespace PPA\dbal\query\builder\AST\operators;
 
-class Comparison extends Operator
+class Comparison extends AbstractOperator
 {
     const EQUALS         = "=";
     const NOT_EQUALS     = "!=";

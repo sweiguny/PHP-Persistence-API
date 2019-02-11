@@ -57,6 +57,7 @@ namespace PPA\dbal\query\builder\AST\operators
     use PPA\dbal\query\builder\AST\expressions\predicates\_Between;
     use PPA\dbal\query\builder\AST\expressions\predicates\_InValues;
     use PPA\dbal\query\builder\AST\expressions\predicates\_InSubquery;
+    use PPA\dbal\query\builder\AST\expressions\_NullValue;
     use PPA\dbal\query\builder\AST\statements\DQL\SelectStatement;
     use PPA\dbal\query\builder\AST\SQLDataSource;
     
@@ -164,6 +165,11 @@ namespace PPA\dbal\query\builder\AST\operators
     function InSubquery(Expression $left, SelectStatement $right): _InSubquery
     {
         return new _InSubquery($left, $right);
+    }
+    
+    function NullValue(): _NullValue
+    {
+        return new _NullValue();
     }
     
 }

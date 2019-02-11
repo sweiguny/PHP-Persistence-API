@@ -2,7 +2,7 @@
 
 namespace PPA\dbal\query\builder\AST\operators;
 
-class Parenthesis extends Operator
+class Parenthesis extends AbstractOperator
 {
     const OPEN  = "(";
     const CLOSE = ")";

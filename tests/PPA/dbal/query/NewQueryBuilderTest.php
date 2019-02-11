@@ -22,6 +22,7 @@ use function PPA\dbal\query\builder\AST\operators\GreaterEquals;
 use function PPA\dbal\query\builder\AST\operators\InSubquery;
 use function PPA\dbal\query\builder\AST\operators\InValues;
 use function PPA\dbal\query\builder\AST\operators\Lower;
+use function PPA\dbal\query\builder\AST\operators\NullValue;
 
 /**
  * @coversDefaultClass \PPA\dbal\query\builder\QueryBuilder
@@ -77,6 +78,7 @@ class QueryBuilderTestNew extends TestCase
     
     public function provideQueryBuilder(): array
     {
+        // TODO: When PHP provides covariance, refactor QueryBuilder :)
         return [
             "mysql" => [1, new QueryBuilder(new MySQLDriver())]
         ];
@@ -84,15 +86,23 @@ class QueryBuilderTestNew extends TestCase
     
     private function checkResult(string $testCase, int $index, string $sql): void
     {
-        $offset   = 1;
-        $expected = self::$expectedResults;
+//        $offset   = 1;
+//        $expected = self::$expectedResults;
         
-        if (!isset($expected[$testCase]))
+        if (!isset(self::$expectedResults[$testCase]))
         {
             throw new \Exception("Test case '{$testCase}' not defined in expected.csv. If you are sure, the test case is defined, please check the delimiter of the test file. It should be ';'.");
         }
         
-        $this->assertEquals($expected[$testCase][$offset + $index], $sql);
+        $expected = self::$expectedResults[$testCase][$index + 1];
+//        echo "<pre>" . print_r($sql, true)."</pre>";
+//        echo "<pre>" . print_r($expected[$testCase][$offset + $index], true)."</pre>";
+        
+//        echo $testCase . "\n";
+//        echo $sql . "\n";
+//        echo $expected . "\n\n\n";
+        
+        $this->assertEquals($expected, $sql);
     }
     
     /**
@@ -263,6 +273,85 @@ class QueryBuilderTestNew extends TestCase
                 ;
         
 //        var_dump($queryBuilder->sql());
+        
+        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
+    }
+    
+    /**
+     * @covers ::update
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testUpdateWithWhereClause(int $index, QueryBuilder $queryBuilder): void
+    {
+        $queryBuilder->update()->table("customer")
+                ->set("name", Parameter())
+                ->set("zip", Parameter())
+                ->where()
+                    ->criteria(Equals(Field("id"), Literal(1)))
+                ;
+        
+        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
+    }
+    
+    /**
+     * @covers ::delete
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testDeleteWithWhereClause(int $index, QueryBuilder $queryBuilder): void
+    {
+        $queryBuilder->delete()->fromTable("customer")
+                ->where()
+                    ->criteria(Equals(Field("id"), Literal(1)))
+                ;
+        
+        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
+    }
+    
+    /**
+     * @covers ::insert
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testInsertWithSetClause(int $index, QueryBuilder $queryBuilder): void
+    {
+        $queryBuilder->insert()->intoTable("customer")
+                ->set("name", Literal("Simon Weiguny"))
+                ->set("dateOfRegistry", Literal("2018-10-10"))
+                ;
+        
+        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
+    }
+    
+    /**
+     * @covers ::insert
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testInsertWithValues(int $index, QueryBuilder $queryBuilder): void
+    {
+        $queryBuilder->insert()->intoTable("customer")
+                ->values(NullValue(), Literal("Simon Weiguny"), Literal("2018-10-10"))
+                ;
+        
+        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
+    }
+    
+    /**
+     * @covers ::insert
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testInsertWithQuery(int $index, QueryBuilder $queryBuilder): void
+    {
+        $subQB = clone $queryBuilder;
+        $subQuery = $subQB->select();
+        $subQuery->from(Table("customer"))->where()->criteria(Equals(Field("id"), Literal(1)));
+        
+        $queryBuilder->insert()->intoTable("customer")
+                ->query($subQuery)
+                ;
         
         $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
     }

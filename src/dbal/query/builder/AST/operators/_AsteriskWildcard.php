@@ -2,7 +2,7 @@
 
 namespace PPA\dbal\query\builder\AST\operators;
 
-class _AsteriskWildcard extends Operator
+class _AsteriskWildcard extends AbstractOperator
 {
     public function __construct()
     {

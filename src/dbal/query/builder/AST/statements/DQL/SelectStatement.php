@@ -15,17 +15,9 @@ use PPA\dbal\query\builder\AST\statements\SQLStatement;
 
 class SelectStatement extends SQLStatement implements SQLDataSource
 {
-    /**
-     *
-     * @var ASTCollection
-     */
-    private $collection;
-    
     public function __construct(DriverInterface $driver, ?Keyword $keyword, Expression ...$selectList)
     {
         parent::__construct($driver);
-        
-        $this->collection = new ASTCollection($driver);
         
         if (empty($selectList))
         {
@@ -58,11 +50,6 @@ class SelectStatement extends SQLStatement implements SQLDataSource
         $this->collection[] = $helper;
         
         return $helper;
-    }
-
-    public function toString(): string
-    {
-        return $this->collection->toString();
     }
     
 }

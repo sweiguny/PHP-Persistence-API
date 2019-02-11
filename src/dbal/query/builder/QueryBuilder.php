@@ -13,11 +13,11 @@ use PPA\dbal\query\builder\AST\expressions\properties\Field;
 use PPA\dbal\query\builder\AST\expressions\properties\Literal;
 use PPA\dbal\query\builder\AST\expressions\UnnamedParameter;
 use PPA\dbal\query\builder\AST\keywords\_Distinct;
+use PPA\dbal\query\builder\AST\statements\DML\DeleteStatement;
+use PPA\dbal\query\builder\AST\statements\DML\InsertStatement;
+use PPA\dbal\query\builder\AST\statements\DML\UpdateStatement;
 use PPA\dbal\query\builder\AST\statements\DQL\SelectStatement;
 use PPA\dbal\query\builder\sub\SelectBuilder;
-use PPA\dbal\statements\DML\DeleteStatement;
-use PPA\dbal\statements\DML\InsertStatement;
-use PPA\dbal\statements\DML\UpdateStatement;
 use PPA\orm\Analysis;
 use PPA\orm\entity\Change;
 use PPA\orm\entity\ChangeSet;
@@ -242,16 +242,16 @@ class QueryBuilder
     
     public function update(): UpdateStatement
     {
-        if (!$this->stateIsInitial())
-        {
-            throw ExceptionFactory::InvalidQueryBuilderState(self::STATE_INITIAL, $this->state);
-        }
+//        if (!$this->stateIsInitial())
+//        {
+//            throw ExceptionFactory::InvalidQueryBuilderState(self::STATE_INITIAL, $this->state);
+//        }
         
         $updateStatement = new UpdateStatement($this->driver);
         
         $this->statement = $updateStatement;
         
-        $this->setTypeUpdate();
+//        $this->setTypeUpdate();
 //        $this->setStateDirty();
         
         return $updateStatement;
