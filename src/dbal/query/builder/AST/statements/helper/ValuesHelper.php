@@ -6,9 +6,11 @@ use PPA\dbal\query\builder\AST\clauses\Values;
 use PPA\dbal\query\builder\AST\expressions\Expression;
 use PPA\dbal\query\builder\AST\operators\Parenthesis;
 use PPA\dbal\query\builder\AST\statements\DQL\SelectStatement;
+use PPA\dbal\query\builder\AST\statements\helper\traits\SetTrait;
 
-class ValuesHelper extends SetClauseHelper
+class ValuesHelper extends BaseHelper
 {
+    use SetTrait;
     
     public function values(Expression ...$expressions): void
     {

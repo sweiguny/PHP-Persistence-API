@@ -2,9 +2,9 @@
 
 namespace PPA\dbal\query\builder\AST\expressions\predicates;
 
-class Exists
+class Like extends Predicate
 {
-    //put your code here
+    
 }
 
 ?>

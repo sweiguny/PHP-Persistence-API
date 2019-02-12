@@ -86,21 +86,12 @@ class QueryBuilderTestNew extends TestCase
     
     private function checkResult(string $testCase, int $index, string $sql): void
     {
-//        $offset   = 1;
-//        $expected = self::$expectedResults;
-        
         if (!isset(self::$expectedResults[$testCase]))
         {
             throw new \Exception("Test case '{$testCase}' not defined in expected.csv. If you are sure, the test case is defined, please check the delimiter of the test file. It should be ';'.");
         }
         
         $expected = self::$expectedResults[$testCase][$index + 1];
-//        echo "<pre>" . print_r($sql, true)."</pre>";
-//        echo "<pre>" . print_r($expected[$testCase][$offset + $index], true)."</pre>";
-        
-//        echo $testCase . "\n";
-//        echo $sql . "\n";
-//        echo $expected . "\n\n\n";
         
         $this->assertEquals($expected, $sql);
     }
