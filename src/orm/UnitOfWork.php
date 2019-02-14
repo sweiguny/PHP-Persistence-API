@@ -4,9 +4,6 @@ namespace PPA\orm;
 
 use Exception;
 use Latitude\QueryBuilder\Statement;
-use PPA\dbal\query\builder\parts\Condition;
-use PPA\dbal\query\builder\parts\On;
-use PPA\dbal\query\builder\parts\SelectList;
 use PPA\dbal\query\builder\QueryBuilder;
 use PPA\orm\entity\Change;
 use PPA\orm\entity\ChangeSet;
@@ -66,7 +63,7 @@ class UnitOfWork implements EventSubscriberInterface
     public function getChangeSet(Serializable $entity): ChangeSet
     {
         $changeSet    = new ChangeSet();
-        $analysis     = $this->analyser->getMetaData($entity);
+        $analysis     = $this->analyser->getMetaData(get_class($entity));
         $properties   = $analysis->getPropertiesByName();
         $originalData = $this->originsMap->retrieve($analysis->getClassname(), $analysis->getPrimaryProperty()->getValue($entity));
         $currentData  = $this->originsMap->extractData($entity);
@@ -136,30 +133,38 @@ class UnitOfWork implements EventSubscriberInterface
         return $statements;
     }
 
-    public function addEntity(EntityPersistEvent $event)
+    public function addEntity(EntityPersistEvent $event): void
     {
         $entityManager = $event->getEntityManager();
         $entity        = $event->getEntity();
         
-        $metaData = $this->analyser->getMetaData($entity);
-        
-        $key = $metaData->getPrimaryProperty()->getValue($entity);
+        $metaData = $this->getMetadataFromAnalyser($entity);
+        $key      = $this->getValueFromPrimaryPropertyofEntity($metaData, $entity);
         
         $this->identityMap->add($entity, $key);
         $this->originsMap->add($entity, $key);
     }
 
-    public function removeEntity(EntityRemoveEvent $event)
+    public function removeEntity(EntityRemoveEvent $event): void
     {
         $entityManager = $event->getEntityManager();
         $entity        = $event->getEntity();
         
-        $metaData = $this->analyser->getMetaData($entity);
-        
-        $key = $metaData->getPrimaryProperty()->getValue($entity);
+        $metaData = $this->getMetadataFromAnalyser($entity);
+        $key      = $this->getValueFromPrimaryPropertyofEntity($metaData, $entity);
         
         $this->identityMap->remove($entity, $key);
         $this->originsMap->remove($entity, $key);
+    }
+    
+    private function getMetadataFromAnalyser(Serializable $entity): Analysis
+    {
+        return $this->analyser->getMetaData(get_class($entity));
+    }
+    
+    private function getValueFromPrimaryPropertyofEntity(Analysis $metaData, Serializable $entity)
+    {
+        return $metaData->getPrimaryProperty()->getValue($entity);
     }
 
     public function getIdentityMap(): IdentityMap

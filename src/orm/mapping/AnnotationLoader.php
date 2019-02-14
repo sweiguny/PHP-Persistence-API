@@ -60,6 +60,18 @@ class AnnotationLoader
     {
         return $this->iterateOverAnnotations($annotatableClass, $bag->getClassAnnotations());
     }
+
+    private function loadPropertyAnnotations(string $annotatableClass, RawAnnotationBag $bag): array
+    {
+        $loadedAnnotations = [];
+        
+        foreach ($bag->getPropertyAnnotations() as $propertyName => $annotations)
+        {
+            $loadedAnnotations[$propertyName] = $this->iterateOverAnnotations($annotatableClass, $annotations, $propertyName);
+        }
+        
+        return $loadedAnnotations;
+    }
     
     private function iterateOverAnnotations(string $annotatableClass, array $annotations, string $propertyName = null)
     {
@@ -70,26 +82,14 @@ class AnnotationLoader
             $resolvedClassname = ltrim($this->loadAndResolveAnnotationClassname($annotationClassname, $annotatableClass), "\\");
             $annotation        = $this->factory->instantiate($annotatableClass, $resolvedClassname, $parameters, $propertyName);
             
-            if ($propertyName == null)
-            {
+//            if ($propertyName == null)
+//            {
                 $loadedAnnotations[$resolvedClassname] = $annotation;
-            }
-            else
-            {
-                $loadedAnnotations[$propertyName][$resolvedClassname] = $annotation;
-            }
-        }
-        
-        return $loadedAnnotations;
-    }
-
-    private function loadPropertyAnnotations(string $annotatableClass, RawAnnotationBag $bag): array
-    {
-        $loadedAnnotations = [];
-        
-        foreach ($bag->getPropertyAnnotations() as $propertyName => $annotations)
-        {
-            $loadedAnnotations[$propertyName] = $this->iterateOverAnnotations($annotatableClass, $annotations, $propertyName);
+//            }
+//            else
+//            {
+//                $loadedAnnotations[$propertyName][$resolvedClassname] = $annotation;
+//            }
         }
         
         return $loadedAnnotations;

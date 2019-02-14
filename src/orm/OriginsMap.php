@@ -74,7 +74,8 @@ class OriginsMap
     
     public function extractData(Serializable $entity): array
     {
-        $properties = $this->analyser->getMetaData($entity)->getPropertiesByColumn();
+        $classname  = get_class($entity);
+        $properties = $this->analyser->getMetaData($classname)->getPropertiesByColumn();
         $data       = [];
         
         foreach ($properties as $property)
