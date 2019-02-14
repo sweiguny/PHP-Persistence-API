@@ -50,7 +50,7 @@ class AnnotationFactoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->dummyEntity       = new class() implements Serializable {};
+        $this->dummyEntity       = get_class(new class() implements Serializable {});
         $this->annotationFactory = new AnnotationFactory();
         $this->annotationReader  = new AnnotationReader();
         $this->annotationLoader  = new AnnotationLoader();
@@ -100,12 +100,13 @@ class AnnotationFactoryTest extends TestCase
     
     public function testDefaults(): void
     {
-        $entity = new TestDefaultsEntity();
-        $fqcn   = explode("\\", get_class($entity));
-        $result = $this->annotationLoader->load($this->annotationReader->read($entity));
+        $entity    = new TestDefaultsEntity();
+        $className = get_class($entity);
+        $fqcn      = explode("\\", $className);
         
-        $classAnnotations    = $result->getClassAnnotations();
-        $propertyAnnotations = $result->getPropertyAnnotations();
+        $annotationBag       = $this->annotationLoader->load($className, $this->annotationReader->readFromObject($entity));
+        $classAnnotations    = $annotationBag->getClassAnnotations();
+        $propertyAnnotations = $annotationBag->getPropertyAnnotations();
         
         $this->assertEquals(strtolower(array_pop($fqcn)), $classAnnotations[Table::class]->getName());
         $this->assertEquals($entity->getColumn(), $propertyAnnotations["column"][Column::class]->getName());
@@ -115,14 +116,18 @@ class AnnotationFactoryTest extends TestCase
     {
         $this->expectException(WrongTargetPropertyException::class);
         
-        $this->annotationLoader->load($this->annotationReader->read(new TargetClassWrong()));
+        $classname = TargetClassWrong::class;
+        
+        $this->annotationLoader->load($classname, $this->annotationReader->readFromAnnotatableClass($classname));
     }
     
     public function testWrongTargetClass(): void
     {
         $this->expectException(WrongTargetClassException::class);
         
-        $this->annotationLoader->load($this->annotationReader->read(new TargetPropertyWrong()));
+        $classname = TargetPropertyWrong::class;
+        
+        $this->annotationLoader->load($classname, $this->annotationReader->readFromAnnotatableClass($classname));
     }
     
 }

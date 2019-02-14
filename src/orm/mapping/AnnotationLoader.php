@@ -48,56 +48,54 @@ class AnnotationLoader
         $this->factory = new AnnotationFactory();
     }
     
-    public function load(RawAnnotationBag $bag): AnnotationBag
+    public function load(string $annotatableClass, RawAnnotationBag $bag): AnnotationBag
     {
         return new AnnotationBag(
-                $bag->getOwner(),
-                $this->loadClassAnnotations($bag),
-                $this->loadPropertyAnnotations($bag)
+                $this->loadClassAnnotations($annotatableClass, $bag),
+                $this->loadPropertyAnnotations($annotatableClass, $bag)
             );
     }
     
-    private function loadClassAnnotations(RawAnnotationBag $bag): array
+    private function loadClassAnnotations(string $annotatableClass, RawAnnotationBag $bag): array
     {
-        $loadedAnnotations = [];
-        
-        foreach ($bag->getClassAnnotations() as $annotationClassname => $parameters)
-        {
-                list($resolvedClassname, $annotation) = $this->workOnAnnotation($annotationClassname, $bag->getOwner(), $parameters);
-                
-                $loadedAnnotations[$resolvedClassname] = $annotation;
-        }
-        
-        return $loadedAnnotations;
+        return $this->iterateOverAnnotations($annotatableClass, $bag->getClassAnnotations());
     }
-
-    private function loadPropertyAnnotations(RawAnnotationBag $bag): array
+    
+    private function iterateOverAnnotations(string $annotatableClass, array $annotations, string $propertyName = null)
     {
         $loadedAnnotations = [];
         
-        foreach ($bag->getPropertyAnnotations() as $propertyName => $annotations)
+        foreach ($annotations as $annotationClassname => $parameters)
         {
-            $loadedAnnotations[$propertyName] = [];
+            $resolvedClassname = ltrim($this->loadAndResolveAnnotationClassname($annotationClassname, $annotatableClass), "\\");
+            $annotation        = $this->factory->instantiate($annotatableClass, $resolvedClassname, $parameters, $propertyName);
             
-            foreach ($annotations as $annotationClassname => $parameters)
+            if ($propertyName == null)
             {
-                list($resolvedClassname, $annotation) = $this->workOnAnnotation($annotationClassname, $bag->getOwner(), $parameters, $propertyName);
-                
+                $loadedAnnotations[$resolvedClassname] = $annotation;
+            }
+            else
+            {
                 $loadedAnnotations[$propertyName][$resolvedClassname] = $annotation;
             }
         }
         
         return $loadedAnnotations;
     }
-    
-    private function workOnAnnotation(string $annotationClassname, Annotatable $owner, array $parameters, string $propertyName = null): array
+
+    private function loadPropertyAnnotations(string $annotatableClass, RawAnnotationBag $bag): array
     {
-        $resolvedClassname = ltrim($this->loadAndResolveAnnotationClassname($annotationClassname, get_class($owner)), "\\");
+        $loadedAnnotations = [];
         
-        return [$resolvedClassname, $this->factory->instantiate($owner, $resolvedClassname, $parameters, $propertyName)];
+        foreach ($bag->getPropertyAnnotations() as $propertyName => $annotations)
+        {
+            $loadedAnnotations[$propertyName] = $this->iterateOverAnnotations($annotatableClass, $annotations, $propertyName);
+        }
+        
+        return $loadedAnnotations;
     }
 
-    private function loadAndResolveAnnotationClassname(string $annotationClassname, string $ownerClassname): string
+    private function loadAndResolveAnnotationClassname(string $annotationClassname, string $annotatableClass): string
     {
         if (class_exists($annotationClassname, false))
         {
@@ -135,7 +133,7 @@ class AnnotationLoader
                 }
             }
             
-            throw ExceptionFactory::CouldNotLoadAnnotation($annotationClassname, $ownerClassname);
+            throw ExceptionFactory::CouldNotLoadAnnotation($annotationClassname, $annotatableClass);
         }
     }
     

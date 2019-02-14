@@ -2,6 +2,7 @@
 
 namespace PPA\orm\mapping;
 
+use PPA\core\exceptions\ExceptionFactory;
 use ReflectionClass;
 
 /**
@@ -66,18 +67,35 @@ class AnnotationReader
             self::$ignoredAnnotations[] = $annotation;
         }
     }
-
-    public function read(Annotatable $annotatable): RawAnnotationBag
+    
+    public function readFromAnnotatableClass(string $classname): AnnotationBag
+    {
+        $reflectionClass = new ReflectionClass($classname);
+        
+        if (!$reflectionClass->isSubclassOf(Annotatable::class))
+        {
+            throw ExceptionFactory::InvalidArgument("Class '{$classname}' is not a subclass of Annotatable.");
+        }
+        
+        return $this->readAnnotations($reflectionClass);
+    }
+    
+    public function readFromObject(Annotatable $annotatable): AnnotationBag
     {
         $reflectionClass = new ReflectionClass($annotatable);
         
-        return new RawAnnotationBag(
-                $annotatable,
-                $this->fetchAnnotations($reflectionClass->getDocComment()),
-                $this->readPropertyAnnotations($reflectionClass->getProperties())
-            );
+        return $this->readAnnotations($reflectionClass);
     }
     
+    private function readAnnotations(ReflectionClass $reflectionClass): AnnotationBag
+    {
+        $classAnnotations    = $this->fetchAnnotations($reflectionClass->getDocComment());
+        $propertyAnnotations = $this->readPropertyAnnotations($reflectionClass->getProperties());
+
+        return new AnnotationBag($classAnnotations, $propertyAnnotations); 
+    }
+
+
     private function readPropertyAnnotations(array $properties): array
     {
         $result = [];

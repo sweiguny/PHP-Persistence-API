@@ -2,6 +2,8 @@
 
 namespace PPA\dbal\query;
 
+use PPA\dbal\Connection;
+
 /**
  * Description of Query
  *
@@ -11,12 +13,23 @@ class Query
 {
     /**
      *
-     * @var \PDO
+     * @var Connection
      */
-    private $pdo;
+    private $connection;
     
-    public function __construct()
+
+    private $pdo;
+
+    public function __construct(Connection $connection)
     {
+        $this->connection = $connection;
+//        \PDO::fetch_l
+        $this->pdo = $connection->getPdo();
+    }
+
+    public function execute(string $query)
+    {
+        
         
     }
     

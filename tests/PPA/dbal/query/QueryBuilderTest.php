@@ -295,6 +295,8 @@ class QueryBuilderTestNew extends TestCase
         $queryBuilder->delete()->fromTable("customer")
                 ->where()
                     ->criteria(Equals(Field("id"), Literal(1)))
+                    // TODO: If feature covariance exists, please refactor the way, so that here having and groupBy and so on can't be called.
+                    // ->criteria(...)->having(...) is not allowwed...
                 ;
         
         $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());

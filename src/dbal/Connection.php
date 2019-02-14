@@ -4,6 +4,7 @@ namespace PPA\dbal;
 
 use LogicException;
 use PDO;
+use PPA\core\exceptions\ExceptionFactory;
 use PPA\dbal\drivers\AbstractDriver;
 use PPA\dbal\event\ConnectionEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -77,12 +78,27 @@ class Connection
         
         $this->eventDispatcher->dispatch(ConnectionEvent::PRE_CONNECT, $connectionEvent);
         
-        $this->pdo = new PDO(
-                $dataSourceName,
-                $this->username,
-                $this->password,
-                $this->driver->getOptions()
-            );
+        try
+        {
+            $this->pdo = new PDO(
+                    $dataSourceName,
+                    $this->username,
+                    $this->password,
+                    $this->driver->getOptions()
+                );
+        }
+        catch (\Exception $exc) // Otherwise PDO exposes user credentials.
+        {
+            $message = $exc->getMessage();
+            $connectionEvent->setMessage($message);
+            $this->eventDispatcher->dispatch(ConnectionEvent::CONNECTION_ERROR, $connectionEvent);
+            
+            throw ExceptionFactory::Connection("[" . ConnectionEvent::CONNECTION_ERROR . "] {$message}");
+        }
+//        finally
+//        {
+//            echo "finally";
+//        }
         
         $this->eventDispatcher->dispatch(ConnectionEvent::POST_CONNECT, $connectionEvent);
     }

@@ -8,6 +8,7 @@ use PPA\core\exceptions\logic\AlreadyExistentInIdentityMapException;
 use PPA\core\exceptions\logic\AlreadyExistentInOriginsMapException;
 use PPA\core\exceptions\logic\CouldNotLoadAnnotationException;
 use PPA\core\exceptions\logic\DatatypeDoesNotExistException;
+use PPA\core\exceptions\logic\DomainException;
 use PPA\core\exceptions\logic\InvalidArgumentException;
 use PPA\core\exceptions\logic\NotExistentInIdentityMapException;
 use PPA\core\exceptions\logic\NotExistentInOriginsMapException;
@@ -22,6 +23,7 @@ use PPA\core\exceptions\logic\UnknownParametersException;
 use PPA\core\exceptions\logic\WrongTargetClassException;
 use PPA\core\exceptions\logic\WrongTargetPropertyException;
 use PPA\core\exceptions\runtime\CollectionStateException;
+use PPA\core\exceptions\runtime\ConnectionException;
 use PPA\core\exceptions\runtime\HasDriverException;
 use PPA\core\exceptions\runtime\InvalidQueryBuilderStateException;
 use PPA\core\exceptions\runtime\InvalidQueryBuilderTypeException;
@@ -160,6 +162,21 @@ final class ExceptionFactory
     public static function TypeError(string $message): TypeError
     {
         return new TypeError($message);
+    }
+    
+    public static function Connection(string $message): ConnectionException
+    {
+        return new ConnectionException($message);
+    }
+    
+    public static function NotInDomain(string $message): DomainException
+    {
+        return new DomainException($message);
+    }
+    
+    public static function AlreadyInDomain(string $message): InvalidArgumentException
+    {
+        return new InvalidArgumentException($message);
     }
     
 //    public static function UnknownInternalDatatype(string $datatype, string $parameterName, string $annotationClass): UnknownInternalDatatypeException

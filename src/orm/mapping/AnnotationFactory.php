@@ -4,7 +4,6 @@ namespace PPA\orm\mapping;
 
 use LogicException;
 use PPA\core\exceptions\ExceptionFactory;
-use PPA\orm\entity\Serializable;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionParameter;
@@ -22,13 +21,13 @@ class AnnotationFactory
         $this->annotationReader = new AnnotationReader();
     }
     
-    public function instantiate(Serializable $entity, string $annotationClassname, array $parameters, string $propertyName = null): Annotation
+    public function instantiate(string $annotatableClass, string $annotationClassname, array $parameters, string $propertyName = null): Annotation
     {
         $reflector   = new ReflectionClass($annotationClassname);
         $constructor = $reflector->getConstructor();
-        $description = $this->annotationReader->read($reflector->newInstanceWithoutConstructor());
+        $description = $this->annotationReader->readFromAnnotatableClass($annotationClassname);
         
-        $this->workOnParameters($entity, $description, $parameters, $propertyName);
+        $this->workOnParameters($annotatableClass, $annotationClassname, $description, $parameters, $propertyName);
         
         /* @var $annotation Annotation */
         $annotation = $constructor == null
@@ -39,7 +38,7 @@ class AnnotationFactory
         
         if (!empty($parameters))
         {
-            throw ExceptionFactory::UnknownParameters($parameters, $annotationClassname, get_class($entity));
+            throw ExceptionFactory::UnknownParameters($parameters, $annotationClassname, $annotatableClass);
         }
         
         return $annotation;
@@ -96,33 +95,31 @@ class AnnotationFactory
      * This method checks for required parameters of the defined annotations.
      * It also parses the default values.
      * 
-     * @param Serializable $entity
+     * @param string $annotatableClass
      * @param RawAnnotationBag $annotationDescription
      * @param array $annotationParameters
      * @param string $propertyName
      * @throws LogicException
      */
-    private function workOnParameters(Serializable $entity, RawAnnotationBag $annotationDescription, array &$annotationParameters, string $propertyName = null): void
+    private function workOnParameters(string $annotatableClass, string $annotationClassname, AnnotationBag $annotationDescription, array &$annotationParameters, string $propertyName = null): void
     {
         $classAnnotations    = $annotationDescription->getClassAnnotations();
         $propertyAnnotations = $annotationDescription->getPropertyAnnotations();
-        $annotationClass     = get_class($annotationDescription->getOwner());
-        $entityClass         = get_class($entity);
         
         if (!isset($classAnnotations[Annotation::TARGET]) && !isset($classAnnotations[Annotation::TARGET]["value"]))
         {
-            throw ExceptionFactory::TargetAnnotationNotExistent($annotationClass);
+            throw ExceptionFactory::TargetAnnotationNotExistent($annotationClassname);
         }
         
         $target = $classAnnotations[Annotation::TARGET]["value"];
         
         if ($propertyName == null && $target != Annotation::TARGET_CLASS)
         {
-            throw ExceptionFactory::WrongTargetClass($annotationClass, $entityClass, $target);
+            throw ExceptionFactory::WrongTargetClass($annotationClassname, $annotatableClass, $target);
         }
         else if ($propertyName != null && $target != Annotation::TARGET_PROPERTY)
         {
-            throw ExceptionFactory::WrongTargetProperty($annotationClass, $entityClass, $propertyName, $target);
+            throw ExceptionFactory::WrongTargetProperty($annotationClassname, $annotatableClass, $propertyName, $target);
         }
         
         /*
@@ -137,10 +134,10 @@ class AnnotationFactory
             {
                 if (!isset($parameter["default"]))
                 {
-                    throw ExceptionFactory::ParameterRequired($parameterName, $annotationClass, $entityClass);
+                    throw ExceptionFactory::ParameterRequired($parameterName, $annotationClassname, $annotatableClass);
                 }
                 
-                $annotationParameters[$parameterName] = $this->parseDefault($entity, $parameter["default"], $propertyName);
+                $annotationParameters[$parameterName] = $this->parseDefault($annotatableClass, $parameter["default"], $propertyName);
             }
             
             if (isset($annotationParameters[$parameterName]))
@@ -158,12 +155,12 @@ class AnnotationFactory
 //        }
     }
     
-    private function parseDefault(Serializable $entity, $value, string $propertyName = null)
+    private function parseDefault(string $annotatableClass, $value, string $propertyName = null)
     {
         switch ($value)
         {
             case "%classname%":
-                $classname = explode("\\", get_class($entity));
+                $classname = explode("\\", $annotatableClass);
                 $value     = strtolower(array_pop($classname));
                 break;
             case "%propertyname%":

@@ -8,8 +8,9 @@ use Symfony\Component\EventDispatcher\Event;
 
 class ConnectionEvent extends Event
 {
-    const PRE_CONNECT  = PPA::EventPrefix . "pre-connect";
-    const POST_CONNECT = PPA::EventPrefix . "post-connect";
+    const PRE_CONNECT      = PPA::EventPrefix . "pre-connect";
+    const CONNECTION_ERROR = PPA::EventPrefix . "connection-error";
+    const POST_CONNECT     = PPA::EventPrefix . "post-connect";
     
     /**
      *
@@ -28,6 +29,12 @@ class ConnectionEvent extends Event
      * @var string
      */
     private $username;
+
+    /**
+     *
+     * @var string
+     */
+    private $message;
     
     public function __construct(DriverInterface $driver, string $dataSourceName, string $username)
     {
@@ -51,6 +58,16 @@ class ConnectionEvent extends Event
         return $this->username;
     }
     
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    public function setMessage($message)
+    {
+        $this->message = $message;
+    }
+
 }
 
 ?>

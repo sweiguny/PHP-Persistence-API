@@ -45,15 +45,15 @@ class AnnotationLoaderTest extends TestCase
     /**
      * @covers ::load
      * 
-     * @dataProvider provideEntities
+     * @dataProvider provideEntityClassnames
      */
-    public function testLoad(Serializable $entity): void
+    public function testLoad(string $entityClass): void
     {
         $annotationReader = new AnnotationReader();
         $annotationLoader = new AnnotationLoader();
         
         $declaredClasses   = get_declared_classes();
-        $annotationBag     = $annotationLoader->load($annotationReader->read($entity));
+        $annotationBag     = $annotationLoader->load($entityClass, $annotationReader->readFromAnnotatableClass($entityClass));
         $loadedAnnotations = $this->getClassList($annotationBag);
         
         $differenceCheck = array_diff($declaredClasses, $loadedAnnotations);
@@ -97,7 +97,15 @@ class AnnotationLoaderTest extends TestCase
         ];
     }
     
-    public function provideEntities(): array
+    public function provideEntityClassnames(): array
+    {
+        return [
+            [Customer::class]
+//            new BadlyAnnotated()
+        ];
+    }
+    
+    private function provideEntities(): array
     {
         return [
             [new Customer(1, "John", "Doe", "at home")]

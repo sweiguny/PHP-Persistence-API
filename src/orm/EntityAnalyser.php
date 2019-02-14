@@ -38,24 +38,24 @@ class EntityAnalyser
         $this->annotationLoader = new AnnotationLoader();
     }
     
-    public function getMetaData(Serializable $entity): Analysis
+    public function getMetaData(string $classname): Analysis
     {
-        $classname = get_class($entity);
+//        $classname = get_class($entity);
         $metadata  = $this->metaDataMap->retrieve($classname);
         
         if ($metadata == null)
         {
-            $metadata = $this->analyse($entity, $classname);
+            $metadata = $this->analyse($classname);
             $this->metaDataMap->add($classname, $metadata);
         }
         
         return $metadata;
     }
     
-    public function analyse(Serializable $entity, string $classname): Analysis
+    public function analyse(string $classname): Analysis
     {
-        $this->reflector = new ReflectionClass($classname);
-        $annotationBag   = $this->annotationLoader->load($this->annotationReader->read($entity));
+//        $this->reflector = new ReflectionClass($classname);
+        $annotationBag   = $this->annotationLoader->load($classname, $this->annotationReader->readFromAnnotatableClass($classname));
         
         list($tableName) = $this->analyseClassAnnotations($classname, $annotationBag->getClassAnnotations());
         list($primaryProperty, $propertiesByName, $propertiesByColumn) = $this->analysePropertyAnnotations($classname, $annotationBag->getPropertyAnnotations());

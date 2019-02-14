@@ -26,8 +26,8 @@ class ConnectionTest extends TestCase
             $driverName = $GLOBALS["driver"];
             $username   = $GLOBALS["username"];
             $password   = $GLOBALS["password"];
-            $database   = $GLOBALS["database"];
             $hostname   = $GLOBALS["hostname"];
+            $database   = $GLOBALS["database"];
             $port       = isset($GLOBALS["port"]) ?: null;
 
             $this->connection = DriverManager::getConnection(new EventDispatcher(), $driverName, [], $username, $password, $hostname, $database, $port);

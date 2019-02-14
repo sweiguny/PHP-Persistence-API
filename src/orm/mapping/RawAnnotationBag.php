@@ -22,17 +22,17 @@ class RawAnnotationBag
      */
     private $propertyAnnotations;
     
-    public function __construct(Annotatable $owner, array $classAnnotations, array $propertyAnnotations)
+    public function __construct(/*Annotatable $owner, */array $classAnnotations, array $propertyAnnotations)
     {
-        $this->owner               = $owner;
+//        $this->owner               = $owner;
         $this->classAnnotations    = $classAnnotations;
         $this->propertyAnnotations = $propertyAnnotations;
     }
     
-    public function getOwner(): Annotatable
-    {
-        return $this->owner;
-    }
+//    public function getOwner(): Annotatable
+//    {
+//        return $this->owner;
+//    }
 
     public function getClassAnnotations(): array
     {

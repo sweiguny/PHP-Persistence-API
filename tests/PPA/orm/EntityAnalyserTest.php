@@ -37,7 +37,7 @@ class EntityAnalyserTest extends TestCase
             $this->expectException($expectedException);
         }
         
-        $analysis = $this->entityAnalyser->analyse($entity, get_class($entity));
+        $analysis = $this->entityAnalyser->analyse(get_class($entity));
         
         $this->assertEquals($primaryPropertyName, $analysis->getPrimaryProperty()->getName());
     }
