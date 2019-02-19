@@ -1,15 +1,20 @@
 <?php
 
-namespace PPA\dbal\drivers\concrete;
+namespace PPA\tests\bootstrap\mock;
 
 use PPA\dbal\drivers\AbstractDriver;
 
-class MySQLDriver extends AbstractDriver
+/**
+ * Description of DummyDriver
+ *
+ * @author siwe
+ */
+class DriverMock extends AbstractDriver
 {
     
     public function getCharset(): string
     {
-        return "utf8"; // Change to utf8mb4?
+        return "";
     }
 
     public function getDefaultOptions(): array
@@ -19,24 +24,24 @@ class MySQLDriver extends AbstractDriver
 
     public function getDefaultPort(): int
     {
-        return 3306;
+        return 0;
     }
 
     public function getDriverName(): string
     {
-        return "mysql";
-    }
-
-    public function getValueIdentifier(): string
-    {
-        return "\"";
+        return "";
     }
 
     public function getSystemIdentifier(): string
     {
-        return "`";
+        return "";
     }
-    
+
+    public function getValueIdentifier(): string
+    {
+        return "";
+    }
+
 }
 
 ?>

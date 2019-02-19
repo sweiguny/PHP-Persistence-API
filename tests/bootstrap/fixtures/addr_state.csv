@@ -1,93 +1,94 @@
-"1";"Burgenland";"1"
-"2";"Kärnten";"1"
-"3";"Niederösterreich";"1"
-"4";"Oberösterreich";"1"
-"5";"Salzburg";"1"
-"6";"Steiermark";"1"
-"7";"Tirol";"1"
-"8";"Vorarlberg";"1"
-"9";"Wien";"1"
-"10";"Brandenburg";"2"
-"11";"Berlin";"2"
-"12";"Baden-Württemberg";"2"
-"13";"Bayern";"2"
-"14";"Bremen";"2"
-"15";"Hessen";"2"
-"16";"Hamburg";"2"
-"17";"Mecklenburg-Vorpommern";"2"
-"18";"Niedersachsen";"2"
-"19";"Nordrhein-Westfalen";"2"
-"20";"Rheinland-Pfalz";"2"
-"21";"Schleswig-Holstein";"2"
-"22";"Saarland";"2"
-"23";"Sachsen";"2"
-"24";"Sachsen-Anhalt";"2"
-"25";"Thüringen";"2"
-"26";"Aquitaine";"3"
-"27";"Auvergne";"3"
-"28";"Basse-Normandie";"3"
-"29";"Bourgogne";"3"
-"30";"Bretagne";"3"
-"31";"Centre";"3"
-"32";"Champagne-Ardenne";"3"
-"33";"Corse";"3"
-"34";"Franche-Comté";"3"
-"35";"Haute-Normandie";"3"
-"36";"Île-de-France";"3"
-"37";"Languedoc-Roussillon";"3"
-"38";"Limousin";"3"
-"39";"Lorraine";"3"
-"40";"Midi-Pyrénées";"3"
-"41";"Nord-Pas-de-Calais";"3"
-"42";"Pays de la Loire";"3"
-"43";"Picardie";"3"
-"44";"Poitou-Charentes";"3"
-"45";"Provence-Alpes-Côte d'Azur";"3"
-"46";"Rhône-Alpes";"3"
-"47";"Alsace";"3"
-"57";"Jihočeský kraj";"4"
-"58";"Plzeňský kraj";"4"
-"59";"Karlovarský kraj";"4"
-"60";"Ústecký kraj";"4"
-"61";"Středočeský kraj";"4"
-"62";"Liberecký kraj";"4"
-"63";"Královéhradecký kraj";"4"
-"64";"Pardubický kraj";"4"
-"65";"Kraj Vysočina";"4"
-"66";"Jihomoravský kraj";"4"
-"67";"Zlínský kraj";"4"
-"69";"Moravskoslezský kraj";"4"
-"70";"Olomoucký kraj";"4"
-"71";"Hlavní město Praha";"4"
-"72";"Abruzzi";"5"
-"73";"Basilicata";"5"
-"74";"Calabria";"5"
-"75";"Campania";"5"
-"76";"Emilia-Romagna";"5"
-"77";"Friuli-Venezia Giulia";"5"
-"78";"Liguria";"5"
-"79";"Lombardia";"5"
-"80";"Lazio";"5"
-"81";"Marche";"5"
-"82";"Molise";"5"
-"83";"Piemonte";"5"
-"84";"Puglia";"5"
-"85";"Sicilia";"5"
-"86";"Sardegna";"5"
-"87";"Toscana";"5"
-"88";"Trentino-Alto Adige";"5"
-"89";"Umbria";"5"
-"90";"Valle D'Aosta";"5"
-"91";"Veneto";"5"
-"103";"Gorenjska";"6"
-"104";"Goriška";"6"
-"105";"Jugovzhodna Slovenija";"6"
-"106";"Koroška";"6"
-"107";"Notranjsko-kraška";"6"
-"108";"Obalno-kraška";"6"
-"109";"Osrednjeslovenska";"6"
-"110";"Podravska";"6"
-"111";"Savinjska";"6"
-"112";"Spodnjeposavska";"6"
-"113";"Zasavska";"6"
-"114";"Pomurska";"6"
+id;name;country
+1;Burgenland;1
+2;Kärnten;1
+3;Niederösterreich;1
+4;Oberösterreich;1
+5;Salzburg;1
+6;Steiermark;1
+7;Tirol;1
+8;Vorarlberg;1
+9;Wien;1
+10;Brandenburg;2
+11;Berlin;2
+12;Baden-Württemberg;2
+13;Bayern;2
+14;Bremen;2
+15;Hessen;2
+16;Hamburg;2
+17;Mecklenburg-Vorpommern;2
+18;Niedersachsen;2
+19;Nordrhein-Westfalen;2
+20;Rheinland-Pfalz;2
+21;Schleswig-Holstein;2
+22;Saarland;2
+23;Sachsen;2
+24;Sachsen-Anhalt;2
+25;Thüringen;2
+26;Aquitaine;3
+27;Auvergne;3
+28;Basse-Normandie;3
+29;Bourgogne;3
+30;Bretagne;3
+31;Centre;3
+32;Champagne-Ardenne;3
+33;Corse;3
+34;Franche-Comté;3
+35;Haute-Normandie;3
+36;Île-de-France;3
+37;Languedoc-Roussillon;3
+38;Limousin;3
+39;Lorraine;3
+40;Midi-Pyrénées;3
+41;Nord-Pas-de-Calais;3
+42;Pays de la Loire;3
+43;Picardie;3
+44;Poitou-Charentes;3
+45;Provence-Alpes-Côte d'Azur;3
+46;Rhône-Alpes;3
+47;Alsace;3
+57;Jihočeský kraj;4
+58;Plzeňský kraj;4
+59;Karlovarský kraj;4
+60;Ústecký kraj;4
+61;Středočeský kraj;4
+62;Liberecký kraj;4
+63;Královéhradecký kraj;4
+64;Pardubický kraj;4
+65;Kraj Vysočina;4
+66;Jihomoravský kraj;4
+67;Zlínský kraj;4
+69;Moravskoslezský kraj;4
+70;Olomoucký kraj;4
+71;Hlavní město Praha;4
+72;Abruzzi;5
+73;Basilicata;5
+74;Calabria;5
+75;Campania;5
+76;Emilia-Romagna;5
+77;Friuli-Venezia Giulia;5
+78;Liguria;5
+79;Lombardia;5
+80;Lazio;5
+81;Marche;5
+82;Molise;5
+83;Piemonte;5
+84;Puglia;5
+85;Sicilia;5
+86;Sardegna;5
+87;Toscana;5
+88;Trentino-Alto Adige;5
+89;Umbria;5
+90;Valle D'Aosta;5
+91;Veneto;5
+103;Gorenjska;6
+104;Goriška;6
+105;Jugovzhodna Slovenija;6
+106;Koroška;6
+107;Notranjsko-kraška;6
+108;Obalno-kraška;6
+109;Osrednjeslovenska;6
+110;Podravska;6
+111;Savinjska;6
+112;Spodnjeposavska;6
+113;Zasavska;6
+114;Pomurska;6

@@ -13,9 +13,9 @@ interface DriverInterface
     
     public function getDefaultOptions(): array;
     
-    public function getOpenIdentifier(): string;
+    public function getSystemIdentifier(): string;
     
-    public function getCloseIdentifier(): string;
+    public function getValueIdentifier(): string;
     
 }
 

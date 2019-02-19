@@ -1,1 +1,1 @@
-phpunit -c tests/travis/mariadb.phpunit.xml
+phpunit -c tests/config/mariadb.phpunit.xml

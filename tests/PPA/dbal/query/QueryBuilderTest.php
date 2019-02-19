@@ -2,9 +2,9 @@
 
 namespace PPA\tests\dbal;
 
-use Generator;
 use PHPUnit\Framework\TestCase;
 use PPA\core\exceptions\io\IOException;
+use PPA\core\util\FileReader;
 use PPA\dbal\drivers\concrete\MySQLDriver;
 use PPA\dbal\query\builder\QueryBuilder;
 use const PPA_BOOTSTRAP_PATH;
@@ -41,7 +41,7 @@ class QueryBuilderTestNew extends TestCase
         parent::setUpBeforeClass();
         
         $filepath = self::createFilePathToExpectedResultsFile("expected.csv");
-        $iterator = self::readExpectedResultsFile($filepath);
+        $iterator = (new FileReader())->getLineIterator($filepath);
         $index    = 0;
         
         foreach ($iterator as $iteration)
@@ -56,24 +56,12 @@ class QueryBuilderTestNew extends TestCase
     
     private static function createFilePathToExpectedResultsFile(string $filename): string
     {
-        if (!file_exists($filepath = PPA_BOOTSTRAP_PATH . DIRECTORY_SEPARATOR . $filename))
+        if (!file_exists($filepath = PPA_TEST_BOOTSTRAP_PATH . DIRECTORY_SEPARATOR . $filename))
         {
             throw new IOException("File '{$filepath}' does not exist.");
         }
         
         return $filepath;
-    }
-    
-    private static function readExpectedResultsFile(string $filepath): Generator
-    {
-        $handle = fopen($filepath, "r");
-        
-        while (!feof($handle))
-        {
-            yield trim(fgets($handle));
-        }
-
-        fclose($handle);
     }
     
     public function provideQueryBuilder(): array

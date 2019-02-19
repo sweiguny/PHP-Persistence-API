@@ -307,24 +307,31 @@ class QueryBuilder
         return $this->statement->toString();
     }
     
-    public static function processExpression($expression): Expression
+    public function clear()
     {
-        if ($expression == "?")
-        {
-            $expression = new UnnamedParameter();
-        }
-        // Check if string is quoted
-        else if (is_string($expression) && preg_match('/^(["\']).*\1$/m', $expression) || is_integer($expression))
-        {
-            $expression = new Literal(trim($expression, "\"'"), gettype($expression));
-        }
-        else
-        {
-            $expression = new Field($expression);
-        }
-        
-        return $expression;
+        $this->statement = null;
+        $this->type      = null;
+        $this->state     = self::STATE_INITIAL;
     }
+    
+//    public static function processExpression($expression): Expression
+//    {
+//        if ($expression == "?")
+//        {
+//            $expression = new UnnamedParameter();
+//        }
+//        // Check if string is quoted
+//        else if (is_string($expression) && preg_match('/^(["\']).*\1$/m', $expression) || is_integer($expression))
+//        {
+//            $expression = new Literal(trim($expression, "\"'"), gettype($expression));
+//        }
+//        else
+//        {
+//            $expression = new Field($expression);
+//        }
+//        
+//        return $expression;
+//    }
     
 }
 

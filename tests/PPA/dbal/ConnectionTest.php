@@ -3,49 +3,31 @@
 namespace PPA\tests\dbal;
 
 use PHPUnit\Framework\TestCase;
-use PPA\core\EventDispatcher;
 use PPA\dbal\Connection;
-use PPA\dbal\DriverManager;
+use PPA\tests\bootstrap\ConnectionProviderForTestEnvironment;
 
 /**
  * @coversDefaultClass PPA\dbal\Connection
  */
 class ConnectionTest extends TestCase
 {
-    /**
-     *
-     * @var Connection
-     */
-    private $connection;
-
-
-    protected function setUp(): void
+    public function provideConnections(): array
     {
-        if ($this->connection == null)
-        {
-            $driverName = $GLOBALS["driver"];
-            $username   = $GLOBALS["username"];
-            $password   = $GLOBALS["password"];
-            $hostname   = $GLOBALS["hostname"];
-            $database   = $GLOBALS["database"];
-            $port       = isset($GLOBALS["port"]) ?: null;
-
-            $this->connection = DriverManager::getConnection(new EventDispatcher(), $driverName, [], $username, $password, $hostname, $database, $port);
-        }
+        return ConnectionProviderForTestEnvironment::getConnections();
     }
     
     /**
      * @covers ::isConnected
+     * 
+     * @dataProvider provideConnections
      */
-    public function testIsConnected(): void
+    public function testIsConnected(Connection $connection): void
     {
-        $connection = $this->connection;
-        
-        $this->assertFalse($connection->isConnected());
+        $this->assertFalse($connection->isConnected(), "Should be false, since no connection attempt was done yet.");
         
         $connection->connect();
         
-        $this->assertTrue($connection->isConnected());
+        $this->assertTrue($connection->isConnected(), "Should be true, since we already tried to connect.");
     }
 
 }

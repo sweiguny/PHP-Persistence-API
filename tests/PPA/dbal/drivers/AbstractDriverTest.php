@@ -4,7 +4,8 @@ namespace PPA\tests\dbal\drivers;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use PPA\tests\bootstrap\DummyDriver;
+use PPA\dbal\drivers\AbstractDriver;
+use PPA\tests\bootstrap\mock\DriverMock;
 
 /**
  * @coversDefaultClass PPA\dbal\drivers\AbstractDriver
@@ -17,17 +18,13 @@ class AbstractDriverTest extends TestCase
      */
     public function testOptions(): void
     {
-        $abstractDefaultOptions = [
-            PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_AUTOCOMMIT => true
-        ];
         $testOptions = [
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
         ];
         
-        $driver = new DummyDriver($testOptions);
+        $driver = new DriverMock($testOptions);
 
-        $expectedOptions = array_merge($abstractDefaultOptions, $driver->getDefaultOptions(), $testOptions);
+        $expectedOptions = AbstractDriver::DEFAULT_OPTIONS + $driver->getDefaultOptions() + $testOptions;
         
         $this->assertEquals($expectedOptions, $driver->getOptions());
     }

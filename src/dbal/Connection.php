@@ -4,12 +4,13 @@ namespace PPA\dbal;
 
 use LogicException;
 use PDO;
+use PDOException;
 use PPA\core\exceptions\ExceptionFactory;
 use PPA\dbal\drivers\AbstractDriver;
 use PPA\dbal\event\ConnectionEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class Connection
+class Connection implements ConnectionInterface
 {
     /**
      *
@@ -87,25 +88,27 @@ class Connection
                     $this->driver->getOptions()
                 );
         }
-        catch (\Exception $exc) // Otherwise PDO exposes user credentials.
+        catch (PDOException $exc) // Otherwise PDO exposes user credentials.
         {
-            $message = $exc->getMessage();
-            $connectionEvent->setMessage($message);
-            $this->eventDispatcher->dispatch(ConnectionEvent::CONNECTION_ERROR, $connectionEvent);
-            
-            throw ExceptionFactory::Connection("[" . ConnectionEvent::CONNECTION_ERROR . "] {$message}");
+            $this->catchConnectionException($exc, $connectionEvent);
         }
-//        finally
-//        {
-//            echo "finally";
-//        }
         
         $this->eventDispatcher->dispatch(ConnectionEvent::POST_CONNECT, $connectionEvent);
     }
     
+    private function catchConnectionException(PDOException $exc, ConnectionEvent $connectionEvent)
+    {
+        $this->eventDispatcher->dispatch(ConnectionEvent::CONNECTION_ERROR, $connectionEvent);
+        
+        $message = $exc->getMessage();
+        $connectionEvent->setMessage($message);
+
+        throw ExceptionFactory::Connection("[" . ConnectionEvent::CONNECTION_ERROR . "] {$message}");
+    }
+
     public function getDataSourceName(): string
     {
-        return vsprintf("%s:host=%s;dbname=%s;charset=%s;port=%s", [
+        return vsprintf("%s:host=%s;dbname=%s;client_encoding=%s;port=%s", [
             $this->driver->getDriverName(),
             $this->hostname,
             $this->database,

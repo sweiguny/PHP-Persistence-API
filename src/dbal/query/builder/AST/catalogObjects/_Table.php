@@ -21,7 +21,7 @@ class _Table extends CatalogObject implements SQLDataSource
     
     public function toString(): string
     {
-        return $this->getDriver()->getOpenIdentifier() . $this->name . $this->getDriver()->getCloseIdentifier();
+        return $this->getDriver()->getSystemIdentifier() . $this->name . $this->getDriver()->getSystemIdentifier();
     }
     
 }

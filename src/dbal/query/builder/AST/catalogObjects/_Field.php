@@ -31,7 +31,7 @@ class _Field extends CatalogObject
     
     public function toString(): string
     {
-        return $this->tableReference . $this->getDriver()->getOpenIdentifier() . $this->name . $this->getDriver()->getCloseIdentifier();
+        return $this->tableReference . $this->getDriver()->getSystemIdentifier() . $this->name . $this->getDriver()->getSystemIdentifier();
     }
 
 }

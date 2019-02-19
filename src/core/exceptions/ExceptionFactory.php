@@ -2,6 +2,8 @@
 
 namespace PPA\core\exceptions;
 
+use PPA\core\exceptions\error\DriverNotInstalledError;
+use PPA\core\exceptions\error\DriverNotSupportedError;
 use PPA\core\exceptions\error\TypeError;
 use PPA\core\exceptions\io\NotADirectoryException;
 use PPA\core\exceptions\logic\AlreadyExistentInIdentityMapException;
@@ -28,6 +30,7 @@ use PPA\core\exceptions\runtime\HasDriverException;
 use PPA\core\exceptions\runtime\InvalidQueryBuilderStateException;
 use PPA\core\exceptions\runtime\InvalidQueryBuilderTypeException;
 use PPA\core\exceptions\runtime\NoDriverException;
+use PPA\core\PPA;
 use PPA\core\util\StacktraceAnalyzer;
 use PPA\dbal\query\builder\AST\ASTNode;
 use PPA\orm\entity\Serializable;
@@ -39,6 +42,21 @@ final class ExceptionFactory
 {
     
     private function __construct() {}
+    
+    public static function DriverNotInstalled(string $drivername, array $drivers): DriverNotInstalledError
+    {
+        return new DriverNotInstalledError(PPA::ApplicationName . " provides a driver for '{$drivername}', but it is not supported by PDO. Installed drivers: " . implode(", ", $drivers));
+    }
+    
+    public static function DriverInstalledButNotLoaded(string $drivername): DriverNotInstalledError
+    {
+        return new DriverNotInstalledError("Driver '{$drivername}' is basically provided (by " . PPA::ApplicationShortName . " & PDO), but 'was not found'. Did you maybe forget to restart webserver?");
+    }
+    
+    public static function DriverNotSupported(string $drivername, array $drivers): DriverNotSupportedError
+    {
+        return new DriverNotSupportedError(PPA::ApplicationName . " does not provide a driver for '{$drivername}'. Supported drivers: " . implode(", ", $drivers));
+    }
     
     public static function UnknownParameters(array $parameters, string $annotationClass, string $entityClass): UnknownParametersException
     {

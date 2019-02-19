@@ -2,10 +2,12 @@
 
 namespace PPA\tests\orm;
 
+use Mockery;
 use PHPUnit\Framework\TestCase;
 use PPA\core\EventDispatcher;
 use PPA\core\exceptions\logic\AlreadyExistentInIdentityMapException;
 use PPA\core\exceptions\logic\NotExistentInIdentityMapException;
+use PPA\dbal\Connection;
 use PPA\dbal\TransactionManager;
 use PPA\orm\entity\Serializable;
 use PPA\orm\EntityManager;
@@ -14,7 +16,6 @@ use PPA\orm\IdentityMap;
 use PPA\orm\OriginsMap;
 use PPA\orm\UnitOfWork;
 use PPA\tests\bootstrap\entity\Customer;
-use PPA\tests\bootstrap\TestDriverManager;
 use ReflectionClass;
 
 /**
@@ -48,8 +49,8 @@ class UnitOfWorkTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        $connection = TestDriverManager::getConnectionByGlobals();
-        $connection->connect();
+        $connection = Mockery::mock(Connection::class);
+        $connection->expects("getPdo");
         
         $eventDispatcher    = new EventDispatcher();
         $transactionManager = new TransactionManager($connection, $eventDispatcher);

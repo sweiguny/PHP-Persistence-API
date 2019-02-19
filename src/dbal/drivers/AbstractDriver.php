@@ -7,22 +7,26 @@ use PDO;
 abstract class AbstractDriver implements DriverInterface
 {
     /**
-     *
-     * @var array
+     * @const array
      */
-    private $options = [
-            PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_AUTOCOMMIT => true
+    const DEFAULT_OPTIONS = [
+            PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION
+//            PDO::ATTR_AUTOCOMMIT => true // not available for pgsql
         ];
 
     public function __construct(array $options = [])
     {
-        $this->options = array_merge($this->getDefaultOptions(), $this->options, $options);
+        $this->options = $this->getDefaultOptions() + self::DEFAULT_OPTIONS + $options;
     }
 
     public function getOptions(): array
     {
         return $this->options;
+    }
+    
+    public function __toString(): string
+    {
+        return "driver:" . $this->getDriverName();
     }
 
 }

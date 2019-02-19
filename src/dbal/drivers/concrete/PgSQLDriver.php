@@ -1,20 +1,15 @@
 <?php
 
-namespace PPA\tests\bootstrap;
+namespace PPA\dbal\drivers\concrete;
 
 use PPA\dbal\drivers\AbstractDriver;
 
-/**
- * Description of DummyDriver
- *
- * @author siwe
- */
-class DummyDriver extends AbstractDriver
+class PgSQLDriver extends AbstractDriver
 {
     
     public function getCharset(): string
     {
-        return "";
+        return "utf8";
     }
 
     public function getDefaultOptions(): array
@@ -24,22 +19,22 @@ class DummyDriver extends AbstractDriver
 
     public function getDefaultPort(): int
     {
-        return 0;
+        return 5432;
     }
 
     public function getDriverName(): string
     {
-        return "";
+        return "pgsql";
     }
 
-    public function getCloseIdentifier(): string
+    public function getValueIdentifier(): string
     {
-        return "";
+        return "'";
     }
 
-    public function getOpenIdentifier(): string
+    public function getSystemIdentifier(): string
     {
-        return "";
+        return "\"";
     }
 
 }

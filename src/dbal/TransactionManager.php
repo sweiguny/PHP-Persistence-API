@@ -12,7 +12,7 @@ class TransactionManager
 {
     /**
      *
-     * @var Connection
+     * @var ConnectionInterface
      */
     private $connection;
     
@@ -28,7 +28,7 @@ class TransactionManager
      */
     private $eventDispatcher;
 
-    public function __construct(Connection $connection, EventDispatcher $eventDispatcher)
+    public function __construct(ConnectionInterface $connection, EventDispatcher $eventDispatcher)
     {
         $this->connection      = $connection;
         $this->pdo             = $connection->getPdo();
@@ -44,7 +44,7 @@ class TransactionManager
         
         $this->eventDispatcher->dispatch(TransactionBeginEvent::NAME, new TransactionBeginEvent());
         
-        $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
+//        $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
         $this->pdo->beginTransaction();
     }
 
@@ -58,7 +58,7 @@ class TransactionManager
         $this->eventDispatcher->dispatch(TransactionCommitEvent::NAME, new TransactionCommitEvent());
         
         $this->pdo->commit();
-        $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
+//        $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
     }
 
     public function rollback(): void
@@ -71,7 +71,7 @@ class TransactionManager
         $this->eventDispatcher->dispatch(TransactionRollbackEvent::NAME, new TransactionRollbackEvent());
         
         $this->pdo->rollBack();
-        $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
+//        $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
     }
 
     public function inTransaction(): bool
@@ -79,7 +79,7 @@ class TransactionManager
         return (bool) $this->pdo->inTransaction();
     }
     
-    public function getConnection(): Connection
+    public function getConnection(): ConnectionInterface
     {
         return $this->connection;
     }
