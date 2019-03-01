@@ -9,13 +9,16 @@ use PPA\dbal\drivers\AbstractDriver;
 
 class DriverManager
 {
+    const PGSQL = "pgsql";
+    const MYSQL = "mysql";
+    
     /**
      *
      * @var array
      */    
     const DRIVER_MAP = [
-        "mysql" => '\PPA\dbal\drivers\concrete\MySQLDriver',
-        "pgsql" => '\PPA\dbal\drivers\concrete\PgSQLDriver'
+        self::MYSQL => '\PPA\dbal\drivers\concrete\MySQLDriver',
+        self::PGSQL => '\PPA\dbal\drivers\concrete\PgSQLDriver'
     ];
     
     public static function createConnection(
@@ -26,7 +29,7 @@ class DriverManager
             string $hostname, string $database, int $port = null
     ): Connection
     {
-        $driver = self::createDriver(self::lookupDriver($driverName), $driverOptions);
+        $driver = self::createDriver(self::lookupDriver(strtolower($driverName)), $driverOptions);
         
         return new Connection($driver, $eventDispatcher, $username, $password, $hostname, $database, $port);
     }
@@ -38,15 +41,11 @@ class DriverManager
     
     protected static function lookupDriver(string $driverName): string
     {
-        $driverName = strtolower($driverName);
-//        $driverList = self::getAvailableDrivers();
-        
-//        print_r(array_keys(self::DRIVER_MAP));
         if (!isset(self::DRIVER_MAP[$driverName]))
         {
             throw ExceptionFactory::DriverNotSupported($driverName, array_keys(self::DRIVER_MAP));
         }
-//        print_r(PDO::getAvailableDrivers());
+        
         if (!in_array($driverName, PDO::getAvailableDrivers()))
         {
             throw ExceptionFactory::DriverNotInstalled($driverName, PDO::getAvailableDrivers());

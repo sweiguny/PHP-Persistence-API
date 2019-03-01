@@ -4,9 +4,12 @@ namespace PPA\tests\bootstrap;
 
 use PHPUnit\Framework\TestCase;
 use PPA\core\EventDispatcher;
+use PPA\core\exceptions\error\DriverNotInstalledError;
+use PPA\core\exceptions\io\IOException;
+use PPA\core\util\FileReader;
 use PPA\dbal\Connection;
-use PPA\dbal\DriverManager;
 use PPA\dbal\TransactionManager;
+use const PPA_TEST_BOOTSTRAP_PATH;
 
 abstract class DatabaseTestCase extends TestCase
 {
@@ -35,21 +38,28 @@ abstract class DatabaseTestCase extends TestCase
         
         $eventDispatcher = new EventDispatcher();
         
-        self::$connection = ConnectionProviderForTestEnvironment::getConnectionByName(self::$drivername);
-        self::$connection->connect();
-        
-        self::$transactionManager = new TransactionManager(self::$connection, $eventDispatcher);
-        
-        self::setUpFixtures();
+        try
+        {
+            self::$connection = ConnectionProviderForTestEnvironment::getConnectionByName(self::$drivername);
+            self::$connection->connect();
+
+            self::$transactionManager = new TransactionManager(self::$connection, $eventDispatcher);
+
+            self::setUpFixtures();
+        }
+        catch (DriverNotInstalledError $ex)
+        {
+            self::markTestSkipped("Skipping test class (" . static::class . ") for driver '" . self::$drivername . "'. Because: \"{$ex->getMessage()}\"");
+        }
     }
     
     private static function setUpFixtures(): void
     {
 //        echo "DatabaseTestCase::setUpFixtures\n";
         
-        $addrStatePath = self::createFilePathToFixtures("addr_country.csv");
+        $addrStatePath = self::generateFilePathToFixtures("addr_country.csv");
         
-        $filereader = new \PPA\core\util\FileReader();
+        $filereader = new FileReader();
         $iterator   = $filereader->getLineIterator($addrStatePath);
         
         self::$transactionManager->begin();
@@ -71,7 +81,7 @@ abstract class DatabaseTestCase extends TestCase
         self::$transactionManager->commit();
     }
     
-    private static function createFilePathToFixtures(string $filename): string
+    private static function generateFilePathToFixtures(string $filename): string
     {
         if (!file_exists($filepath = PPA_TEST_BOOTSTRAP_PATH . DIRECTORY_SEPARATOR . "fixtures" . DIRECTORY_SEPARATOR . $filename))
         {

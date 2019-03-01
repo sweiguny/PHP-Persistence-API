@@ -103,7 +103,7 @@ class Connection implements ConnectionInterface
         $message = $exc->getMessage();
         $connectionEvent->setMessage($message);
 
-        throw ExceptionFactory::Connection("[" . ConnectionEvent::CONNECTION_ERROR . "] {$message}");
+        throw ExceptionFactory::Connection("[" . ConnectionEvent::CONNECTION_ERROR . "|{$connectionEvent->getDriver()}] {$message}");
     }
 
     public function getDataSourceName(): string

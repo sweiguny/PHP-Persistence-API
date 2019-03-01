@@ -45,7 +45,7 @@ final class ExceptionFactory
     
     public static function DriverNotInstalled(string $drivername, array $drivers): DriverNotInstalledError
     {
-        return new DriverNotInstalledError(PPA::ApplicationName . " provides a driver for '{$drivername}', but it is not supported by PDO. Installed drivers: " . implode(", ", $drivers));
+        return new DriverNotInstalledError(PPA::ApplicationName . " provides a driver for '{$drivername}', but it is not supported by PDO. Installed drivers: '" . implode("', '", $drivers) . "'");
     }
     
     public static function DriverInstalledButNotLoaded(string $drivername): DriverNotInstalledError
@@ -55,7 +55,7 @@ final class ExceptionFactory
     
     public static function DriverNotSupported(string $drivername, array $drivers): DriverNotSupportedError
     {
-        return new DriverNotSupportedError(PPA::ApplicationName . " does not provide a driver for '{$drivername}'. Supported drivers: " . implode(", ", $drivers));
+        return new DriverNotSupportedError(PPA::ApplicationName . " does not provide a driver for '{$drivername}'. Supported drivers: '" . implode("', '", $drivers) . "'");
     }
     
     public static function UnknownParameters(array $parameters, string $annotationClass, string $entityClass): UnknownParametersException

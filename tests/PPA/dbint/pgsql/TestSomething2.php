@@ -1,6 +1,6 @@
 <?php
 
-namespace PPA\tests\dbint\postgre;
+namespace PPA\tests\dbint\pgsql;
 
 class TestSomething2 extends \PHPUnit\Framework\TestCase
 {
