@@ -23,7 +23,7 @@ trait SetTrait
     {
         $this->injectDriversWhereNecessary($to);
         
-        if ($this->count++ == 1)
+        if ($this->count++ >= 1)
         {
             $this->consolidateCurrentCollection();
         }

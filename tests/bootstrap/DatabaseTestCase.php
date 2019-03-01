@@ -5,11 +5,14 @@ namespace PPA\tests\bootstrap;
 use PHPUnit\Framework\TestCase;
 use PPA\core\EventDispatcher;
 use PPA\core\exceptions\error\DriverNotInstalledError;
-use PPA\core\exceptions\io\IOException;
-use PPA\core\util\FileReader;
+use PPA\core\exceptions\runtime\db\DatabaseException;
 use PPA\dbal\Connection;
 use PPA\dbal\TransactionManager;
-use const PPA_TEST_BOOTSTRAP_PATH;
+use PPA\orm\EntityAnalyser;
+use PPA\tests\bootstrap\entity\City;
+use PPA\tests\bootstrap\entity\Country;
+use PPA\tests\bootstrap\entity\District;
+use PPA\tests\bootstrap\entity\State;
 
 abstract class DatabaseTestCase extends TestCase
 {
@@ -31,6 +34,18 @@ abstract class DatabaseTestCase extends TestCase
      * @var TransactionManager
      */
     protected static $transactionManager;
+    
+    /**
+     *
+     * @var EntityAnalyser
+     */
+    protected static $entityAnalyser;
+    
+    /**
+     *
+     * @var FixtureSetup
+     */
+    private static $fixtureSetup;
 
     public static function setUpBeforeClass(): void
     {
@@ -44,8 +59,10 @@ abstract class DatabaseTestCase extends TestCase
             self::$connection->connect();
 
             self::$transactionManager = new TransactionManager(self::$connection, $eventDispatcher);
-
-            self::setUpFixtures();
+            self::$entityAnalyser     = new EntityAnalyser();
+            self::$fixtureSetup       = new FixtureSetup(self::$connection, self::$entityAnalyser, self::$transactionManager);
+            
+            self::setUpFixtures(self::$fixtureSetup);
         }
         catch (DriverNotInstalledError $ex)
         {
@@ -53,53 +70,39 @@ abstract class DatabaseTestCase extends TestCase
         }
     }
     
-    private static function setUpFixtures(): void
+    /**
+     * Please respect foreign keys...
+     * 
+     * @param FixtureSetup $setup
+     * @return void
+     */
+    private static function setUpFixtures(FixtureSetup $setup): void
     {
-//        echo "DatabaseTestCase::setUpFixtures\n";
-        
-        $addrStatePath = self::generateFilePathToFixtures("addr_country.csv");
-        
-        $filereader = new FileReader();
-        $iterator   = $filereader->getLineIterator($addrStatePath);
-        
-        self::$transactionManager->begin();
-        
-        $header = explode(";", $iterator->current());
-        $count  = count($header);
-        
-        $query = "INSERT INTO addr_country (id, name, short_name) VALUES(" . implode(",", array_fill(0, $count, "?")) . ")";
-        $statement = self::$connection->getPdo()->prepare($query);
-        
-        for ($iterator->next(); $iterator->valid(); $iterator->next())
+        try
         {
-            $line = $iterator->current();
-            $values = explode(";", $line);
+            $setup->setUpFixtures(Country::class);
+            $setup->setUpFixtures(State::class);
+            $setup->setUpFixtures(District::class);
+            $setup->setUpFixtures(City::class);
+        }
+        catch (DatabaseException $ex)
+        {
+            if (self::$connection->getPdo()->inTransaction())
+            {
+                self::$connection->getPdo()->rollBack();
+            }
             
-            $statement->execute($values);
+            self::$fixtureSetup->tearDownFixtures();
+            self::markTestIncomplete($ex->getMessage() . "\n" . $ex->getPrevious()->getMessage());
         }
-        
-        self::$transactionManager->commit();
-    }
-    
-    private static function generateFilePathToFixtures(string $filename): string
-    {
-        if (!file_exists($filepath = PPA_TEST_BOOTSTRAP_PATH . DIRECTORY_SEPARATOR . "fixtures" . DIRECTORY_SEPARATOR . $filename))
-        {
-            throw new IOException("File '{$filepath}' does not exist.");
-        }
-        
-        return $filepath;
     }
     
     protected function setUp(): void
     {
-//        print_r(DriverManager::getAvailableDrivers());
-//        echo "DatabaseTestCase::setup\n";
         parent::setUp();
         
         self::$transactionManager->begin();
     }
-    
     
     protected function tearDown(): void
     {
@@ -112,9 +115,9 @@ abstract class DatabaseTestCase extends TestCase
     {
         parent::tearDownAfterClass();
         
-//        echo __METHOD__."\n";
+        self::$fixtureSetup->tearDownFixtures();
         
-        self::$connection->getPdo()->query("DELETE FROM addr_country");
+//        self::$connection->getPdo()->query("DELETE FROM addr_country");
         self::$connection->disconnect();
     }
 }

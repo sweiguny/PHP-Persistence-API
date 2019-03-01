@@ -18,8 +18,7 @@ class ConnectionProviderForTestEnvironment extends DriverManager
 
     public static function init(): void
     {
-        // Ensure, that driver names are in lower case.
-        $drivernames = array_map("strtolower", explode(",", $GLOBALS["drivers"]));
+        $drivernames = array_map("strtolower", explode(",", $GLOBALS["drivers"])); // Ensure, that driver names are in lower case.
 
         foreach ($drivernames as $drivername)
         {

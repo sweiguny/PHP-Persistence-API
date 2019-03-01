@@ -1,1040 +1,1041 @@
-"1";"Eisenstadt";"1"
-"2";"Rust";"1"
-"3";"Eisenstadt-Umgebung";"1"
-"4";"Güssing";"1"
-"5";"Jennersdorf";"1"
-"6";"Mattersburg";"1"
-"7";"Neusiedl am See";"1"
-"8";"Oberpullendorf";"1"
-"9";"Oberwart";"1"
-"16";"Klagenfurt";"2"
-"17";"Villach";"2"
-"18";"Hermagor";"2"
-"19";"Klagenfurt Land";"2"
-"20";"Sankt Veit an der Glan";"2"
-"21";"Spittal an der Drau";"2"
-"22";"Villach Land";"2"
-"23";"Völkermarkt";"2"
-"24";"Wolfsberg";"2"
-"25";"Feldkirchen";"2"
-"31";"Krems an der Donau";"3"
-"32";"Sankt Pölten";"3"
-"33";"Waidhofen an der Ybbs";"3"
-"34";"Wiener Neustadt";"3"
-"35";"Amstetten";"3"
-"36";"Baden";"3"
-"37";"Bruck an der Leitha";"3"
-"38";"Gänserndorf";"3"
-"39";"Gmünd";"3"
-"40";"Hollabrunn";"3"
-"41";"Horn";"3"
-"42";"Korneuburg";"3"
-"43";"Krems-Land";"3"
-"44";"Lilienfeld";"3"
-"45";"Melk";"3"
-"46";"Mistelbach";"3"
-"47";"Mödling";"3"
-"48";"Neunkirchen";"3"
-"49";"Sankt Pölten-Land";"3"
-"50";"Scheibbs";"3"
-"51";"Tulln";"3"
-"52";"Waidhofen an der Thaya";"3"
-"53";"Wiener Neustadt Land";"3"
-"54";"Wien-Umgebung";"3"
-"55";"Zwettl";"3"
-"62";"Linz";"4"
-"63";"Steyr";"4"
-"64";"Wels";"4"
-"65";"Braunau am Inn";"4"
-"66";"Eferding";"4"
-"67";"Freistadt";"4"
-"68";"Gmunden";"4"
-"69";"Grieskirchen";"4"
-"70";"Kirchdorf an der Krems";"4"
-"71";"Linz-Land";"4"
-"72";"Perg";"4"
-"73";"Ried im Innkreis";"4"
-"74";"Rohrbach";"4"
-"75";"Schärding";"4"
-"76";"Steyr-Land";"4"
-"77";"Urfahr-Umgebung";"4"
-"78";"Vöcklabruck";"4"
-"79";"Wels-Land";"4"
-"93";"Salzburg";"5"
-"94";"Hallein";"5"
-"95";"Salzburg-Umgebung";"5"
-"96";"Sankt Johann im Pongau";"5"
-"97";"Tamsweg";"5"
-"98";"Zell am See";"5"
-"100";"Graz";"6"
-"101";"Bruck an der Mur";"6"
-"102";"Deutschlandsberg";"6"
-"103";"Feldbach";"6"
-"104";"Fürstenfeld";"6"
-"105";"Graz-Umgebung";"6"
-"106";"Hartberg";"6"
-"107";"Judenburg";"6"
-"108";"Knittelfeld";"6"
-"109";"Leibnitz";"6"
-"110";"Leoben";"6"
-"111";"Liezen";"6"
-"112";"Mürzzuschlag";"6"
-"113";"Murau";"6"
-"114";"Radkersburg";"6"
-"115";"Voitsberg";"6"
-"116";"Weiz";"6"
-"131";"Innsbruck-Stadt";"7"
-"132";"Imst";"7"
-"133";"Innsbruck-Land";"7"
-"134";"Kitzbühel";"7"
-"135";"Kufstein";"7"
-"136";"Landeck";"7"
-"137";"Lienz";"7"
-"138";"Reutte";"7"
-"139";"Schwaz";"7"
-"146";"Bludenz";"8"
-"147";"Bregenz";"8"
-"148";"Dornbirn";"8"
-"149";"Feldkirch";"8"
-"153";"Wien (Stadt)";"9"
-"154";"Oberspreewald-Lausitz";"10"
-"155";"Cottbus, Stadt";"10"
-"156";"Spree-Neiße";"10"
-"157";"Uckermark";"10"
-"158";"Elbe-Elster";"10"
-"159";"Dahme-Spreewald";"10"
-"161";"Potsdam, Stadt";"10"
-"162";"Potsdam-Mittelmark";"10"
-"163";"Havelland";"10"
-"164";"Brandenburg an der Havel, Stadt";"10"
-"165";"Teltow-Fläming";"10"
-"166";"Frankfurt (Oder), Stadt";"10"
-"167";"Oder-Spree";"10"
-"168";"Märkisch-Oderland";"10"
-"169";"Landkreis Dahme-Spreewald";"10"
-"170";"Barnim";"10"
-"171";"Oberhavel";"10"
-"172";"Ostprignitz-Ruppin";"10"
-"173";"Prignitz";"10"
-"174";"Kreisfreie Stadt Berlin";"11"
-"175";"Berlin, Stadt";"11"
-"176";"Stuttgart";"12"
-"177";"Rems-Murr-Kreis";"12"
-"178";"Esslingen";"12"
-"179";"Ludwigsburg";"12"
-"180";"Böblingen";"12"
-"181";"Heilbronn";"12"
-"182";"Göppingen";"12"
-"183";"Ostalbkreis";"12"
-"184";"Hohenlohekreis";"12"
-"185";"Schwäbisch Hall";"12"
-"186";"Main-Tauber-Kreis";"12"
-"187";"Heidenheim";"12"
-"188";"Mannheim";"12"
-"189";"Rhein-Neckar-Kreis";"12"
-"190";"Karlsruhe";"12"
-"191";"Heidelberg";"12"
-"192";"Neckar-Odenwald-Kreis";"12"
-"193";"Enzkreis";"12"
-"194";"Freudenstadt";"12"
-"195";"Calw";"12"
-"196";"Pforzheim";"12"
-"197";"Rastatt";"12"
-"198";"Baden-Baden";"12"
-"199";"Rottweil";"12"
-"200";"Ortenaukreis";"12"
-"201";"Schwarzwald-Baar-Kreis";"12"
-"202";"Tuttlingen";"12"
-"203";"Konstanz";"12"
-"204";"Freiburg im Breisgau";"12"
-"205";"Emmendingen";"12"
-"206";"Breisgau-Hochschwarzwald";"12"
-"207";"Lörrach";"12"
-"208";"Waldshut";"12"
-"209";"Tübingen";"12"
-"210";"Reutlingen";"12"
-"211";"Zollernalbkreis";"12"
-"212";"Sigmaringen";"12"
-"213";"Alb-Donau-Kreis";"12"
-"214";"Bodenseekreis";"12"
-"215";"Ravensburg";"12"
-"216";"Biberach";"12"
-"217";"Ulm";"12"
-"218";"Landkreis Böblingen";"12"
-"219";"Kreisfreie Stadt Karlsruhe";"12"
-"220";"Landkreis Lörrach";"12"
-"221";"Kreisfreie Stadt Ulm";"12"
-"222";"München";"13"
-"223";"Fürstenfeldbruck";"13"
-"224";"Bad Tölz-Wolfratshausen";"13"
-"225";"Starnberg";"13"
-"226";"Landsberg am Lech";"13"
-"227";"Weilheim-Schongau";"13"
-"228";"Garmisch-Partenkirchen";"13"
-"229";"Rosenheim";"13"
-"230";"Traunstein";"13"
-"231";"Berchtesgadener Land";"13"
-"232";"Mühldorf a.Inn";"13"
-"233";"Ebersberg";"13"
-"234";"Miesbach";"13"
-"235";"Freising";"13"
-"236";"Erding";"13"
-"237";"Altötting";"13"
-"238";"Ingolstadt";"13"
-"239";"Eichstätt";"13"
-"240";"Pfaffenhofen a.d.Ilm";"13"
-"241";"Neuburg-Schrobenhausen";"13"
-"242";"Dachau";"13"
-"243";"Landshut";"13"
-"244";"Kelheim";"13"
-"245";"Straubing-Bogen";"13"
-"246";"Dingolfing-Landau";"13"
-"247";"Rottal-Inn";"13"
-"248";"Regen";"13"
-"249";"Passau";"13"
-"250";"Freyung-Grafenau";"13"
-"251";"Straubing";"13"
-"252";"Deggendorf";"13"
-"253";"Regensburg";"13"
-"254";"Neumarkt i.d.OPf.";"13"
-"255";"Amberg-Sulzbach";"13"
-"256";"Neustadt a.d.Waldnaab";"13"
-"257";"Amberg";"13"
-"258";"Schwandorf";"13"
-"259";"Cham";"13"
-"260";"Weiden i.d.OPf.";"13"
-"261";"Tirschenreuth";"13"
-"262";"Forchheim";"13"
-"263";"Bayreuth";"13"
-"264";"Bamberg";"13"
-"265";"Hof";"13"
-"266";"Wunsiedel i.Fichtelgebirge";"13"
-"267";"Kulmbach";"13"
-"268";"Coburg";"13"
-"269";"Lichtenfels";"13"
-"270";"Kronach";"13"
-"271";"Nürnberg";"13"
-"272";"Fürth";"13"
-"273";"Nürnberger Land";"13"
-"274";"Roth";"13"
-"275";"Erlangen-Höchstadt";"13"
-"276";"Ansbach";"13"
-"277";"Neustadt a.d.Aisch-Bad Windsheim";"13"
-"278";"Erlangen";"13"
-"279";"Weißenburg-Gunzenhausen";"13"
-"280";"Aschaffenburg";"13"
-"281";"Miltenberg";"13"
-"282";"Haßberge";"13"
-"283";"Kitzingen";"13"
-"284";"Würzburg";"13"
-"285";"Main-Spessart";"13"
-"286";"Schweinfurt";"13"
-"287";"Bad Kissingen";"13"
-"288";"Rhön-Grabfeld";"13"
-"289";"Aichach-Friedberg";"13"
-"290";"Augsburg";"13"
-"291";"Günzburg";"13"
-"292";"Unterallgäu";"13"
-"293";"Dillingen a.d.Donau";"13"
-"294";"Donau-Ries";"13"
-"295";"Ostallgäu";"13"
-"296";"Kempten (Allgäu)";"13"
-"297";"Oberallgäu";"13"
-"298";"Kaufbeuren";"13"
-"299";"Memmingen";"13"
-"300";"Lindau (Bodensee)";"13"
-"301";"Neu-Ulm";"13"
-"302";"Landkreis Traunstein";"13"
-"303";"Bremerhaven, Stadt";"14"
-"304";"Bremen, Stadt";"14"
-"305";"Kreisfreie Stadt Bremen";"14"
-"306";"Wetteraukreis";"15"
-"307";"Main-Kinzig-Kreis";"15"
-"308";"Wiesbaden, Landeshauptstadt";"15"
-"309";"Frankfurt am Main, Stadt";"15"
-"310";"Hochtaunuskreis";"15"
-"311";"Offenbach am Main, Stadt";"15"
-"312";"Offenbach";"15"
-"313";"Darmstadt, Wissenschaftsstadt";"15"
-"314";"Darmstadt-Dieburg";"15"
-"315";"Odenwaldkreis";"15"
-"316";"Groß-Gerau";"15"
-"317";"Bergstraße";"15"
-"318";"Rheingau-Taunus-Kreis";"15"
-"319";"Main-Taunus-Kreis";"15"
-"320";"Marburg-Biedenkopf";"15"
-"321";"Gießen";"15"
-"322";"Vogelsbergkreis";"15"
-"323";"Lahn-Dill-Kreis";"15"
-"324";"Limburg-Weilburg";"15"
-"325";"Kassel, documenta-Stadt";"15"
-"326";"Schwalm-Eder-Kreis";"15"
-"327";"Kassel";"15"
-"328";"Waldeck-Frankenberg";"15"
-"329";"Fulda";"15"
-"330";"Hersfeld-Rotenburg";"15"
-"331";"Werra-Meißner-Kreis";"15"
-"332";"Kreisfreie Stadt Wiesbaden";"15"
-"333";"Hamburg, Freie und Hansestadt";"16"
-"334";"Neubrandenburg";"17"
-"335";"Mecklenburg-Strelitz";"17"
-"336";"Demmin";"17"
-"337";"Güstrow";"17"
-"338";"Müritz";"17"
-"339";"Uecker-Randow";"17"
-"340";"Ostvorpommern";"17"
-"341";"Greifswald";"17"
-"342";"Rostock";"17"
-"343";"Bad Doberan";"17"
-"344";"Nordvorpommern";"17"
-"345";"Stralsund";"17"
-"346";"Landkreis Nordvorpommern";"17"
-"347";"Rügen";"17"
-"348";"Schwerin";"17"
-"349";"Parchim";"17"
-"350";"Nordwestmecklenburg";"17"
-"351";"Ludwigslust";"17"
-"352";"Wismar";"17"
-"353";"Harburg";"18"
-"354";"Lüneburg";"18"
-"355";"Stade";"18"
-"356";"Cuxhaven";"18"
-"357";"Oldenburg (Oldenburg), Stadt";"18"
-"358";"Ammerland";"18"
-"359";"Cloppenburg";"18"
-"360";"Oldenburg";"18"
-"361";"Friesland";"18"
-"362";"Wesermarsch";"18"
-"363";"Wilhelmshaven, Stadt";"18"
-"364";"Wittmund";"18"
-"365";"Aurich";"18"
-"366";"Leer";"18"
-"367";"Emden, Stadt";"18"
-"368";"Emsland";"18"
-"369";"Diepholz";"18"
-"370";"Verden";"18"
-"371";"Nienburg (Weser)";"18"
-"372";"Soltau-Fallingbostel";"18"
-"373";"Rotenburg (Wümme)";"18"
-"374";"Osterholz";"18"
-"375";"Delmenhorst, Stadt";"18"
-"376";"Celle";"18"
-"377";"Gifhorn";"18"
-"378";"Uelzen";"18"
-"379";"Lüchow-Dannenberg";"18"
-"380";"Region Hannover";"18"
-"381";"Hildesheim";"18"
-"382";"Hameln-Pyrmont";"18"
-"383";"Holzminden";"18"
-"384";"Peine";"18"
-"385";"Schaumburg";"18"
-"386";"Göttingen";"18"
-"387";"Northeim";"18"
-"388";"Osterode am Harz";"18"
-"389";"Goslar";"18"
-"390";"Kreisfreie Stadt Braunschweig";"18"
-"391";"Braunschweig, Stadt";"18"
-"392";"Helmstedt";"18"
-"393";"Wolfenbüttel";"18"
-"394";"Salzgitter, Stadt";"18"
-"395";"Landkreis Wolfenbüttel";"18"
-"396";"Wolfsburg, Stadt";"18"
-"397";"Grafschaft Bentheim";"18"
-"398";"Osnabrück, Stadt";"18"
-"399";"Osnabrück";"18"
-"400";"Vechta";"18"
-"401";"Düsseldorf, Stadt";"19"
-"402";"Rhein-Kreis Neuss";"19"
-"403";"Mettmann";"19"
-"404";"Mönchengladbach, Stadt";"19"
-"405";"Viersen";"19"
-"406";"Wuppertal, Stadt";"19"
-"407";"Solingen, Stadt";"19"
-"408";"Remscheid, Stadt";"19"
-"409";"Essen, Stadt";"19"
-"410";"Mülheim an der Ruhr, Stadt";"19"
-"411";"Oberhausen, Stadt";"19"
-"412";"Kleve";"19"
-"413";"Wesel";"19"
-"414";"Duisburg, Stadt";"19"
-"415";"Krefeld, Stadt";"19"
-"416";"Heinsberg";"19"
-"417";"Oberbergischer Kreis";"19"
-"418";"Rheinisch-Bergischer Kreis";"19"
-"419";"Rhein-Erft-Kreis";"19"
-"420";"Köln, Stadt";"19"
-"421";"Leverkusen, Stadt";"19"
-"422";"Rhein-Sieg-Kreis";"19"
-"423";"Städteregion Aachen";"19"
-"424";"Düren";"19"
-"425";"Bonn, Stadt";"19"
-"426";"Euskirchen";"19"
-"427";"Recklinghausen";"19"
-"428";"Gelsenkirchen, Stadt";"19"
-"429";"Bottrop, Stadt";"19"
-"430";"Borken";"19"
-"431";"Münster, Stadt";"19"
-"432";"Warendorf";"19"
-"433";"Coesfeld";"19"
-"434";"Steinfurt";"19"
-"435";"Herford";"19"
-"436";"Lippe";"19"
-"437";"Minden-Lübbecke";"19"
-"438";"Höxter";"19"
-"439";"Paderborn";"19"
-"440";"Gütersloh";"19"
-"441";"Bielefeld, Stadt";"19"
-"442";"Hochsauerlandkreis";"19"
-"443";"Dortmund, Stadt";"19"
-"444";"Unna";"19"
-"445";"Herne, Stadt";"19"
-"446";"Bochum, Stadt";"19"
-"447";"Ennepe-Ruhr-Kreis";"19"
-"448";"Siegen-Wittgenstein";"19"
-"449";"Olpe";"19"
-"450";"Hagen, Stadt";"19"
-"451";"Märkischer Kreis";"19"
-"452";"Soest";"19"
-"453";"Hamm, Stadt";"19"
-"454";"Landkreis Gütersloh";"19"
-"455";"Kreisfreie Stadt Bielefeld";"19"
-"456";"Landkreis Mettmann";"19"
-"457";"Kreisfreie Stadt Duisburg";"19"
-"458";"Kreisfreie Stadt Münster";"19"
-"459";"Kreisfreie Stadt Aachen";"19"
-"460";"Landkreis Aachen";"19"
-"461";"Altenkirchen (Westerwald)";"20"
-"462";"Ahrweiler";"20"
-"463";"Vulkaneifel";"20"
-"464";"Neuwied";"20"
-"465";"Trier, kreisfreie Stadt";"20"
-"466";"Trier-Saarburg";"20"
-"467";"Bernkastel-Wittlich";"20"
-"468";"Eifelkreis Bitburg-Prüm";"20"
-"469";"Mainz, kreisfreie Stadt";"20"
-"470";"Mainz-Bingen";"20"
-"471";"Alzey-Worms";"20"
-"472";"Rhein-Hunsrück-Kreis";"20"
-"473";"Bad Kreuznach";"20"
-"474";"Birkenfeld";"20"
-"475";"Koblenz, kreisfreie Stadt";"20"
-"476";"Rhein-Lahn-Kreis";"20"
-"477";"Mayen-Koblenz";"20"
-"478";"Westerwaldkreis";"20"
-"479";"Cochem-Zell";"20"
-"480";"Zweibrücken, kreisfreie Stadt";"20"
-"481";"Südwestpfalz";"20"
-"482";"Kaiserslautern";"20"
-"483";"Kusel";"20"
-"484";"Pirmasens, kreisfreie Stadt";"20"
-"485";"Ludwigshafen am Rhein, kreisfreie Stadt";"20"
-"486";"Bad Dürkheim";"20"
-"487";"Rhein-Pfalz-Kreis";"20"
-"488";"Frankenthal (Pfalz), kreisfreie Stadt";"20"
-"489";"Donnersbergkreis";"20"
-"490";"Speyer, kreisfreie Stadt";"20"
-"491";"Germersheim";"20"
-"492";"Südliche Weinstraße";"20"
-"493";"Neustadt an der Weinstraße, kreisfreie Stadt";"20"
-"494";"Worms, kreisfreie Stadt";"20"
-"495";"Kaiserslautern, kreisfreie Stadt";"20"
-"496";"Herzogtum Lauenburg";"21"
-"497";"Stormarn";"21"
-"498";"Segeberg";"21"
-"499";"Pinneberg";"21"
-"500";"Lübeck, Hansestadt";"21"
-"501";"Ostholstein";"21"
-"502";"Plön";"21"
-"503";"Kiel, Landeshauptstadt";"21"
-"504";"Rendsburg-Eckernförde";"21"
-"505";"Kreisfreie Stadt Kiel";"21"
-"506";"Landkreis Plön";"21"
-"507";"Schleswig-Flensburg";"21"
-"508";"Neumünster, Stadt";"21"
-"509";"Steinburg";"21"
-"510";"Flensburg, Stadt";"21"
-"511";"Landkreis Schleswig-Flensburg";"21"
-"512";"Kreisfreie Stadt Flensburg";"21"
-"513";"Landkreis Pinneberg";"21"
-"514";"Dithmarschen";"21"
-"515";"Nordfriesland";"21"
-"516";"Landkreis Nordfriesland";"21"
-"517";"Regionalverband Saarbrücken";"22"
-"518";"Saarlouis";"22"
-"519";"Saarpfalz-Kreis";"22"
-"520";"Neunkirchen";"22"
-"521";"St. Wendel";"22"
-"522";"Merzig-Wadern";"22"
-"523";"Dresden, Stadt";"23"
-"524";"Kreisfreie Stadt Dresden";"23"
-"525";"Meißen";"23"
-"526";"Bautzen";"23"
-"527";"Landkreis Riesa-Großenhain";"23"
-"528";"Sächsische Schweiz-Osterzgebirge";"23"
-"530";"Görlitz";"23"
-"531";"Landkreis Löbau-Zittau";"23"
-"532";"Kreisfreie Stadt Görlitz";"23"
-"533";"Kreisfreie Stadt Leipzig";"23"
-"534";"Leipzig, Stadt";"23"
-"535";"Leipzig";"23"
-"536";"Nordsachsen";"23"
-"537";"Mittelsachsen";"23"
-"538";"Vogtlandkreis";"23"
-"539";"Zwickau";"23"
-"540";"Erzgebirgskreis";"23"
-"541";"Landkreis Aue-Schwarzenberg";"23"
-"542";"Chemnitz, Stadt";"23"
-"543";"Kreisfreie Stadt Chemnitz";"23"
-"544";"Mittlerer Erzgebirgskreis";"23"
-"545";"Landkreis Freiberg";"23"
-"546";"Halle (Saale), Stadt";"24"
-"547";"Saalkreis";"24"
-"548";"Kreisfreie Stadt Halle";"24"
-"549";"Saalekreis";"24"
-"550";"Landkreis Merseburg-Querfurt";"24"
-"551";"Mansfeld-Südharz";"24"
-"552";"Landkreis Mansfelder Land";"24"
-"553";"Anhalt-Bitterfeld";"24"
-"554";"Landkreis Köthen";"24"
-"555";"Salzlandkreis";"24"
-"556";"Landkreis Aschersleben-Staßfurt";"24"
-"557";"Harz";"24"
-"558";"Landkreis Sangerhausen";"24"
-"559";"Burgenlandkreis";"24"
-"560";"Landkreis Weißenfels";"24"
-"561";"Landkreis Bitterfeld";"24"
-"562";"Wittenberg";"24"
-"563";"Dessau-Roßlau, Stadt";"24"
-"564";"Landkreis Anhalt-Zerbst";"24"
-"565";"Landkreis Wittenberg";"24"
-"566";"Altmarkkreis Salzwedel";"24"
-"567";"Landkreis Halberstadt";"24"
-"568";"Landkreis Wernigerode";"24"
-"569";"Kreisfreie Stadt Magdeburg";"24"
-"570";"Magdeburg, Landeshauptstadt";"24"
-"571";"Börde";"24"
-"572";"Jerichower Land";"24"
-"573";"Ohrekreis";"24"
-"574";"Bördekreis";"24"
-"575";"Landkreis Schönebeck";"24"
-"576";"Stendal";"24"
-"577";"Landkreis Stendal";"24"
-"578";"Altenburger Land";"25"
-"579";"Kyffhäuserkreis";"25"
-"580";"Sömmerda";"25"
-"581";"Saalfeld-Rudolstadt";"25"
-"582";"Saale-Orla-Kreis";"25"
-"583";"Gera, Stadt";"25"
-"584";"Greiz";"25"
-"585";"Saale-Holzland-Kreis";"25"
-"586";"Jena, Stadt";"25"
-"587";"Wartburgkreis";"25"
-"588";"Eichsfeld";"25"
-"589";"Sonneberg";"25"
-"590";"Suhl, Stadt";"25"
-"591";"Hildburghausen";"25"
-"592";"Schmalkalden-Meiningen";"25"
-"593";"Ilm-Kreis";"25"
-"594";"Erfurt, Stadt";"25"
-"595";"Gotha";"25"
-"596";"Weimarer Land";"25"
-"597";"Weimar, Stadt";"25"
-"598";"Nordhausen";"25"
-"599";"Eisenach, Stadt";"25"
-"600";"Landkreis Gotha";"25"
-"601";"Unstrut-Hainich-Kreis";"25"
-"602";"Dordogne";"26"
-"603";"Gironde";"26"
-"604";"Landes";"26"
-"605";"Lot-et-Garonne";"26"
-"606";"Pyrénées-Atlantiques";"26"
-"607";"Allier";"27"
-"608";"Cantal";"27"
-"609";"Haute-Loire";"27"
-"610";"Puy-de-Dôme";"27"
-"611";"Calvados";"28"
-"612";"Manche";"28"
-"613";"Orne";"28"
-"614";"Côte-d'Or";"29"
-"615";"Nièvre";"29"
-"616";"Saône-et-Loire";"29"
-"617";"Yonne";"29"
-"618";"Côtes-d'Armor";"30"
-"619";"Finistère";"30"
-"620";"Ille-et-Vilaine";"30"
-"621";"Morbihan";"30"
-"622";"Cher";"31"
-"623";"Eure-et-Loir";"31"
-"624";"Indre";"31"
-"625";"Département d'Indre-et-Loire";"31"
-"626";"Loir-et-Cher";"31"
-"627";"Loiret";"31"
-"628";"Ardennes";"32"
-"629";"Aube";"32"
-"630";"Marne";"32"
-"631";"Haute-Marne";"32"
-"632";"Corse-du-Sud";"33"
-"633";"Haute-Corse";"33"
-"634";"Doubs";"34"
-"635";"Jura";"34"
-"636";"Haute-Saône";"34"
-"637";"Territoire de Belfort";"34"
-"638";"Eure";"35"
-"639";"Seine-Maritime";"35"
-"640";"Paris";"36"
-"641";"Seine-et-Marne";"36"
-"642";"Yvelines";"36"
-"643";"Essonne";"36"
-"644";"Hauts-de-Seine";"36"
-"645";"Seine-Saint-Denis";"36"
-"646";"Val-de-Marne";"36"
-"647";"Val-d'Oise";"36"
-"649";"Aude";"37"
-"650";"Gard";"37"
-"651";"Hérault";"37"
-"652";"Lozère";"37"
-"653";"Pyrénées-Orientales";"37"
-"654";"Corrèze";"38"
-"655";"Creuse";"38"
-"656";"Haute-Vienne";"38"
-"657";"Meurthe-et-Moselle";"39"
-"658";"Meuse";"39"
-"659";"Moselle";"39"
-"660";"Vosges";"39"
-"661";"Ariège";"40"
-"662";"Aveyron";"40"
-"663";"Haute-Garonne";"40"
-"664";"Gers";"40"
-"665";"Lot";"40"
-"666";"Hautes-Pyrénées";"40"
-"667";"Tarn";"40"
-"668";"Tarn-et-Garonne";"40"
-"669";"Nord";"41"
-"670";"Pas-de-Calais";"41"
-"671";"Loire-Atlantique";"42"
-"672";"Maine-et-Loire";"42"
-"673";"Mayenne";"42"
-"674";"Sarthe";"42"
-"675";"Vendée";"42"
-"676";"Aisne";"43"
-"677";"Oise";"43"
-"678";"Somme";"43"
-"679";"Charente";"44"
-"680";"Charente-Maritime";"44"
-"681";"Deux-Sèvres";"44"
-"682";"Vienne";"44"
-"683";"Alpes-de-Haute-Provence";"45"
-"684";"Hautes-Alpes";"45"
-"685";"Alpes-Maritimes";"45"
-"686";"Bouches-du-Rhône";"45"
-"687";"Var";"45"
-"688";"Vaucluse";"45"
-"689";"Ain";"46"
-"690";"Ardèche";"46"
-"691";"Drôme";"46"
-"692";"Isère";"46"
-"693";"Loire";"46"
-"694";"Rhône";"46"
-"695";"Savoie";"46"
-"696";"Haute-Savoie";"46"
-"697";"Bas-Rhin";"47"
-"698";"Haut-Rhin";"47"
-"744";"Hlavní město Praha";"71"
-"745";"Benešov";"61"
-"746";"Beroun";"61"
-"747";"Kladno";"61"
-"748";"Kolín";"61"
-"749";"Kutná Hora";"61"
-"750";"Mělník";"61"
-"751";"Mladá Boleslav";"61"
-"752";"Nymburk";"61"
-"753";"Praha-východ";"61"
-"754";"Praha-západ";"61"
-"755";"Příbram";"61"
-"756";"Rakovník";"61"
-"757";"České Budějovice";"57"
-"758";"Český Krumlov";"57"
-"759";"Jindřichův Hradec";"57"
-"760";"Pelhřimov";"65"
-"761";"Písek";"57"
-"762";"Prachatice";"57"
-"763";"Strakonice";"57"
-"764";"Tábor";"57"
-"765";"Domažlice";"58"
-"766";"Cheb";"59"
-"767";"Karlovy Vary";"59"
-"768";"Klatovy";"58"
-"769";"Plzeň-město";"58"
-"770";"Plzeň-jih";"58"
-"771";"Plzeň-sever";"58"
-"772";"Rokycany";"58"
-"773";"Sokolov";"59"
-"774";"Tachov";"58"
-"775";"Česká Lípa";"62"
-"776";"Děčín";"60"
-"777";"Chomutov";"60"
-"778";"Jablonec nad Nisou";"62"
-"779";"Liberec";"62"
-"780";"Litoměřice";"60"
-"781";"Louny";"60"
-"782";"Most";"60"
-"783";"Teplice";"60"
-"784";"Ústí nad Labem";"60"
-"785";"Havlíčkův Brod";"65"
-"786";"Hradec Králové";"63"
-"787";"Chrudim";"64"
-"788";"Jičín";"63"
-"789";"Náchod";"63"
-"790";"Pardubice";"64"
-"791";"Rychnov nad Kněžnou";"63"
-"792";"Semily";"62"
-"793";"Svitavy";"64"
-"794";"Trutnov";"63"
-"795";"Ústí nad Orlicí";"64"
-"796";"Blansko";"66"
-"797";"Brno-město";"66"
-"798";"Brno-venkov";"66"
-"799";"Břeclav";"66"
-"800";"Zlín";"67"
-"801";"Hodonín";"66"
-"802";"Jihlava";"65"
-"803";"Kroměříž";"67"
-"804";"Prostějov";"70"
-"805";"Třebíč";"65"
-"806";"Uherské Hradiště";"67"
-"807";"Vyškov";"66"
-"808";"Znojmo";"66"
-"809";"Žďár nad Sázavou";"65"
-"810";"Bruntál";"69"
-"811";"Frýdek-Místek";"69"
-"812";"Karviná";"69"
-"813";"Nový Jičín";"69"
-"814";"Olomouc";"70"
-"815";"Opava";"69"
-"816";"Ostrava-město";"69"
-"817";"Přerov";"70"
-"818";"Šumperk";"70"
-"819";"Vsetín";"67"
-"820";"Jeseník";"70"
-"821";"L'Aquila";"72"
-"822";"Chieti";"72"
-"823";"Pescara";"72"
-"824";"Teramo";"72"
-"825";"Matera";"73"
-"826";"Potenza";"73"
-"827";"Cosenza";"74"
-"828";"Catanzaro";"74"
-"829";"Crotone";"74"
-"830";"Reggio Di Calabria";"74"
-"831";"Vibo Valentia";"74"
-"832";"Avellino";"75"
-"833";"Benevento";"75"
-"834";"Caserta";"75"
-"835";"Napoli";"75"
-"836";"Salerno";"75"
-"837";"Bologna";"76"
-"838";"Forli";"76"
-"839";"Ferrara";"76"
-"840";"Modena";"76"
-"841";"Piacenza";"76"
-"842";"Parma";"76"
-"843";"Ravenna";"76"
-"844";"Reggio Nell'Emilia";"76"
-"845";"Rimini";"76"
-"846";"Gorizia";"77"
-"847";"Pordenone";"77"
-"848";"Trieste";"77"
-"849";"Udine";"77"
-"850";"Genova";"78"
-"851";"Imperia";"78"
-"852";"La Spezia";"78"
-"853";"Savona";"78"
-"854";"Bergamo";"79"
-"855";"Brescia";"79"
-"856";"Como";"79"
-"857";"Cremona";"79"
-"858";"Lecco";"79"
-"859";"Lodi";"79"
-"860";"Monza e Brianza";"79"
-"861";"Milano";"79"
-"862";"Mantova";"79"
-"863";"Pavia";"79"
-"864";"Sondrio";"79"
-"865";"Varese";"79"
-"866";"Frosinone";"80"
-"867";"Latina";"80"
-"868";"Rieti";"80"
-"869";"Roma";"80"
-"870";"Viterbo";"80"
-"871";"Ancona";"81"
-"872";"Ascoli Piceno";"81"
-"873";"Fermo";"81"
-"874";"Macerata";"81"
-"875";"Pesaro E Urbino";"81"
-"876";"Campobasso";"82"
-"877";"Isernia";"82"
-"878";"Alessandria";"83"
-"879";"Asti";"83"
-"880";"Biella";"83"
-"881";"Cuneo";"83"
-"882";"Novara";"83"
-"883";"Torino";"83"
-"884";"Verbano-Cusio-Ossola";"83"
-"885";"Vercelli";"83"
-"886";"Bari";"84"
-"887";"Brindisi";"84"
-"888";"Barletta-Andria-Trani";"84"
-"889";"Foggia";"84"
-"890";"Lecce";"84"
-"891";"Taranto";"84"
-"892";"Agrigento";"85"
-"893";"Caltanissetta";"85"
-"894";"Catania";"85"
-"895";"Enna";"85"
-"896";"Messina";"85"
-"897";"Palermo";"85"
-"898";"Ragusa";"85"
-"899";"Siracusa";"85"
-"900";"Trapani";"85"
-"901";"Cagliari";"86"
-"902";"Carbonia-Iglesias";"86"
-"903";"Nuoro";"86"
-"904";"Ogliastra";"86"
-"905";"Oristano";"86"
-"906";"Olbia-Tempio";"86"
-"907";"Sassari";"86"
-"908";"Medio Campidano";"86"
-"909";"Arezzo";"87"
-"910";"Firenze";"87"
-"911";"Grosseto";"87"
-"912";"Livorno";"87"
-"913";"Lucca";"87"
-"914";"Massa-Carrara";"87"
-"915";"Pisa";"87"
-"916";"Prato";"87"
-"917";"Pistoia";"87"
-"918";"Siena";"87"
-"919";"Bolzano-Bozen";"88"
-"920";"Trento";"88"
-"921";"Perugia";"89"
-"922";"Terni";"89"
-"923";"Valle D'Aosta";"90"
-"924";"Belluno";"91"
-"925";"Padova";"91"
-"926";"Rovigo";"91"
-"927";"Treviso";"91"
-"928";"Venezia";"91"
-"929";"Vicenza";"91"
-"930";"Verona";"91"
-"948";"Ankaran";"108"
-"949";"Apače";"114"
-"950";"Beltinci";"114"
-"951";"Benedikt";"110"
-"952";"Bistrica ob Sotli";"111"
-"953";"Bled";"103"
-"954";"Bloke";"107"
-"955";"Bohinj";"103"
-"956";"Borovnica";"109"
-"957";"Bovec";"104"
-"958";"Braslovče";"111"
-"959";"Brda";"104"
-"960";"Brezovica";"109"
-"961";"Brežice";"112"
-"962";"Cankova";"114"
-"963";"Celje";"111"
-"964";"Cerklje na Gorenjskem";"103"
-"965";"Cerknica";"107"
-"966";"Cerkno";"104"
-"967";"Cerkvenjak";"110"
-"968";"Cirkulane";"110"
-"969";"Črenšovci";"114"
-"970";"Črna na Koroškem";"106"
-"971";"Črnomelj";"105"
-"972";"Destrnik";"110"
-"973";"Divača";"108"
-"974";"Dobje";"111"
-"975";"Dobrepolje";"109"
-"976";"Dobrna";"111"
-"977";"Dobrova - Polhov Gradec";"109"
-"978";"Dobrovnik";"114"
-"979";"Dol pri Ljubljani";"109"
-"980";"Dolenjske Toplice";"105"
-"981";"Domžale";"109"
-"982";"Dornava";"110"
-"983";"Dravograd";"106"
-"984";"Duplek";"110"
-"985";"Gorenja vas - Poljane";"103"
-"986";"Gorišnica";"110"
-"987";"Gorje";"103"
-"988";"Gornja Radgona";"114"
-"989";"Gornji Grad";"111"
-"990";"Gornji Petrovci";"114"
-"991";"Grad";"114"
-"992";"Grosuplje";"109"
-"993";"Hajdina";"110"
-"994";"Hoče - Slivnica";"110"
-"995";"Hodoš";"114"
-"996";"Horjul";"109"
-"997";"Hrastnik";"113"
-"998";"Hrpelje - Kozina";"108"
-"999";"Idrija";"104"
-"1000";"Ig";"109"
-"1001";"Ilirska Bistrica";"107"
-"1002";"Ivančna Gorica";"109"
-"1003";"Izola";"108"
-"1004";"Jesenice";"103"
-"1005";"Jezersko";"103"
-"1006";"Juršinci";"110"
-"1007";"Kamnik";"109"
-"1008";"Kanal ob Soči";"104"
-"1009";"Kidričevo";"110"
-"1010";"Kobarid";"104"
-"1011";"Kobilje";"114"
-"1012";"Kočevje";"105"
-"1013";"Komen";"108"
-"1014";"Komenda";"109"
-"1015";"Koper";"108"
-"1016";"Kostanjevica na Krki";"112"
-"1017";"Kostel";"105"
-"1018";"Kozje";"111"
-"1019";"Kranj";"103"
-"1020";"Kranjska Gora";"103"
-"1021";"Križevci";"114"
-"1022";"Krško";"112"
-"1023";"Kungota";"110"
-"1024";"Kuzma";"114"
-"1025";"Laško";"111"
-"1026";"Lenart";"110"
-"1027";"Lendava";"114"
-"1028";"Litija";"109"
-"1029";"Ljubljana";"109"
-"1030";"Ljubno";"111"
-"1031";"Ljutomer";"114"
-"1032";"Log - Dragomer";"109"
-"1033";"Logatec";"109"
-"1034";"Loška Dolina";"107"
-"1035";"Loški Potok";"105"
-"1036";"Lovrenc na Pohorju";"110"
-"1037";"Luče";"111"
-"1038";"Lukovica";"109"
-"1039";"Majšperk";"110"
-"1040";"Makole";"110"
-"1041";"Maribor";"110"
-"1042";"Markovci";"110"
-"1043";"Medvode";"109"
-"1044";"Mengeš";"109"
-"1045";"Metlika";"105"
-"1046";"Mežica";"106"
-"1047";"Miklavž na Dravskem Polju";"110"
-"1048";"Miren - Kostanjevica";"104"
-"1049";"Mirna";"105"
-"1050";"Mirna Peč";"105"
-"1051";"Mislinja";"106"
-"1052";"Mokronog - Trebelno";"105"
-"1053";"Moravče";"109"
-"1054";"Moravske Toplice";"114"
-"1055";"Mozirje";"111"
-"1056";"Murska Sobota";"114"
-"1057";"Muta";"106"
-"1058";"Naklo";"103"
-"1059";"Nazarje";"111"
-"1060";"Nova Gorica";"104"
-"1061";"Novo mesto";"105"
-"1062";"Odranci";"114"
-"1063";"Oplotnica";"110"
-"1064";"Ormož";"110"
-"1065";"Osilnica";"105"
-"1066";"Pesnica";"110"
-"1067";"Piran";"108"
-"1068";"Pivka";"107"
-"1069";"Podčetrtek";"111"
-"1070";"Podlehnik";"110"
-"1071";"Podvelka";"106"
-"1072";"Poljčane";"110"
-"1073";"Polzela";"111"
-"1074";"Postojna";"107"
-"1075";"Prebold";"111"
-"1076";"Preddvor";"103"
-"1077";"Prevalje";"106"
-"1078";"Ptuj";"110"
-"1079";"Puconci";"114"
-"1080";"Rače - Fram";"110"
-"1081";"Radeče";"111"
-"1082";"Radenci";"114"
-"1083";"Radlje ob Dravi";"106"
-"1084";"Radovljica";"103"
-"1085";"Ravne na Koroškem";"106"
-"1086";"Razkrižje";"114"
-"1087";"Rečica ob Savinji";"111"
-"1088";"Renče - Vogrsko";"104"
-"1089";"Ribnica";"105"
-"1090";"Ribnica na Pohorju";"106"
-"1091";"Rogaška Slatina";"111"
-"1092";"Rogašovci";"114"
-"1093";"Rogatec";"111"
-"1094";"Ruše";"110"
-"1095";"Šalovci";"114"
-"1096";"Selnica ob Dravi";"110"
-"1097";"Semič";"105"
-"1098";"Šempeter - Vrtojba";"104"
-"1099";"Šenčur";"103"
-"1100";"Šentilj";"110"
-"1101";"Šentjernej";"105"
-"1102";"Šentjur pri Celju";"111"
-"1103";"Šentrupert";"105"
-"1104";"Sevnica";"112"
-"1105";"Sežana";"108"
-"1106";"Škocjan";"105"
-"1107";"Škofja Loka";"103"
-"1108";"Škofljica";"109"
-"1109";"Slovenj Gradec";"106"
-"1110";"Slovenska Bistrica";"110"
-"1111";"Slovenske Konjice";"111"
-"1112";"Šmarje pri Jelšah";"111"
-"1113";"Šmarješke Toplice";"105"
-"1114";"Šmartno ob Paki";"111"
-"1115";"Šmartno pri Litiji";"109"
-"1116";"Sodražica";"105"
-"1117";"Solčava";"111"
-"1118";"Šoštanj";"111"
-"1119";"Središče ob Dravi";"110"
-"1120";"Starše";"110"
-"1121";"Štore";"111"
-"1122";"Straža";"105"
-"1123";"Sveta Ana";"110"
-"1124";"Sveta Trojica v Slovenskih goricah";"110"
-"1125";"Sveti Andraž v Slovenskih goricah";"110"
-"1126";"Sveti Jurij ob Ščavnici";"114"
-"1127";"Sveti Jurij v Slovenskih goricah";"110"
-"1128";"Sveti Tomaž";"110"
-"1129";"Tabor";"111"
-"1130";"Tišina";"114"
-"1131";"Tolmin";"104"
-"1132";"Trbovlje";"113"
-"1133";"Trebnje";"105"
-"1134";"Trnovska vas";"110"
-"1135";"Trzin";"109"
-"1136";"Tržič";"103"
-"1137";"Turnišče";"114"
-"1139";"Velika Polana";"114"
-"1140";"Velike Lašče";"109"
-"1141";"Veržej";"114"
-"1142";"Videm";"110"
-"1143";"Vipava";"104"
-"1144";"Vitanje";"111"
-"1145";"Vodice";"109"
-"1146";"Vojnik";"111"
-"1147";"Vransko";"111"
-"1148";"Vrhnika";"109"
-"1149";"Vuzenica";"106"
-"1150";"Zagorje ob Savi";"113"
-"1151";"Žalec";"111"
-"1152";"Zavrč";"110"
-"1153";"Železniki";"103"
-"1154";"Žetale";"110"
-"1155";"Žiri";"103"
-"1156";"Žirovnica";"103"
-"1157";"Zreče";"111"
-"1158";"Žužemberk";"105"
-"1203";"Ajdovščina";"104"
-"1204";"Velenje";"111"
+id;name;state
+1;Eisenstadt;1
+2;Rust;1
+3;Eisenstadt-Umgebung;1
+4;Güssing;1
+5;Jennersdorf;1
+6;Mattersburg;1
+7;Neusiedl am See;1
+8;Oberpullendorf;1
+9;Oberwart;1
+16;Klagenfurt;2
+17;Villach;2
+18;Hermagor;2
+19;Klagenfurt Land;2
+20;Sankt Veit an der Glan;2
+21;Spittal an der Drau;2
+22;Villach Land;2
+23;Völkermarkt;2
+24;Wolfsberg;2
+25;Feldkirchen;2
+31;Krems an der Donau;3
+32;Sankt Pölten;3
+33;Waidhofen an der Ybbs;3
+34;Wiener Neustadt;3
+35;Amstetten;3
+36;Baden;3
+37;Bruck an der Leitha;3
+38;Gänserndorf;3
+39;Gmünd;3
+40;Hollabrunn;3
+41;Horn;3
+42;Korneuburg;3
+43;Krems-Land;3
+44;Lilienfeld;3
+45;Melk;3
+46;Mistelbach;3
+47;Mödling;3
+48;Neunkirchen;3
+49;Sankt Pölten-Land;3
+50;Scheibbs;3
+51;Tulln;3
+52;Waidhofen an der Thaya;3
+53;Wiener Neustadt Land;3
+54;Wien-Umgebung;3
+55;Zwettl;3
+62;Linz;4
+63;Steyr;4
+64;Wels;4
+65;Braunau am Inn;4
+66;Eferding;4
+67;Freistadt;4
+68;Gmunden;4
+69;Grieskirchen;4
+70;Kirchdorf an der Krems;4
+71;Linz-Land;4
+72;Perg;4
+73;Ried im Innkreis;4
+74;Rohrbach;4
+75;Schärding;4
+76;Steyr-Land;4
+77;Urfahr-Umgebung;4
+78;Vöcklabruck;4
+79;Wels-Land;4
+93;Salzburg;5
+94;Hallein;5
+95;Salzburg-Umgebung;5
+96;Sankt Johann im Pongau;5
+97;Tamsweg;5
+98;Zell am See;5
+100;Graz;6
+101;Bruck an der Mur;6
+102;Deutschlandsberg;6
+103;Feldbach;6
+104;Fürstenfeld;6
+105;Graz-Umgebung;6
+106;Hartberg;6
+107;Judenburg;6
+108;Knittelfeld;6
+109;Leibnitz;6
+110;Leoben;6
+111;Liezen;6
+112;Mürzzuschlag;6
+113;Murau;6
+114;Radkersburg;6
+115;Voitsberg;6
+116;Weiz;6
+131;Innsbruck-Stadt;7
+132;Imst;7
+133;Innsbruck-Land;7
+134;Kitzbühel;7
+135;Kufstein;7
+136;Landeck;7
+137;Lienz;7
+138;Reutte;7
+139;Schwaz;7
+146;Bludenz;8
+147;Bregenz;8
+148;Dornbirn;8
+149;Feldkirch;8
+153;Wien (Stadt);9
+154;Oberspreewald-Lausitz;10
+155;Cottbus, Stadt;10
+156;Spree-Neiße;10
+157;Uckermark;10
+158;Elbe-Elster;10
+159;Dahme-Spreewald;10
+161;Potsdam, Stadt;10
+162;Potsdam-Mittelmark;10
+163;Havelland;10
+164;Brandenburg an der Havel, Stadt;10
+165;Teltow-Fläming;10
+166;Frankfurt (Oder), Stadt;10
+167;Oder-Spree;10
+168;Märkisch-Oderland;10
+169;Landkreis Dahme-Spreewald;10
+170;Barnim;10
+171;Oberhavel;10
+172;Ostprignitz-Ruppin;10
+173;Prignitz;10
+174;Kreisfreie Stadt Berlin;11
+175;Berlin, Stadt;11
+176;Stuttgart;12
+177;Rems-Murr-Kreis;12
+178;Esslingen;12
+179;Ludwigsburg;12
+180;Böblingen;12
+181;Heilbronn;12
+182;Göppingen;12
+183;Ostalbkreis;12
+184;Hohenlohekreis;12
+185;Schwäbisch Hall;12
+186;Main-Tauber-Kreis;12
+187;Heidenheim;12
+188;Mannheim;12
+189;Rhein-Neckar-Kreis;12
+190;Karlsruhe;12
+191;Heidelberg;12
+192;Neckar-Odenwald-Kreis;12
+193;Enzkreis;12
+194;Freudenstadt;12
+195;Calw;12
+196;Pforzheim;12
+197;Rastatt;12
+198;Baden-Baden;12
+199;Rottweil;12
+200;Ortenaukreis;12
+201;Schwarzwald-Baar-Kreis;12
+202;Tuttlingen;12
+203;Konstanz;12
+204;Freiburg im Breisgau;12
+205;Emmendingen;12
+206;Breisgau-Hochschwarzwald;12
+207;Lörrach;12
+208;Waldshut;12
+209;Tübingen;12
+210;Reutlingen;12
+211;Zollernalbkreis;12
+212;Sigmaringen;12
+213;Alb-Donau-Kreis;12
+214;Bodenseekreis;12
+215;Ravensburg;12
+216;Biberach;12
+217;Ulm;12
+218;Landkreis Böblingen;12
+219;Kreisfreie Stadt Karlsruhe;12
+220;Landkreis Lörrach;12
+221;Kreisfreie Stadt Ulm;12
+222;München;13
+223;Fürstenfeldbruck;13
+224;Bad Tölz-Wolfratshausen;13
+225;Starnberg;13
+226;Landsberg am Lech;13
+227;Weilheim-Schongau;13
+228;Garmisch-Partenkirchen;13
+229;Rosenheim;13
+230;Traunstein;13
+231;Berchtesgadener Land;13
+232;Mühldorf a.Inn;13
+233;Ebersberg;13
+234;Miesbach;13
+235;Freising;13
+236;Erding;13
+237;Altötting;13
+238;Ingolstadt;13
+239;Eichstätt;13
+240;Pfaffenhofen a.d.Ilm;13
+241;Neuburg-Schrobenhausen;13
+242;Dachau;13
+243;Landshut;13
+244;Kelheim;13
+245;Straubing-Bogen;13
+246;Dingolfing-Landau;13
+247;Rottal-Inn;13
+248;Regen;13
+249;Passau;13
+250;Freyung-Grafenau;13
+251;Straubing;13
+252;Deggendorf;13
+253;Regensburg;13
+254;Neumarkt i.d.OPf.;13
+255;Amberg-Sulzbach;13
+256;Neustadt a.d.Waldnaab;13
+257;Amberg;13
+258;Schwandorf;13
+259;Cham;13
+260;Weiden i.d.OPf.;13
+261;Tirschenreuth;13
+262;Forchheim;13
+263;Bayreuth;13
+264;Bamberg;13
+265;Hof;13
+266;Wunsiedel i.Fichtelgebirge;13
+267;Kulmbach;13
+268;Coburg;13
+269;Lichtenfels;13
+270;Kronach;13
+271;Nürnberg;13
+272;Fürth;13
+273;Nürnberger Land;13
+274;Roth;13
+275;Erlangen-Höchstadt;13
+276;Ansbach;13
+277;Neustadt a.d.Aisch-Bad Windsheim;13
+278;Erlangen;13
+279;Weißenburg-Gunzenhausen;13
+280;Aschaffenburg;13
+281;Miltenberg;13
+282;Haßberge;13
+283;Kitzingen;13
+284;Würzburg;13
+285;Main-Spessart;13
+286;Schweinfurt;13
+287;Bad Kissingen;13
+288;Rhön-Grabfeld;13
+289;Aichach-Friedberg;13
+290;Augsburg;13
+291;Günzburg;13
+292;Unterallgäu;13
+293;Dillingen a.d.Donau;13
+294;Donau-Ries;13
+295;Ostallgäu;13
+296;Kempten (Allgäu);13
+297;Oberallgäu;13
+298;Kaufbeuren;13
+299;Memmingen;13
+300;Lindau (Bodensee);13
+301;Neu-Ulm;13
+302;Landkreis Traunstein;13
+303;Bremerhaven, Stadt;14
+304;Bremen, Stadt;14
+305;Kreisfreie Stadt Bremen;14
+306;Wetteraukreis;15
+307;Main-Kinzig-Kreis;15
+308;Wiesbaden, Landeshauptstadt;15
+309;Frankfurt am Main, Stadt;15
+310;Hochtaunuskreis;15
+311;Offenbach am Main, Stadt;15
+312;Offenbach;15
+313;Darmstadt, Wissenschaftsstadt;15
+314;Darmstadt-Dieburg;15
+315;Odenwaldkreis;15
+316;Groß-Gerau;15
+317;Bergstraße;15
+318;Rheingau-Taunus-Kreis;15
+319;Main-Taunus-Kreis;15
+320;Marburg-Biedenkopf;15
+321;Gießen;15
+322;Vogelsbergkreis;15
+323;Lahn-Dill-Kreis;15
+324;Limburg-Weilburg;15
+325;Kassel, documenta-Stadt;15
+326;Schwalm-Eder-Kreis;15
+327;Kassel;15
+328;Waldeck-Frankenberg;15
+329;Fulda;15
+330;Hersfeld-Rotenburg;15
+331;Werra-Meißner-Kreis;15
+332;Kreisfreie Stadt Wiesbaden;15
+333;Hamburg, Freie und Hansestadt;16
+334;Neubrandenburg;17
+335;Mecklenburg-Strelitz;17
+336;Demmin;17
+337;Güstrow;17
+338;Müritz;17
+339;Uecker-Randow;17
+340;Ostvorpommern;17
+341;Greifswald;17
+342;Rostock;17
+343;Bad Doberan;17
+344;Nordvorpommern;17
+345;Stralsund;17
+346;Landkreis Nordvorpommern;17
+347;Rügen;17
+348;Schwerin;17
+349;Parchim;17
+350;Nordwestmecklenburg;17
+351;Ludwigslust;17
+352;Wismar;17
+353;Harburg;18
+354;Lüneburg;18
+355;Stade;18
+356;Cuxhaven;18
+357;Oldenburg (Oldenburg), Stadt;18
+358;Ammerland;18
+359;Cloppenburg;18
+360;Oldenburg;18
+361;Friesland;18
+362;Wesermarsch;18
+363;Wilhelmshaven, Stadt;18
+364;Wittmund;18
+365;Aurich;18
+366;Leer;18
+367;Emden, Stadt;18
+368;Emsland;18
+369;Diepholz;18
+370;Verden;18
+371;Nienburg (Weser);18
+372;Soltau-Fallingbostel;18
+373;Rotenburg (Wümme);18
+374;Osterholz;18
+375;Delmenhorst, Stadt;18
+376;Celle;18
+377;Gifhorn;18
+378;Uelzen;18
+379;Lüchow-Dannenberg;18
+380;Region Hannover;18
+381;Hildesheim;18
+382;Hameln-Pyrmont;18
+383;Holzminden;18
+384;Peine;18
+385;Schaumburg;18
+386;Göttingen;18
+387;Northeim;18
+388;Osterode am Harz;18
+389;Goslar;18
+390;Kreisfreie Stadt Braunschweig;18
+391;Braunschweig, Stadt;18
+392;Helmstedt;18
+393;Wolfenbüttel;18
+394;Salzgitter, Stadt;18
+395;Landkreis Wolfenbüttel;18
+396;Wolfsburg, Stadt;18
+397;Grafschaft Bentheim;18
+398;Osnabrück, Stadt;18
+399;Osnabrück;18
+400;Vechta;18
+401;Düsseldorf, Stadt;19
+402;Rhein-Kreis Neuss;19
+403;Mettmann;19
+404;Mönchengladbach, Stadt;19
+405;Viersen;19
+406;Wuppertal, Stadt;19
+407;Solingen, Stadt;19
+408;Remscheid, Stadt;19
+409;Essen, Stadt;19
+410;Mülheim an der Ruhr, Stadt;19
+411;Oberhausen, Stadt;19
+412;Kleve;19
+413;Wesel;19
+414;Duisburg, Stadt;19
+415;Krefeld, Stadt;19
+416;Heinsberg;19
+417;Oberbergischer Kreis;19
+418;Rheinisch-Bergischer Kreis;19
+419;Rhein-Erft-Kreis;19
+420;Köln, Stadt;19
+421;Leverkusen, Stadt;19
+422;Rhein-Sieg-Kreis;19
+423;Städteregion Aachen;19
+424;Düren;19
+425;Bonn, Stadt;19
+426;Euskirchen;19
+427;Recklinghausen;19
+428;Gelsenkirchen, Stadt;19
+429;Bottrop, Stadt;19
+430;Borken;19
+431;Münster, Stadt;19
+432;Warendorf;19
+433;Coesfeld;19
+434;Steinfurt;19
+435;Herford;19
+436;Lippe;19
+437;Minden-Lübbecke;19
+438;Höxter;19
+439;Paderborn;19
+440;Gütersloh;19
+441;Bielefeld, Stadt;19
+442;Hochsauerlandkreis;19
+443;Dortmund, Stadt;19
+444;Unna;19
+445;Herne, Stadt;19
+446;Bochum, Stadt;19
+447;Ennepe-Ruhr-Kreis;19
+448;Siegen-Wittgenstein;19
+449;Olpe;19
+450;Hagen, Stadt;19
+451;Märkischer Kreis;19
+452;Soest;19
+453;Hamm, Stadt;19
+454;Landkreis Gütersloh;19
+455;Kreisfreie Stadt Bielefeld;19
+456;Landkreis Mettmann;19
+457;Kreisfreie Stadt Duisburg;19
+458;Kreisfreie Stadt Münster;19
+459;Kreisfreie Stadt Aachen;19
+460;Landkreis Aachen;19
+461;Altenkirchen (Westerwald);20
+462;Ahrweiler;20
+463;Vulkaneifel;20
+464;Neuwied;20
+465;Trier, kreisfreie Stadt;20
+466;Trier-Saarburg;20
+467;Bernkastel-Wittlich;20
+468;Eifelkreis Bitburg-Prüm;20
+469;Mainz, kreisfreie Stadt;20
+470;Mainz-Bingen;20
+471;Alzey-Worms;20
+472;Rhein-Hunsrück-Kreis;20
+473;Bad Kreuznach;20
+474;Birkenfeld;20
+475;Koblenz, kreisfreie Stadt;20
+476;Rhein-Lahn-Kreis;20
+477;Mayen-Koblenz;20
+478;Westerwaldkreis;20
+479;Cochem-Zell;20
+480;Zweibrücken, kreisfreie Stadt;20
+481;Südwestpfalz;20
+482;Kaiserslautern;20
+483;Kusel;20
+484;Pirmasens, kreisfreie Stadt;20
+485;Ludwigshafen am Rhein, kreisfreie Stadt;20
+486;Bad Dürkheim;20
+487;Rhein-Pfalz-Kreis;20
+488;Frankenthal (Pfalz), kreisfreie Stadt;20
+489;Donnersbergkreis;20
+490;Speyer, kreisfreie Stadt;20
+491;Germersheim;20
+492;Südliche Weinstraße;20
+493;Neustadt an der Weinstraße, kreisfreie Stadt;20
+494;Worms, kreisfreie Stadt;20
+495;Kaiserslautern, kreisfreie Stadt;20
+496;Herzogtum Lauenburg;21
+497;Stormarn;21
+498;Segeberg;21
+499;Pinneberg;21
+500;Lübeck, Hansestadt;21
+501;Ostholstein;21
+502;Plön;21
+503;Kiel, Landeshauptstadt;21
+504;Rendsburg-Eckernförde;21
+505;Kreisfreie Stadt Kiel;21
+506;Landkreis Plön;21
+507;Schleswig-Flensburg;21
+508;Neumünster, Stadt;21
+509;Steinburg;21
+510;Flensburg, Stadt;21
+511;Landkreis Schleswig-Flensburg;21
+512;Kreisfreie Stadt Flensburg;21
+513;Landkreis Pinneberg;21
+514;Dithmarschen;21
+515;Nordfriesland;21
+516;Landkreis Nordfriesland;21
+517;Regionalverband Saarbrücken;22
+518;Saarlouis;22
+519;Saarpfalz-Kreis;22
+520;Neunkirchen;22
+521;St. Wendel;22
+522;Merzig-Wadern;22
+523;Dresden, Stadt;23
+524;Kreisfreie Stadt Dresden;23
+525;Meißen;23
+526;Bautzen;23
+527;Landkreis Riesa-Großenhain;23
+528;Sächsische Schweiz-Osterzgebirge;23
+530;Görlitz;23
+531;Landkreis Löbau-Zittau;23
+532;Kreisfreie Stadt Görlitz;23
+533;Kreisfreie Stadt Leipzig;23
+534;Leipzig, Stadt;23
+535;Leipzig;23
+536;Nordsachsen;23
+537;Mittelsachsen;23
+538;Vogtlandkreis;23
+539;Zwickau;23
+540;Erzgebirgskreis;23
+541;Landkreis Aue-Schwarzenberg;23
+542;Chemnitz, Stadt;23
+543;Kreisfreie Stadt Chemnitz;23
+544;Mittlerer Erzgebirgskreis;23
+545;Landkreis Freiberg;23
+546;Halle (Saale), Stadt;24
+547;Saalkreis;24
+548;Kreisfreie Stadt Halle;24
+549;Saalekreis;24
+550;Landkreis Merseburg-Querfurt;24
+551;Mansfeld-Südharz;24
+552;Landkreis Mansfelder Land;24
+553;Anhalt-Bitterfeld;24
+554;Landkreis Köthen;24
+555;Salzlandkreis;24
+556;Landkreis Aschersleben-Staßfurt;24
+557;Harz;24
+558;Landkreis Sangerhausen;24
+559;Burgenlandkreis;24
+560;Landkreis Weißenfels;24
+561;Landkreis Bitterfeld;24
+562;Wittenberg;24
+563;Dessau-Roßlau, Stadt;24
+564;Landkreis Anhalt-Zerbst;24
+565;Landkreis Wittenberg;24
+566;Altmarkkreis Salzwedel;24
+567;Landkreis Halberstadt;24
+568;Landkreis Wernigerode;24
+569;Kreisfreie Stadt Magdeburg;24
+570;Magdeburg, Landeshauptstadt;24
+571;Börde;24
+572;Jerichower Land;24
+573;Ohrekreis;24
+574;Bördekreis;24
+575;Landkreis Schönebeck;24
+576;Stendal;24
+577;Landkreis Stendal;24
+578;Altenburger Land;25
+579;Kyffhäuserkreis;25
+580;Sömmerda;25
+581;Saalfeld-Rudolstadt;25
+582;Saale-Orla-Kreis;25
+583;Gera, Stadt;25
+584;Greiz;25
+585;Saale-Holzland-Kreis;25
+586;Jena, Stadt;25
+587;Wartburgkreis;25
+588;Eichsfeld;25
+589;Sonneberg;25
+590;Suhl, Stadt;25
+591;Hildburghausen;25
+592;Schmalkalden-Meiningen;25
+593;Ilm-Kreis;25
+594;Erfurt, Stadt;25
+595;Gotha;25
+596;Weimarer Land;25
+597;Weimar, Stadt;25
+598;Nordhausen;25
+599;Eisenach, Stadt;25
+600;Landkreis Gotha;25
+601;Unstrut-Hainich-Kreis;25
+602;Dordogne;26
+603;Gironde;26
+604;Landes;26
+605;Lot-et-Garonne;26
+606;Pyrénées-Atlantiques;26
+607;Allier;27
+608;Cantal;27
+609;Haute-Loire;27
+610;Puy-de-Dôme;27
+611;Calvados;28
+612;Manche;28
+613;Orne;28
+614;Côte-d'Or;29
+615;Nièvre;29
+616;Saône-et-Loire;29
+617;Yonne;29
+618;Côtes-d'Armor;30
+619;Finistère;30
+620;Ille-et-Vilaine;30
+621;Morbihan;30
+622;Cher;31
+623;Eure-et-Loir;31
+624;Indre;31
+625;Département d'Indre-et-Loire;31
+626;Loir-et-Cher;31
+627;Loiret;31
+628;Ardennes;32
+629;Aube;32
+630;Marne;32
+631;Haute-Marne;32
+632;Corse-du-Sud;33
+633;Haute-Corse;33
+634;Doubs;34
+635;Jura;34
+636;Haute-Saône;34
+637;Territoire de Belfort;34
+638;Eure;35
+639;Seine-Maritime;35
+640;Paris;36
+641;Seine-et-Marne;36
+642;Yvelines;36
+643;Essonne;36
+644;Hauts-de-Seine;36
+645;Seine-Saint-Denis;36
+646;Val-de-Marne;36
+647;Val-d'Oise;36
+649;Aude;37
+650;Gard;37
+651;Hérault;37
+652;Lozère;37
+653;Pyrénées-Orientales;37
+654;Corrèze;38
+655;Creuse;38
+656;Haute-Vienne;38
+657;Meurthe-et-Moselle;39
+658;Meuse;39
+659;Moselle;39
+660;Vosges;39
+661;Ariège;40
+662;Aveyron;40
+663;Haute-Garonne;40
+664;Gers;40
+665;Lot;40
+666;Hautes-Pyrénées;40
+667;Tarn;40
+668;Tarn-et-Garonne;40
+669;Nord;41
+670;Pas-de-Calais;41
+671;Loire-Atlantique;42
+672;Maine-et-Loire;42
+673;Mayenne;42
+674;Sarthe;42
+675;Vendée;42
+676;Aisne;43
+677;Oise;43
+678;Somme;43
+679;Charente;44
+680;Charente-Maritime;44
+681;Deux-Sèvres;44
+682;Vienne;44
+683;Alpes-de-Haute-Provence;45
+684;Hautes-Alpes;45
+685;Alpes-Maritimes;45
+686;Bouches-du-Rhône;45
+687;Var;45
+688;Vaucluse;45
+689;Ain;46
+690;Ardèche;46
+691;Drôme;46
+692;Isère;46
+693;Loire;46
+694;Rhône;46
+695;Savoie;46
+696;Haute-Savoie;46
+697;Bas-Rhin;47
+698;Haut-Rhin;47
+744;Hlavní město Praha;71
+745;Benešov;61
+746;Beroun;61
+747;Kladno;61
+748;Kolín;61
+749;Kutná Hora;61
+750;Mělník;61
+751;Mladá Boleslav;61
+752;Nymburk;61
+753;Praha-východ;61
+754;Praha-západ;61
+755;Příbram;61
+756;Rakovník;61
+757;České Budějovice;57
+758;Český Krumlov;57
+759;Jindřichův Hradec;57
+760;Pelhřimov;65
+761;Písek;57
+762;Prachatice;57
+763;Strakonice;57
+764;Tábor;57
+765;Domažlice;58
+766;Cheb;59
+767;Karlovy Vary;59
+768;Klatovy;58
+769;Plzeň-město;58
+770;Plzeň-jih;58
+771;Plzeň-sever;58
+772;Rokycany;58
+773;Sokolov;59
+774;Tachov;58
+775;Česká Lípa;62
+776;Děčín;60
+777;Chomutov;60
+778;Jablonec nad Nisou;62
+779;Liberec;62
+780;Litoměřice;60
+781;Louny;60
+782;Most;60
+783;Teplice;60
+784;Ústí nad Labem;60
+785;Havlíčkův Brod;65
+786;Hradec Králové;63
+787;Chrudim;64
+788;Jičín;63
+789;Náchod;63
+790;Pardubice;64
+791;Rychnov nad Kněžnou;63
+792;Semily;62
+793;Svitavy;64
+794;Trutnov;63
+795;Ústí nad Orlicí;64
+796;Blansko;66
+797;Brno-město;66
+798;Brno-venkov;66
+799;Břeclav;66
+800;Zlín;67
+801;Hodonín;66
+802;Jihlava;65
+803;Kroměříž;67
+804;Prostějov;70
+805;Třebíč;65
+806;Uherské Hradiště;67
+807;Vyškov;66
+808;Znojmo;66
+809;Žďár nad Sázavou;65
+810;Bruntál;69
+811;Frýdek-Místek;69
+812;Karviná;69
+813;Nový Jičín;69
+814;Olomouc;70
+815;Opava;69
+816;Ostrava-město;69
+817;Přerov;70
+818;Šumperk;70
+819;Vsetín;67
+820;Jeseník;70
+821;L'Aquila;72
+822;Chieti;72
+823;Pescara;72
+824;Teramo;72
+825;Matera;73
+826;Potenza;73
+827;Cosenza;74
+828;Catanzaro;74
+829;Crotone;74
+830;Reggio Di Calabria;74
+831;Vibo Valentia;74
+832;Avellino;75
+833;Benevento;75
+834;Caserta;75
+835;Napoli;75
+836;Salerno;75
+837;Bologna;76
+838;Forli;76
+839;Ferrara;76
+840;Modena;76
+841;Piacenza;76
+842;Parma;76
+843;Ravenna;76
+844;Reggio Nell'Emilia;76
+845;Rimini;76
+846;Gorizia;77
+847;Pordenone;77
+848;Trieste;77
+849;Udine;77
+850;Genova;78
+851;Imperia;78
+852;La Spezia;78
+853;Savona;78
+854;Bergamo;79
+855;Brescia;79
+856;Como;79
+857;Cremona;79
+858;Lecco;79
+859;Lodi;79
+860;Monza e Brianza;79
+861;Milano;79
+862;Mantova;79
+863;Pavia;79
+864;Sondrio;79
+865;Varese;79
+866;Frosinone;80
+867;Latina;80
+868;Rieti;80
+869;Roma;80
+870;Viterbo;80
+871;Ancona;81
+872;Ascoli Piceno;81
+873;Fermo;81
+874;Macerata;81
+875;Pesaro E Urbino;81
+876;Campobasso;82
+877;Isernia;82
+878;Alessandria;83
+879;Asti;83
+880;Biella;83
+881;Cuneo;83
+882;Novara;83
+883;Torino;83
+884;Verbano-Cusio-Ossola;83
+885;Vercelli;83
+886;Bari;84
+887;Brindisi;84
+888;Barletta-Andria-Trani;84
+889;Foggia;84
+890;Lecce;84
+891;Taranto;84
+892;Agrigento;85
+893;Caltanissetta;85
+894;Catania;85
+895;Enna;85
+896;Messina;85
+897;Palermo;85
+898;Ragusa;85
+899;Siracusa;85
+900;Trapani;85
+901;Cagliari;86
+902;Carbonia-Iglesias;86
+903;Nuoro;86
+904;Ogliastra;86
+905;Oristano;86
+906;Olbia-Tempio;86
+907;Sassari;86
+908;Medio Campidano;86
+909;Arezzo;87
+910;Firenze;87
+911;Grosseto;87
+912;Livorno;87
+913;Lucca;87
+914;Massa-Carrara;87
+915;Pisa;87
+916;Prato;87
+917;Pistoia;87
+918;Siena;87
+919;Bolzano-Bozen;88
+920;Trento;88
+921;Perugia;89
+922;Terni;89
+923;Valle D'Aosta;90
+924;Belluno;91
+925;Padova;91
+926;Rovigo;91
+927;Treviso;91
+928;Venezia;91
+929;Vicenza;91
+930;Verona;91
+948;Ankaran;108
+949;Apače;114
+950;Beltinci;114
+951;Benedikt;110
+952;Bistrica ob Sotli;111
+953;Bled;103
+954;Bloke;107
+955;Bohinj;103
+956;Borovnica;109
+957;Bovec;104
+958;Braslovče;111
+959;Brda;104
+960;Brezovica;109
+961;Brežice;112
+962;Cankova;114
+963;Celje;111
+964;Cerklje na Gorenjskem;103
+965;Cerknica;107
+966;Cerkno;104
+967;Cerkvenjak;110
+968;Cirkulane;110
+969;Črenšovci;114
+970;Črna na Koroškem;106
+971;Črnomelj;105
+972;Destrnik;110
+973;Divača;108
+974;Dobje;111
+975;Dobrepolje;109
+976;Dobrna;111
+977;Dobrova - Polhov Gradec;109
+978;Dobrovnik;114
+979;Dol pri Ljubljani;109
+980;Dolenjske Toplice;105
+981;Domžale;109
+982;Dornava;110
+983;Dravograd;106
+984;Duplek;110
+985;Gorenja vas - Poljane;103
+986;Gorišnica;110
+987;Gorje;103
+988;Gornja Radgona;114
+989;Gornji Grad;111
+990;Gornji Petrovci;114
+991;Grad;114
+992;Grosuplje;109
+993;Hajdina;110
+994;Hoče - Slivnica;110
+995;Hodoš;114
+996;Horjul;109
+997;Hrastnik;113
+998;Hrpelje - Kozina;108
+999;Idrija;104
+1000;Ig;109
+1001;Ilirska Bistrica;107
+1002;Ivančna Gorica;109
+1003;Izola;108
+1004;Jesenice;103
+1005;Jezersko;103
+1006;Juršinci;110
+1007;Kamnik;109
+1008;Kanal ob Soči;104
+1009;Kidričevo;110
+1010;Kobarid;104
+1011;Kobilje;114
+1012;Kočevje;105
+1013;Komen;108
+1014;Komenda;109
+1015;Koper;108
+1016;Kostanjevica na Krki;112
+1017;Kostel;105
+1018;Kozje;111
+1019;Kranj;103
+1020;Kranjska Gora;103
+1021;Križevci;114
+1022;Krško;112
+1023;Kungota;110
+1024;Kuzma;114
+1025;Laško;111
+1026;Lenart;110
+1027;Lendava;114
+1028;Litija;109
+1029;Ljubljana;109
+1030;Ljubno;111
+1031;Ljutomer;114
+1032;Log - Dragomer;109
+1033;Logatec;109
+1034;Loška Dolina;107
+1035;Loški Potok;105
+1036;Lovrenc na Pohorju;110
+1037;Luče;111
+1038;Lukovica;109
+1039;Majšperk;110
+1040;Makole;110
+1041;Maribor;110
+1042;Markovci;110
+1043;Medvode;109
+1044;Mengeš;109
+1045;Metlika;105
+1046;Mežica;106
+1047;Miklavž na Dravskem Polju;110
+1048;Miren - Kostanjevica;104
+1049;Mirna;105
+1050;Mirna Peč;105
+1051;Mislinja;106
+1052;Mokronog - Trebelno;105
+1053;Moravče;109
+1054;Moravske Toplice;114
+1055;Mozirje;111
+1056;Murska Sobota;114
+1057;Muta;106
+1058;Naklo;103
+1059;Nazarje;111
+1060;Nova Gorica;104
+1061;Novo mesto;105
+1062;Odranci;114
+1063;Oplotnica;110
+1064;Ormož;110
+1065;Osilnica;105
+1066;Pesnica;110
+1067;Piran;108
+1068;Pivka;107
+1069;Podčetrtek;111
+1070;Podlehnik;110
+1071;Podvelka;106
+1072;Poljčane;110
+1073;Polzela;111
+1074;Postojna;107
+1075;Prebold;111
+1076;Preddvor;103
+1077;Prevalje;106
+1078;Ptuj;110
+1079;Puconci;114
+1080;Rače - Fram;110
+1081;Radeče;111
+1082;Radenci;114
+1083;Radlje ob Dravi;106
+1084;Radovljica;103
+1085;Ravne na Koroškem;106
+1086;Razkrižje;114
+1087;Rečica ob Savinji;111
+1088;Renče - Vogrsko;104
+1089;Ribnica;105
+1090;Ribnica na Pohorju;106
+1091;Rogaška Slatina;111
+1092;Rogašovci;114
+1093;Rogatec;111
+1094;Ruše;110
+1095;Šalovci;114
+1096;Selnica ob Dravi;110
+1097;Semič;105
+1098;Šempeter - Vrtojba;104
+1099;Šenčur;103
+1100;Šentilj;110
+1101;Šentjernej;105
+1102;Šentjur pri Celju;111
+1103;Šentrupert;105
+1104;Sevnica;112
+1105;Sežana;108
+1106;Škocjan;105
+1107;Škofja Loka;103
+1108;Škofljica;109
+1109;Slovenj Gradec;106
+1110;Slovenska Bistrica;110
+1111;Slovenske Konjice;111
+1112;Šmarje pri Jelšah;111
+1113;Šmarješke Toplice;105
+1114;Šmartno ob Paki;111
+1115;Šmartno pri Litiji;109
+1116;Sodražica;105
+1117;Solčava;111
+1118;Šoštanj;111
+1119;Središče ob Dravi;110
+1120;Starše;110
+1121;Štore;111
+1122;Straža;105
+1123;Sveta Ana;110
+1124;Sveta Trojica v Slovenskih goricah;110
+1125;Sveti Andraž v Slovenskih goricah;110
+1126;Sveti Jurij ob Ščavnici;114
+1127;Sveti Jurij v Slovenskih goricah;110
+1128;Sveti Tomaž;110
+1129;Tabor;111
+1130;Tišina;114
+1131;Tolmin;104
+1132;Trbovlje;113
+1133;Trebnje;105
+1134;Trnovska vas;110
+1135;Trzin;109
+1136;Tržič;103
+1137;Turnišče;114
+1139;Velika Polana;114
+1140;Velike Lašče;109
+1141;Veržej;114
+1142;Videm;110
+1143;Vipava;104
+1144;Vitanje;111
+1145;Vodice;109
+1146;Vojnik;111
+1147;Vransko;111
+1148;Vrhnika;109
+1149;Vuzenica;106
+1150;Zagorje ob Savi;113
+1151;Žalec;111
+1152;Zavrč;110
+1153;Železniki;103
+1154;Žetale;110
+1155;Žiri;103
+1156;Žirovnica;103
+1157;Zreče;111
+1158;Žužemberk;105
+1203;Ajdovščina;104
+1204;Velenje;111

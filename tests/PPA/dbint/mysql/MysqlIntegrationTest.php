@@ -27,27 +27,20 @@ class MysqlIntegrationTest extends DatabaseTestCase
     public function setUp(): void
     {
         parent::setUp();
-        echo "setUp MYSQL\n";
+        
         $this->queryBuilder = new QueryBuilder(self::$connection->getDriver());
     }
     
     public function tearDown(): void
     {
-        echo "tearDown MYSQL\n";
         parent::tearDown();
         
         $this->queryBuilder->clear();
     }
-
-//    public function provideQueryBuilder(): array
-//    {
-//        echo __METHOD__."\n";
-//        return [new QueryBuilder(self::$connection->getDriver())];
-//    }
     
-    public function testSimon(/*QueryBuilder $queryBuilder*/)
+    public function testSimon()
     {
-        $this->queryBuilder->delete()->fromTable("addr_country")->where()->criteria(Equals(Field("id"), Literal(1)));
+        $this->queryBuilder->delete()->fromTable("addr_city")->where()->criteria(Equals(Field("id"), Literal(1)));
         
         $sql = $this->queryBuilder->sql();
         

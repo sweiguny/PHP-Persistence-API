@@ -44,16 +44,16 @@ class PgsqlIntegrationTest extends DatabaseTestCase
 //        return [new QueryBuilder(self::$connection->getDriver())];
 //    }
     
-//    public function testSimon(/*QueryBuilder $queryBuilder*/)
-//    {
-//        $this->queryBuilder->delete()->fromTable("addr_country")->where()->criteria(Equals(Field("id"), Literal(1)));
-//        
-//        $sql = $this->queryBuilder->sql();
-//        
-//        $affectedRows = self::$connection->getPdo()->exec($sql);
-//        
-//        $this->assertTrue($affectedRows === 1, "Expected that 1 row is deleted, but instead was '{$affectedRows}'.");
-//    }
+    public function testSimon(/*QueryBuilder $queryBuilder*/)
+    {
+        $this->queryBuilder->delete()->fromTable("addr_country")->where()->criteria(Equals(Field("id"), Literal(1)));
+        
+        $sql = $this->queryBuilder->sql();
+        
+        $affectedRows = self::$connection->getPdo()->exec($sql);
+        
+        $this->assertTrue($affectedRows === 1, "Expected that 1 row is deleted, but instead was '{$affectedRows}'.");
+    }
     
 }
 

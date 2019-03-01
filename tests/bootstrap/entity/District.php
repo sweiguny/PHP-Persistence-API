@@ -15,21 +15,21 @@ class District implements Serializable
 
     /**
      * @Id
-     * @Column(type="integer")
+     * @Column(datatype="integer")
      * 
      * @var int
      */
     private $id;
     
     /**
-     * @Column(type="string")
+     * @Column(datatype="string")
      * 
      * @var string
      */
     private $name;
     
     /**
-     * @Column(type="integer")
+     * @Column(datatype="integer")
      * 
      * @var int
      */

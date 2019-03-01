@@ -14,28 +14,28 @@ class City implements Serializable
 {
     /**
      * @Id
-     * @Column(name="integer")
+     * @Column(datatype="integer")
      * 
      * @var int
      */
     private $id;
     
     /**
-     * @Column(type="string")
+     * @Column(datatype="string")
      * 
      * @var string
      */
     private $name;
     
     /**
-     * @Column(name="zip_code", type="string")
+     * @Column(name="zip_code", datatype="string")
      * 
      * @var string
      */
     private $zipcode;
     
     /**
-     * @Column(name="integer")
+     * @Column(datatype="integer")
      * 
      * @var int
      */
