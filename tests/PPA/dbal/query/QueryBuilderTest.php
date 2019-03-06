@@ -3,11 +3,11 @@
 namespace PPA\tests\dbal;
 
 use PHPUnit\Framework\TestCase;
-use PPA\core\exceptions\io\IOException;
-use PPA\core\util\FileReader;
+use PPA\dbal\DriverManager;
 use PPA\dbal\drivers\concrete\MySQLDriver;
+use PPA\dbal\drivers\concrete\PgSQLDriver;
 use PPA\dbal\query\builder\QueryBuilder;
-use const PPA_BOOTSTRAP_PATH;
+use PPA\tests\bootstrap\ExpectedSQLResultsProvider;
 use function PPA\dbal\query\builder\AST\catalogObjects\Field;
 use function PPA\dbal\query\builder\AST\catalogObjects\Table;
 use function PPA\dbal\query\builder\AST\expressions\functions\aggregate\Sum;
@@ -27,7 +27,7 @@ use function PPA\dbal\query\builder\AST\operators\NullValue;
 /**
  * @coversDefaultClass \PPA\dbal\query\builder\QueryBuilder
  */
-class QueryBuilderTestNew extends TestCase
+class QueryBuilderTest extends TestCase
 {
     /**
      * Data of expected.csv file indexed by name of the test cases, w/o header.
@@ -40,35 +40,15 @@ class QueryBuilderTestNew extends TestCase
     {
         parent::setUpBeforeClass();
         
-        $filepath = self::createFilePathToExpectedResultsFile("expected.csv");
-        $iterator = (new FileReader())->getLineIterator($filepath);
-        $index    = 0;
-        
-        foreach ($iterator as $iteration)
-        {
-            if ($index++ > 0) // skip header
-            {
-                $temp = explode(";", $iteration);
-                self::$expectedResults[array_shift($temp)] = $temp;
-            }
-        }
-    }
-    
-    private static function createFilePathToExpectedResultsFile(string $filename): string
-    {
-        if (!file_exists($filepath = PPA_TEST_BOOTSTRAP_PATH . DIRECTORY_SEPARATOR . $filename))
-        {
-            throw new IOException("File '{$filepath}' does not exist.");
-        }
-        
-        return $filepath;
+        self::$expectedResults = ExpectedSQLResultsProvider::provideExpectedSQLResults();
     }
     
     public function provideQueryBuilder(): array
     {
         // TODO: When PHP provides covariance, refactor QueryBuilder :)
         return [
-            "mysql" => [1, new QueryBuilder(new MySQLDriver())]
+            DriverManager::MYSQL => [1, new QueryBuilder(new MySQLDriver())],
+//            DriverManager::PGSQL => [2, new QueryBuilder(new PgSQLDriver())]
         ];
     }
     

@@ -83,7 +83,7 @@ abstract class DatabaseTestCase extends TestCase
             $setup->setUpFixtures(Country::class);
             $setup->setUpFixtures(State::class);
             $setup->setUpFixtures(District::class);
-            $setup->setUpFixtures(City::class);
+//            $setup->setUpFixtures(City::class);
         }
         catch (DatabaseException $ex)
         {
@@ -117,7 +117,6 @@ abstract class DatabaseTestCase extends TestCase
         
         self::$fixtureSetup->tearDownFixtures();
         
-//        self::$connection->getPdo()->query("DELETE FROM addr_country");
         self::$connection->disconnect();
     }
 }

@@ -25,7 +25,7 @@
     
     
     <php>
-        <var name="drivers"  value="mysql,pgsql"/>
+        <var name="drivers"  value="mysql"/>
 <!--        <var name="driver"   value="pgsql"/>
         <var name="hostname" value="127.0.0.1" />
         <var name="database" value="ppa_test" />

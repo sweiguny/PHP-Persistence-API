@@ -3,46 +3,18 @@
 namespace PPA\tests\dbint\pgsql;
 
 use PPA\dbal\DriverManager;
-use PPA\dbal\query\builder\QueryBuilder;
-use PPA\tests\bootstrap\DatabaseTestCase;
+use PPA\tests\bootstrap\DatabaseIntegrationTestCase;
 use function PPA\dbal\query\builder\AST\catalogObjects\Field;
 use function PPA\dbal\query\builder\AST\expressions\Literal;
 use function PPA\dbal\query\builder\AST\operators\Equals;
 
-class PgsqlIntegrationTest extends DatabaseTestCase
+class PgsqlIntegrationTest extends DatabaseIntegrationTestCase
 {
-    /**
-     *
-     * @var QueryBuilder
-     */
-    private $queryBuilder;
-    
-    public static function setUpBeforeClass(): void
-    {
-        self::$drivername = DriverManager::PGSQL;
-        
-        parent::setUpBeforeClass();
-    }
-    
-    public function setUp(): void
-    {
-        parent::setUp();
-        
-        $this->queryBuilder = new QueryBuilder(self::$connection->getDriver());
-    }
-    
-    public function tearDown(): void
-    {
-        parent::tearDown();
-        
-        $this->queryBuilder->clear();
-    }
 
-//    public function provideQueryBuilder(): array
-//    {
-//        echo __METHOD__."\n";
-//        return [new QueryBuilder(self::$connection->getDriver())];
-//    }
+    protected static function getDriver(): string
+    {
+        return DriverManager::PGSQL;
+    }
     
     public function testSimon(/*QueryBuilder $queryBuilder*/)
     {
@@ -54,7 +26,7 @@ class PgsqlIntegrationTest extends DatabaseTestCase
         
         $this->assertTrue($affectedRows === 1, "Expected that 1 row is deleted, but instead was '{$affectedRows}'.");
     }
-    
+
 }
 
 ?>

@@ -6,6 +6,7 @@ use PPA\core\EventDispatcher;
 use PPA\core\exceptions\error\DriverNotInstalledError;
 use PPA\core\exceptions\error\DriverNotSupportedError;
 use PPA\core\exceptions\io\IOException;
+use PPA\core\exceptions\logic\DomainException;
 use PPA\dbal\Connection;
 use PPA\dbal\DriverManager;
 use const PPA_TEST_CONFIG_PATH;
@@ -15,12 +16,13 @@ class ConnectionProviderForTestEnvironment extends DriverManager
     private static $collection = [];
     private static $connections = [];
     private static $exceptions  = [];
+    private static $drivernames = [];
 
     public static function init(): void
     {
-        $drivernames = array_map("strtolower", explode(",", $GLOBALS["drivers"])); // Ensure, that driver names are in lower case.
+        self::$drivernames = array_map("strtolower", explode(",", $GLOBALS["drivers"])); // Ensure, that driver names are in lower case.
 
-        foreach ($drivernames as $drivername)
+        foreach (self::$drivernames as $drivername)
         {
             self::$collection[$drivername] = require_once self::generateDriverParametersFilePath($drivername);
 
@@ -40,7 +42,7 @@ class ConnectionProviderForTestEnvironment extends DriverManager
             {
                 /*
                  * Deferred Exception.
-                 * Thrown in self.:getConnectionByName(),
+                 * Thrown in self::getConnectionByName(),
                  * which is called by DatabaseTestCase::setUpBeforeClass()
                  * called by a certain integration test, to be able to skip
                  * that integration test, if the driver is not available.
@@ -73,9 +75,14 @@ class ConnectionProviderForTestEnvironment extends DriverManager
             throw self::$exceptions[$drivername];
         }
         
-        if (!self::driverAvailable($drivername))
+        if (!self::driverFromIntegrationTestValid($drivername))
         {
-            throw new DriverNotSupportedError("Driver '{$drivername}' is highly probably wrongly defined (typo?) in your integration test, because DriverManager wasn't complaining. So the driver list configured is valid. Use the constants of DriverManager to prevent typos.");
+            throw new DomainException("Driver '{$drivername}' returned from getDriver() in your integration test is highly probably wrongly defined (typo?). The driver list configured in your phpunit.xml is valid, because DriverManager didn't complain about the listed drivers.\nHint: Use the constants of DriverManager in getDriver() of the integration test class to prevent typos.");
+        }
+        
+        if (!self::driverConfiguredToTest($drivername))
+        {
+            throw new DriverNotSupportedError("Driver '{$drivername}' is not defined in driver list in phpunit.xml.");
         }
         
         return self::$connections[$drivername][0];
@@ -86,10 +93,20 @@ class ConnectionProviderForTestEnvironment extends DriverManager
         return self::$connections;
     }
     
-    public static function driverAvailable(string $drivername): bool
+    private static function driverConfiguredToTest(string $drivername): bool
     {
-        return isset(self::$connections[$drivername]);
+        return in_array($drivername, self::$drivernames);
     }
+    
+    public static function driverFromIntegrationTestValid(string $drivername): bool
+    {
+        return isset(DriverManager::getAvailableDrivers()[$drivername]);
+    }
+    
+//    public static function connectionAvailable(string $drivername): bool
+//    {
+//        return isset(self::$connections[$drivername]);
+//    }
     
 }
 
