@@ -37,6 +37,11 @@ abstract class DatabaseIntegrationTestCase extends DatabaseTestCase
     
     abstract static protected function getDriver(): string;
     
+    /**
+     * Provides the expected SQL-Statements for a certain driver.
+     * 
+     * @return array
+     */
     public function provideExpectedSQLResults(): array
     {
         $index = array_search(static::getDriver(), array_keys(DriverManager::DRIVER_MAP)) + 1;
@@ -57,21 +62,24 @@ abstract class DatabaseIntegrationTestCase extends DatabaseTestCase
     }
     
     /**
+     * This method tests whether the expected SQL-Statements are accepted by the
+     * corresponding DBMS. Otherwise testing against them doesn't make much sense.
+     * 
      * @dataProvider provideExpectedSQLResults
      * 
-     * @param string $index
+     * @param string $sql
      */
     public function testExpectedSQLResults(string $sql)
     {
-//        $expectedResults = ExpectedSQLResultsProvider::provideExpectedSQLResults();
-//        
-//        $sql = $expectedResults[$index + 1];
+        $exception = null;
         
-        $stmt = self::$connection->getPdo()->prepare($sql);
-//        $stmt->execute();
-        print_r($stmt->errorInfo());
-//        print_r(self::$connection->getPdo()->errorInfo());
+        try
+        {
+            self::$connection->getPdo()->prepare($sql);
+        }
+        catch (\PDOException $exception){}
         
+        $this->assertNull($exception, $exception->getMessage());
     }
     
 }
