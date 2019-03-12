@@ -29,8 +29,6 @@ abstract class AbstractDatatype
         
         $this->doConversion($value);
     }
-    
-    public abstract function quoteValueForQuery($value): string;
 
     public abstract function proveValue($value): bool;
     

@@ -11,17 +11,12 @@ class TypeString extends AbstractDatatype
 
     protected function doConversion(&$value): void
     {
-        // Nothing to do here, because we except a string
+        // Nothing to do here, because we expect a string
     }
     
     public function proveValue($value): bool
     {
         return is_string($value);
-    }
-
-    public function quoteValueForQuery($value): string
-    {
-        return '"' . $value . '"';
     }
 
 }

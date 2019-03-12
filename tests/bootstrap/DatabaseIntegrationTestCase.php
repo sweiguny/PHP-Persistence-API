@@ -42,8 +42,6 @@ abstract class DatabaseIntegrationTestCase extends DatabaseTestCase
         $index = array_search(static::getDriver(), array_keys(DriverManager::DRIVER_MAP)) + 1;
         $expectedResults = ExpectedSQLResultsProvider::provideExpectedSQLResults();
         
-        $data = ["mytest" => ["SELECT * FROM `addr_country` WHERE `id` = ?"]];
-        
         foreach ($expectedResults as $testCase => $results)
         {
             $data[$testCase] = [$results[$index + 1]];
@@ -59,7 +57,7 @@ abstract class DatabaseIntegrationTestCase extends DatabaseTestCase
     /**
      * @dataProvider provideExpectedSQLResults
      * 
-     * @param string $index
+     * @param string $sql
      */
     public function testExpectedSQLResults(string $sql)
     {
@@ -69,7 +67,7 @@ abstract class DatabaseIntegrationTestCase extends DatabaseTestCase
         
         $stmt = self::$connection->getPdo()->prepare($sql);
 //        $stmt->execute();
-        print_r($stmt->errorInfo());
+//        print_r($stmt->errorInfo());
 //        print_r(self::$connection->getPdo()->errorInfo());
         
     }

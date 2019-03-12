@@ -10,6 +10,8 @@ use PPA\dbal\query\builder\QueryBuilder;
 use PPA\tests\bootstrap\ExpectedSQLResultsProvider;
 use function PPA\dbal\query\builder\AST\catalogObjects\Field;
 use function PPA\dbal\query\builder\AST\catalogObjects\Table;
+use function PPA\dbal\query\builder\AST\expressions\functions\aggregate\Count;
+use function PPA\dbal\query\builder\AST\expressions\functions\aggregate\Max;
 use function PPA\dbal\query\builder\AST\expressions\functions\aggregate\Sum;
 use function PPA\dbal\query\builder\AST\expressions\Literal;
 use function PPA\dbal\query\builder\AST\expressions\Parameter;
@@ -21,6 +23,7 @@ use function PPA\dbal\query\builder\AST\operators\Greater;
 use function PPA\dbal\query\builder\AST\operators\GreaterEquals;
 use function PPA\dbal\query\builder\AST\operators\InSubquery;
 use function PPA\dbal\query\builder\AST\operators\InValues;
+use function PPA\dbal\query\builder\AST\operators\Like;
 use function PPA\dbal\query\builder\AST\operators\Lower;
 use function PPA\dbal\query\builder\AST\operators\NullValue;
 
@@ -48,7 +51,7 @@ class QueryBuilderTest extends TestCase
         // TODO: When PHP provides covariance, refactor QueryBuilder :)
         return [
             DriverManager::MYSQL => [1, new QueryBuilder(new MySQLDriver())],
-//            DriverManager::PGSQL => [2, new QueryBuilder(new PgSQLDriver())]
+            DriverManager::PGSQL => [2, new QueryBuilder(new PgSQLDriver())]
         ];
     }
     
@@ -71,7 +74,7 @@ class QueryBuilderTest extends TestCase
      */
     public function testSelectAll(int $index, QueryBuilder $queryBuilder): void
     {
-        $queryBuilder->select()->from(Alias(Table("test"), "c"));
+        $queryBuilder->select()->from(Alias(Table("addr_country"), "c"));
         
         $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
     }
@@ -83,7 +86,20 @@ class QueryBuilderTest extends TestCase
      */
     public function testSelectAllWithAsteriskWildcard(int $index, QueryBuilder $queryBuilder): void
     {
-        $queryBuilder->select(AsteriskWildcard())->from(Alias(Table("test"), "c"));
+        $queryBuilder->select(AsteriskWildcard())->from(Alias(Table("addr_country"), "c"));
+        
+        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
+    }
+    
+    /**
+     * @covers ::insert
+     * 
+     * @dataProvider provideQueryBuilder
+     */
+    public function testSelectWithAggregateFunctions(int $index, QueryBuilder $queryBuilder): void
+    {
+        $queryBuilder->select(Count(AsteriskWildcard()), Max(Field("id")))->from(Alias(Table("addr_country"), "c"))
+                ;
         
         $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
     }
@@ -95,8 +111,8 @@ class QueryBuilderTest extends TestCase
      */
     public function testJoinClause(int $index, QueryBuilder $queryBuilder): void
     {
-        $queryBuilder->select()->from(Alias(Table("customer"), "c"))
-                ->join(Alias(Table("order"), "o"))
+        $queryBuilder->select()->from(Alias(Table("addr_country"), "c"))
+                ->join(Alias(Table("addr_state"), "s"))
                 ;
         
         $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
@@ -109,9 +125,9 @@ class QueryBuilderTest extends TestCase
      */
     public function testSimpleJoinOnClause(int $index, QueryBuilder $queryBuilder): void
     {
-        $queryBuilder->select()->from(Alias(Table("customer"), "c"))
-                ->join(Alias(Table("order"), "o"))->on()
-                    ->criteria(Equals(Field("id", "c"), Field("customer", "o")))
+        $queryBuilder->select()->from(Alias(Table("addr_country"), "c"))
+                ->join(Alias(Table("addr_state"), "s"))->on()
+                    ->criteria(Equals(Field("id", "c"), Field("country", "s")))
                     ->and()
                     ->criteria(Equals(Parameter("name"), Literal(10)))
                 ;
@@ -126,20 +142,20 @@ class QueryBuilderTest extends TestCase
      */
     public function testOnClauseWithGroup(int $index, QueryBuilder $queryBuilder): void
     {
-        $queryBuilder->select()->from(Alias(Table("customer"), "c"))
-                ->join(Alias(Table("order"), "o"))->on()
-                    ->criteria(Equals(Field("id", "c"), Field("customer", "o")))
+        $queryBuilder->select()->from(Alias(Table("addr_country"), "c"))
+                ->join(Alias(Table("addr_state"), "s"))->on()
+                    ->criteria(Equals(Field("id", "c"), Field("country", "s")))
                     ->and()
                     ->group()
-                        ->criteria(Greater(Field("id", "o"), Literal(100)))
+                        ->criteria(Greater(Field("id", "s"), Literal(100)))
                         ->and()
-                        ->criteria(Lower(Field("id", "o"), Literal(1000)))
+                        ->criteria(Lower(Field("id", "s"), Literal(1000)))
                     ->closeGroup()
                     ->or()
                     ->group()
-                        ->criteria(Between(Field("id", "c"), Literal(1), Literal(10)))
+                        ->criteria(Between(Field("id", "s"), Literal(1), Literal(10)))
                         ->and()
-                        ->criteria(Between(Field("id", "o"), Literal(0), Literal(100)))
+                        ->criteria(Between(Field("id", "s"), Literal(0), Literal(100)))
                     ->closeGroup()
                 ;
         
@@ -155,9 +171,9 @@ class QueryBuilderTest extends TestCase
      */
     public function testSimpleWhereClause(int $index, QueryBuilder $queryBuilder): void
     {
-        $queryBuilder->select()->from(Table("customer"))
+        $queryBuilder->select()->from(Table("addr_country"))
                 ->where()
-                    ->criteria(Equals(Field("id"), Field("old_identifier")))
+                    ->criteria(Equals(Field("id"), Field("name")))
                 ;
         
 //        var_dump($queryBuilder->sql());
@@ -172,12 +188,12 @@ class QueryBuilderTest extends TestCase
      */
     public function testComplexWhereClause(int $index, QueryBuilder $queryBuilder): void
     {
-        $queryBuilder->select()->from(Alias(Table("customer"), "c"))
+        $queryBuilder->select()->from(Alias(Table("addr_country"), "c"))
                 ->where()
-                    ->criteria(Equals(Field("target_group", "c"), Literal(10)))
+                    ->criteria(Equals(Field("id", "c"), Literal(10)))
                     ->and()
                     ->group()
-                        ->criteria(Equals(Field("name"), Literal("jochen")))
+                        ->criteria(Equals(Field("name"), Literal("Österreich")))
                     ->closeGroup()
                     ->or()
                     ->group()
@@ -198,14 +214,15 @@ class QueryBuilderTest extends TestCase
     public function testInClause(int $index, QueryBuilder $queryBuilder): void
     {
         $subQB = clone $queryBuilder;
-        $subQuery = $subQB->selectDistinct(Field("age"));
-        $subQuery->from(Table("order"));
+        $subQuery = $subQB->selectDistinct(Field("state"));
+        $subQuery->from(Table("addr_district"))
+                ->where()->criteria(Like(Field("name"), Literal("%heim%")));
         
-        $queryBuilder->select()->from(Alias(Table("customer"), "c"))
+        $queryBuilder->select()->from(Alias(Table("addr_state"), "s"))
                 ->where()
-                    ->criteria(InValues(Field("id", "c"), [10,20,30]))
+                    ->criteria(InValues(Field("name", "s"), ["Bayern", "Niedersachsen"]))
                     ->and()
-                    ->criteria(InSubquery(Field("age"), $subQuery))
+                    ->criteria(InSubquery(Field("id"), $subQuery))
                 ;
         
 //        var_dump($queryBuilder->sql());
@@ -220,15 +237,15 @@ class QueryBuilderTest extends TestCase
      */
     public function testJoinWithGroupByAndAggregateFunctionAndHavingClause(int $index, QueryBuilder $queryBuilder): void
     {
-        $queryBuilder->select(Sum(Field("age")), Field("type"))->from(Table("customer"))
-                ->join(Table("order"))->on()->criteria(Equals(Field("id", "customer"), Field("customer_id", "order")))
+        $queryBuilder->select(Sum(Field("zip_code")), Field("country"))->from(Table("address"))
+                ->join(Table("addr_city"))->on()->criteria(Equals(Field("id", "addr_city"), Field("city", "address")))
                 ->where()
-                    ->criteria(InValues(Field("id"), [10,20,30]))
-                    ->and()
-                    ->criteria(InValues(Field("id2"), [30,20,10]))
-                ->groupBy(Field("type"))
+                    ->criteria(InValues(Field("country"), [2, 5, 6]))
+//                    ->and()
+//                    ->criteria(InValues(Field("id2"), [30,20,10]))
+                ->groupBy(Field("country"))
                 ->having()
-                    ->criteria(GreaterEquals(Field("test"), Literal(10)))
+                    ->criteria(GreaterEquals(Count(Field("city")), Literal(3)))
                 ;
         
 //        var_dump($queryBuilder->sql());
@@ -243,9 +260,9 @@ class QueryBuilderTest extends TestCase
      */
     public function testUpdateWithWhereClause(int $index, QueryBuilder $queryBuilder): void
     {
-        $queryBuilder->update()->table("customer")
+        $queryBuilder->update()->table("addr_city")
                 ->set("name", Parameter())
-                ->set("zip", Parameter())
+                ->set("zip_code", Parameter())
                 ->where()
                     ->criteria(Equals(Field("id"), Literal(1)))
                 ;
@@ -260,7 +277,7 @@ class QueryBuilderTest extends TestCase
      */
     public function testDeleteWithWhereClause(int $index, QueryBuilder $queryBuilder): void
     {
-        $queryBuilder->delete()->fromTable("customer")
+        $queryBuilder->delete()->fromTable("addr_city")
                 ->where()
                     ->criteria(Equals(Field("id"), Literal(1)))
                     // TODO: If feature covariance exists, please refactor the way, so that here having and groupBy and so on can't be called.
@@ -277,9 +294,10 @@ class QueryBuilderTest extends TestCase
      */
     public function testInsertWithSetClause(int $index, QueryBuilder $queryBuilder): void
     {
-        $queryBuilder->insert()->intoTable("customer")
+        $queryBuilder->insert()->intoTable("addr_city")
+                ->set("id", Literal(1))
                 ->set("name", Literal("Simon Weiguny"))
-                ->set("dateOfRegistry", Literal("2018-10-10"))
+                ->set("zip_code", Literal(1337))
                 ;
         
         $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
@@ -292,8 +310,8 @@ class QueryBuilderTest extends TestCase
      */
     public function testInsertWithValues(int $index, QueryBuilder $queryBuilder): void
     {
-        $queryBuilder->insert()->intoTable("customer")
-                ->values(NullValue(), Literal("Simon Weiguny"), Literal("2018-10-10"))
+        $queryBuilder->insert()->intoTable("address")
+                ->values(NullValue(), Literal(1), Literal(18358), Literal(50), Literal("66a, Salmesmühle"))
                 ;
         
         $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
@@ -308,15 +326,15 @@ class QueryBuilderTest extends TestCase
     {
         $subQB = clone $queryBuilder;
         $subQuery = $subQB->select();
-        $subQuery->from(Table("customer"))->where()->criteria(Equals(Field("id"), Literal(1)));
+        $subQuery->from(Table("address"))->where()->criteria(Equals(Field("id"), Literal(80)));
         
-        $queryBuilder->insert()->intoTable("customer")
+        $queryBuilder->insert()->intoTable("address")
                 ->query($subQuery)
                 ;
         
         $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
     }
-
+    
 }
 
 ?>

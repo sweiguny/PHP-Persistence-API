@@ -34,10 +34,19 @@ namespace PPA\dbal\query\builder\AST\expressions\functions\aggregate
         return new _Sum($expression);
     }
     
-
     function Count(Expression $expression = null): _Count
     {
         return new _Count($expression);
+    }
+    
+    function Min(Expression $expression = null): _Min
+    {
+        return new _Min($expression);
+    }
+    
+    function Max(Expression $expression = null): _Max
+    {
+        return new _Max($expression);
     }
     
 }
@@ -115,6 +124,13 @@ namespace PPA\dbal\query\builder\AST\operators
         };
         
         return $wrapper;
+    }
+    
+    function Like(Expression $left, Expression $right): Predicate
+    {
+        $operator = new Comparison(Comparison::LIKE);
+        
+        return Predicate::makePredicate($left, $right, $operator);
     }
     
     function Equals(Expression $left, Expression $right): Predicate

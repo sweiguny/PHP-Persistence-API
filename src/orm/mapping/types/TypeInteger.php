@@ -19,11 +19,6 @@ class TypeInteger extends AbstractDatatype
         return ctype_digit(strval($value));
     }
 
-    public function quoteValueForQuery($value): string
-    {
-        return (string)$value;
-    }
-
 }
 
 ?>

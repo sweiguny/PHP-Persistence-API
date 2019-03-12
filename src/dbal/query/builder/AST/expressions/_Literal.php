@@ -21,7 +21,7 @@ class _Literal extends Expression
     
     public function __construct($value, string $dataType)
     {
-        parent::__construct(false);
+        parent::__construct(true);
         
         $this->dataType = DataTypeMapper::mapDatatype($dataType);
         $this->dataType->convertValue($value);
@@ -29,14 +29,20 @@ class _Literal extends Expression
         $this->value = $value;
     }
 
-    public function getValue(bool $quoteValueForQuery = false)
+    public function getValue()
     {
-        return $quoteValueForQuery ? $this->dataType->quoteValueForQuery($this->value) : $this->value;
+        return $this->value;
     }
 
     public function toString(): string
     {
-        return $this->getValue(true);
+        switch ($this->dataType->getName())
+        {
+            case AbstractDatatype::TYPE_STRING:
+                return $this->getDriver()->getValueIdentifier() . $this->value . $this->getDriver()->getValueIdentifier();
+            default:
+                return $this->value;
+        }
     }
 }
 
