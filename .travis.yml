@@ -2,25 +2,22 @@ dist: trusty
 sudo: false
 language: php
 php:
-  - '7.2'
-#services:
-#    - mariadb
-#    - 
+  - 7.2
+
+before_install:
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS ppa_test;'
+  - psql  -c 'CREATE DATABASE ppa_test;' -U postgres
 install:
    - composer install
-script: phpunit -c tests/config/phpunit.xml
+before_script:
+  - mysql ppa_test < tests/config/mysql_schema.sql
+  - psql -U postgres -d ppa_test -f tests/config/pgsql_schema.sql
+script:
+  - phpunit -c tests/config/phpunit.xml
 
 jobs:
     include:
         stage: test
-#        env:
-#           - DB=mariadb
-        before_install:
-           - mysql -e 'CREATE DATABASE IF NOT EXISTS ppa_test;'
-           - psql  -c 'CREATE DATABASE ppa_test;' -U postgres
-        before_script:
-           - mysql < tests/config/mysql_schema.sql
-           - psql -U postgres -d ppa_test -f tests/config/pgsql_schema.sql
         addons:
             mariadb:    10.1
             postgresql: 9.6
