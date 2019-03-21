@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace PPA\tests\orm\mapping;
 
@@ -41,8 +40,6 @@ class AnnotationReaderTest extends TestCase
      */
     public function testFetchAnnotations(string $testname, string $docComment, array $expected): void
     {
-//        echo "in ".__FUNCTION__."\n";
-//        var_dump($docComment);echo "\n";
         $reflectionMethod = $this->reflectionClass->getMethod("fetchAnnotations");
         $reflectionMethod->setAccessible(true);
         
@@ -66,12 +63,10 @@ class AnnotationReaderTest extends TestCase
             /* @var $property ReflectionProperty */
             
             $propName   = $property->getName();
-            $docComment = $property->getDocComment();
-//            echo "in ".__FUNCTION__."\n";
-//            var_dump($docComment);echo "\n";
+            $docComment = $property->getDocComment() ?: ""; // Map to string, because getDocComment() returns false if there's no DocComment
             $expected   = $property->getValue($docCommentProvider);
             
-            $docComments[] = [$propName, $docComment ?: "", $expected];
+            $docComments[] = [$propName, $docComment, $expected];
         }
         
         return $docComments;
