@@ -2,23 +2,11 @@
 
 namespace PPA\dbal\query\builder\AST\statements\helper;
 
-use PPA\dbal\query\builder\AST\clauses\Join;
-use PPA\dbal\query\builder\AST\SQLDataSource;
+use PPA\dbal\query\builder\AST\statements\helper\traits\JoinTrait;
 
 class JoinClauseHelper extends WhereClauseHelper
 {
-    
-    public function join(SQLDataSource $source)
-    {
-        $helper = new OnClauseHelper($this->getDriver());
-        
-        $this->collection[] = new Join();
-        $this->collection[] = $source;
-        $this->collection[] = $helper;
-        
-        return $helper;
-    }
-    
+    use JoinTrait;
 }
 
 ?>

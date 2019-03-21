@@ -1,6 +1,6 @@
 <?php
 
-namespace PPA\dbal\query\builder\AST\statements\helper\criteria;
+namespace PPA\dbal\query\builder\AST\statements\helper\traits;
 
 use PPA\dbal\query\builder\AST\expressions\predicates\Predicate;
 use PPA\dbal\query\builder\AST\operators\logical\Conjunction;

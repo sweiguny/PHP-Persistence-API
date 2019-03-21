@@ -42,7 +42,7 @@ class Address implements Serializable
     private $street;
 
     /**
-     * @Column(name="house_number")
+     * @Column(name="house_number", datatype="string")
      * 
      * @var string
      */

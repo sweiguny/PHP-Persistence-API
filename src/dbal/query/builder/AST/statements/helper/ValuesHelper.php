@@ -16,6 +16,7 @@ class ValuesHelper extends BaseHelper
     
     public function values(Expression ...$expressions): void
     {
+        $this->injectDriversWhereNecessary(...$expressions);
 //        $this->parent->getState()->setStateClean();
         
         $collection = [

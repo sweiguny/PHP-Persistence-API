@@ -5,6 +5,8 @@ namespace PPA\dbal\query\builder\AST;
 use PPA\core\exceptions\ExceptionFactory;
 use PPA\core\util\StacktraceAnalyzer;
 use PPA\dbal\drivers\DriverInterface;
+use PPA\dbal\query\builder\AST\operators\Parenthesis;
+use PPA\dbal\query\builder\AST\statements\DQL\SelectStatement;
 
 abstract class ASTNode
 {
@@ -83,9 +85,14 @@ abstract class ASTNode
             /* @var $node ASTNode */
             $node = $nodes[$i];
             
-            // It shouldn't be necessary to trim()...
-//            $strings[] = trim($node->toString());
-            $strings[] = $node->toString();
+            if ($node instanceof SelectStatement) // Subselect
+            {
+                $strings[] = Parenthesis::OPEN . $node->toString() . Parenthesis::CLOSE;
+            }
+            else
+            {
+                $strings[] = $node->toString();
+            }
         }
         
         $wrapper = new class($glue, $strings) extends ASTNode

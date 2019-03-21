@@ -3,7 +3,7 @@
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
-         stopOnFailure="true"
+         stopOnFailure="false"
          verbose="true"
     >
     <testsuites>
@@ -15,7 +15,6 @@
         </testsuite>
         <testsuite name="dbint">
             <directory>../PPA/dbint</directory>
-            <!--<file>../PPA/dbint/DatabaseIntegrationSuite.php</file>-->
         </testsuite>
     </testsuites>
     
@@ -25,18 +24,7 @@
     
     
     <php>
-        <var name="drivers"  value="mysql,pgsql"/>
-<!--        <var name="driver"   value="pgsql"/>
-        <var name="hostname" value="127.0.0.1" />
-        <var name="database" value="ppa_test" />
-        <var name="username" value="postgres" />
-        <var name="password" value="lei6395derf" />-->
-<!--        <var name="driver"   value="mysql"/>
-        <var name="hostname" value="127.0.0.1" />
-        <var name="database" value="ppa_test" />
-        <var name="username" value="root" />
-        <var name="password" value="lei6395derf" />-->
-        <!--<var name="port"     value="3306"/>-->
+        <var name="drivers" value="mysql,pgsql"/>
     </php>
     
     

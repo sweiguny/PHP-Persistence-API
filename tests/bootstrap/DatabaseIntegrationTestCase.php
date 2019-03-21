@@ -37,39 +37,57 @@ abstract class DatabaseIntegrationTestCase extends DatabaseTestCase
     
     abstract static protected function getDriver(): string;
     
+    /**
+     * Provides the expected SQL-Statements for a certain driver.
+     * 
+     * @return array
+     */
     public function provideExpectedSQLResults(): array
     {
-        $index = array_search(static::getDriver(), array_keys(DriverManager::DRIVER_MAP)) + 1;
+        $offset          = 2; // Description, Parameters
+        $index           = array_search(static::getDriver(), array_keys(DriverManager::DRIVER_MAP)) + 1;
         $expectedResults = ExpectedSQLResultsProvider::provideExpectedSQLResults();
+        $data            = [];
         
         foreach ($expectedResults as $testCase => $results)
         {
-            $data[$testCase] = [$results[$index + 1]];
+            $parameters      = json_decode($results[$offset], true);
+            $sql             = $results[$index + $offset];
+            $data[$testCase] = [$sql, $parameters ?: []];
         }
-        
-//        print_r($data);
-//        var_dump($data);
-//        echo $data;
         
         return $data;
     }
     
     /**
+     * This method tests whether the expected SQL-Statements are accepted by the
+     * corresponding DBMS. Otherwise testing against them doesn't make much sense.
+     * 
      * @dataProvider provideExpectedSQLResults
      * 
      * @param string $sql
      */
-    public function testExpectedSQLResults(string $sql)
+    public function testExpectedSQLResults(string $sql, array $parameters)
     {
-//        $expectedResults = ExpectedSQLResultsProvider::provideExpectedSQLResults();
-//        
-//        $sql = $expectedResults[$index + 1];
+        if (empty($sql))
+        {
+            $this->markTestSkipped("This should only be, because the specific syntax is not available for the target DBMS.");
+        }
         
-        $stmt = self::$connection->getPdo()->prepare($sql);
-//        $stmt->execute();
-//        print_r($stmt->errorInfo());
-//        print_r(self::$connection->getPdo()->errorInfo());
+        $errorHappend = false;
+        $errorMessage = $sql . "\n" . print_r($parameters, true) . "\n";
+//        echo "$sql\n";
+        try
+        {
+            $stmt = self::$connection->getPdo()->prepare($sql);
+            $stmt->execute($parameters);
+        }
+        catch (\PDOException $exception){
+            $errorHappend  = true;
+            $errorMessage .= $exception->getMessage();
+        }
         
+        $this->assertFalse($errorHappend, $errorMessage);
     }
     
 }

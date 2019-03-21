@@ -4,9 +4,9 @@ namespace PPA\dbal\query\builder\AST\statements;
 
 use PPA\dbal\drivers\DriverInterface;
 use PPA\dbal\query\builder\AST\ASTCollection;
-use PPA\dbal\query\builder\AST\ASTNode;
+use PPA\dbal\query\builder\AST\expressions\Expression;
 
-abstract class SQLStatement extends ASTNode
+abstract class SQLStatement extends Expression
 {
     /**
      *

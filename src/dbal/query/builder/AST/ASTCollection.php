@@ -30,7 +30,6 @@ class ASTCollection extends ASTNode implements ArrayAccess
 
     public function toString(): string
     {
-        // TODO: Maybe it is necessary to call $this->injectDriversWhereNecessary();
         if ($this->hasDriver())
         {
             $this->injectDriversWhereNecessary(...$this->collection);

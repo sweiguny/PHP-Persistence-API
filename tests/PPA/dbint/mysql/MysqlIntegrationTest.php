@@ -13,20 +13,20 @@ class MysqlIntegrationTest extends DatabaseIntegrationTestCase
         return DriverManager::MYSQL;
     }
 
-    public function testSimon1()
-    {
-        $this->assertTrue(true);
-    }
-
-    public function testSimon2()
-    {
-        $this->assertTrue(true);
-    }
-
-    public function testSimon3()
-    {
-        $this->assertTrue(true);
-    }
+//    public function testSimon1()
+//    {
+//        $this->assertTrue(true);
+//    }
+//
+//    public function testSimon2()
+//    {
+//        $this->assertTrue(true);
+//    }
+//
+//    public function testSimon3()
+//    {
+//        $this->assertTrue(true);
+//    }
     
 }
 

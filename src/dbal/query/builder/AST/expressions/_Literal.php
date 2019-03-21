@@ -41,7 +41,7 @@ class _Literal extends Expression
             case AbstractDatatype::TYPE_STRING:
                 return $this->getDriver()->getValueIdentifier() . $this->value . $this->getDriver()->getValueIdentifier();
             default:
-                return $this->value;
+                return (string)$this->value;
         }
     }
 }

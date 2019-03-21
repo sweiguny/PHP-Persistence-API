@@ -5,14 +5,15 @@ namespace PPA\tests\bootstrap;
 use PHPUnit\Framework\TestCase;
 use PPA\core\EventDispatcher;
 use PPA\core\exceptions\error\DriverNotInstalledError;
-use PPA\core\exceptions\runtime\db\DatabaseException;
 use PPA\dbal\Connection;
 use PPA\dbal\TransactionManager;
 use PPA\orm\EntityAnalyser;
+use PPA\tests\bootstrap\entity\Address;
 use PPA\tests\bootstrap\entity\City;
 use PPA\tests\bootstrap\entity\Country;
 use PPA\tests\bootstrap\entity\District;
 use PPA\tests\bootstrap\entity\State;
+use PPA\tests\bootstrap\entity\Street;
 
 abstract class DatabaseTestCase extends TestCase
 {
@@ -83,9 +84,11 @@ abstract class DatabaseTestCase extends TestCase
             $setup->setUpFixtures(Country::class);
             $setup->setUpFixtures(State::class);
             $setup->setUpFixtures(District::class);
-//            $setup->setUpFixtures(City::class);
+            $setup->setUpFixtures(City::class);
+            $setup->setUpFixtures(Street::class);
+            $setup->setUpFixtures(Address::class);
         }
-        catch (DatabaseException $ex)
+        catch (\Exception $ex)
         {
             if (self::$connection->getPdo()->inTransaction())
             {

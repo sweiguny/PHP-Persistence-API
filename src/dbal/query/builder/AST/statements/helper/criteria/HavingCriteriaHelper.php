@@ -4,6 +4,7 @@ namespace PPA\dbal\query\builder\AST\statements\helper\criteria;
 
 use PPA\dbal\drivers\DriverInterface;
 use PPA\dbal\query\builder\AST\statements\helper\BaseHelper;
+use PPA\dbal\query\builder\AST\statements\helper\traits\CriteriaTrait;
 use PPA\dbal\query\builder\AST\statements\helper\traits\OrderByTrait;
 
 class HavingCriteriaHelper extends BaseHelper

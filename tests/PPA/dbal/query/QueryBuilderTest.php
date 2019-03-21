@@ -62,7 +62,8 @@ class QueryBuilderTest extends TestCase
             throw new \Exception("Test case '{$testCase}' not defined in expected.csv. If you are sure, the test case is defined, please check the delimiter of the test file. It should be ';'.");
         }
         
-        $expected = self::$expectedResults[$testCase][$index + 1];
+        $offset   = 2; // Description, Parameters
+        $expected = self::$expectedResults[$testCase][$index + $offset];
         
         $this->assertEquals($expected, $sql);
     }
@@ -112,7 +113,7 @@ class QueryBuilderTest extends TestCase
     public function testJoinClause(int $index, QueryBuilder $queryBuilder): void
     {
         $queryBuilder->select()->from(Alias(Table("addr_country"), "c"))
-                ->join(Alias(Table("addr_state"), "s"))
+                ->crossJoin(Alias(Table("addr_state"), "s"))
                 ;
         
         $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
@@ -129,7 +130,7 @@ class QueryBuilderTest extends TestCase
                 ->join(Alias(Table("addr_state"), "s"))->on()
                     ->criteria(Equals(Field("id", "c"), Field("country", "s")))
                     ->and()
-                    ->criteria(Equals(Parameter("name"), Literal(10)))
+                    ->criteria(Equals(Field("id", "c"), Parameter("name")))
                 ;
         
         $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
@@ -157,6 +158,7 @@ class QueryBuilderTest extends TestCase
                         ->and()
                         ->criteria(Between(Field("id", "s"), Literal(0), Literal(100)))
                     ->closeGroup()
+//                ->where()->
                 ;
         
 //        var_dump($queryBuilder->sql());
@@ -173,7 +175,7 @@ class QueryBuilderTest extends TestCase
     {
         $queryBuilder->select()->from(Table("addr_country"))
                 ->where()
-                    ->criteria(Equals(Field("id"), Field("name")))
+                    ->criteria(\PPA\dbal\query\builder\AST\operators\LowerEquals(Field("id"), Literal(2)))
                 ;
         
 //        var_dump($queryBuilder->sql());
@@ -197,7 +199,7 @@ class QueryBuilderTest extends TestCase
                     ->closeGroup()
                     ->or()
                     ->group()
-                        ->criteria(Between(Parameter(), Literal(1), Literal(2)))
+                        ->criteria(Between(Field("id"), Parameter(), Literal(2)))
                     ->closeGroup()
                 ;
         
@@ -237,8 +239,10 @@ class QueryBuilderTest extends TestCase
      */
     public function testJoinWithGroupByAndAggregateFunctionAndHavingClause(int $index, QueryBuilder $queryBuilder): void
     {
-        $queryBuilder->select(Sum(Field("zip_code")), Field("country"))->from(Table("address"))
-                ->join(Table("addr_city"))->on()->criteria(Equals(Field("id", "addr_city"), Field("city", "address")))
+        $queryBuilder->select(Sum(Field("id", "address")), Field("country"))->from(Table("address"))
+                ->join(Table("addr_city"))
+                ->on()
+                    ->criteria(Equals(Field("id", "addr_city"), Field("city", "address")))
                 ->where()
                     ->criteria(InValues(Field("country"), [2, 5, 6]))
 //                    ->and()
@@ -292,16 +296,16 @@ class QueryBuilderTest extends TestCase
      * 
      * @dataProvider provideQueryBuilder
      */
-    public function testInsertWithSetClause(int $index, QueryBuilder $queryBuilder): void
-    {
-        $queryBuilder->insert()->intoTable("addr_city")
-                ->set("id", Literal(1))
-                ->set("name", Literal("Simon Weiguny"))
-                ->set("zip_code", Literal(1337))
-                ;
-        
-        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
-    }
+//    public function testInsertWithSetClause(int $index, QueryBuilder $queryBuilder): void
+//    {
+//        $queryBuilder->insert()->intoTable("addr_city")
+//                ->set("name", Literal("Simon Weiguny"))
+//                ->set("zip_code", Literal(1337))
+//                ->set("district", Literal(1))
+//                ;
+//        
+//        $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
+//    }
     
     /**
      * @covers ::insert
@@ -311,7 +315,7 @@ class QueryBuilderTest extends TestCase
     public function testInsertWithValues(int $index, QueryBuilder $queryBuilder): void
     {
         $queryBuilder->insert()->intoTable("address")
-                ->values(NullValue(), Literal(1), Literal(18358), Literal(50), Literal("66a, Salmesmühle"))
+                ->values(Literal(3080), Literal(1), Literal(18358), Literal(50), Literal("66a, Salm"))
                 ;
         
         $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
@@ -324,13 +328,24 @@ class QueryBuilderTest extends TestCase
      */
     public function testInsertWithQuery(int $index, QueryBuilder $queryBuilder): void
     {
-        $subQB = clone $queryBuilder;
-        $subQuery = $subQB->select();
-        $subQuery->from(Table("address"))->where()->criteria(Equals(Field("id"), Literal(80)));
+        $subQB1 = clone $queryBuilder;
+        $subQB2 = clone $queryBuilder;
+        
+        $subQuery2 = $subQB2->select(Field("id"));
+        $subQuery2->from(Table("addr_city"))->where()->criteria(Equals(Field("id"), Literal(1)));
+        
+        $subQuery1 = $subQB1->select(Literal(3081), Field("id", "c"), $subQuery2, Literal(50), Literal("test"));
+//        $subQuery->from(Table("address"))->where()->criteria(Equals(Field("id"), Literal(80)));
+        $subQuery1->from(Alias(Table("addr_country"), "c"))
+                ->where()
+                    ->criteria(Equals(Field("id", "c"), Literal(1)))
+                ;
         
         $queryBuilder->insert()->intoTable("address")
-                ->query($subQuery)
+                ->query($subQuery1)
                 ;
+        
+//        echo $queryBuilder->sql();
         
         $this->checkResult(__FUNCTION__, $index, $queryBuilder->sql());
     }
