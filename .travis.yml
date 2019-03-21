@@ -3,19 +3,27 @@ sudo: false
 language: php
 php:
   - '7.2'
+#services:
+#    - mariadb
+#    - 
 install:
    - composer install
-script: phpunit -c tests/travis/$DB.phpunit.xml
+script: phpunit -c tests/config/phpunit.xml
 
 jobs:
     include:
         stage: test
-        env:
-           - DB=mariadb
-        before_script:
+#        env:
+#           - DB=mariadb
+        before_install:
            - mysql -e 'CREATE DATABASE IF NOT EXISTS ppa_test;'
+           - psql  -c 'CREATE DATABASE ppa_test;' -U postgres
+        before_script:
+           - mysql < tests/config/mysql_schema.sql
+           - psql -U postgres -d ppa_test -f tests/config/pgsql_schema.sql
         addons:
-            mariadb: 10.1
+            mariadb:    10.1
+            postgresql: 11.2
 notifications:
   email:
     on_success: change
