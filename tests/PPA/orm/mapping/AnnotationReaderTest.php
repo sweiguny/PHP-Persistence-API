@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use PPA\orm\mapping\AnnotationReader;
 use PPA\tests\bootstrap\entity\DocCommentProvider;
 use ReflectionClass;
+use ReflectionProperty;
 
 /**
  * @coversDefaultClass PPA\orm\mapping\AnnotationReader
@@ -59,8 +60,11 @@ class AnnotationReaderTest extends TestCase
         
         foreach ($reflectionClass->getProperties() as $property)
         {
+            /* @var $property ReflectionProperty */
+            
             $propName   = $property->getName();
             $docComment = $property->getDocComment();
+            var_dump($docComment);
             $expected   = $property->getValue($docCommentProvider);
             
             $docComments[] = [$propName, $docComment, $expected];

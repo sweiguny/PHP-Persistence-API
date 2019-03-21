@@ -48,7 +48,7 @@ CREATE TABLE public.addr_country (
 );
 
 
-ALTER TABLE public.addr_country OWNER TO root;
+-- ALTER TABLE public.addr_country OWNER TO root;
 
 --
 -- TOC entry 198 (class 1259 OID 16405)
@@ -76,7 +76,7 @@ CREATE TABLE public.addr_state (
 );
 
 
-ALTER TABLE public.addr_state OWNER TO root;
+-- ALTER TABLE public.addr_state OWNER TO root;
 
 --
 -- TOC entry 201 (class 1259 OID 16438)
