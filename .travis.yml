@@ -23,7 +23,7 @@ jobs:
            - psql -U postgres -d ppa_test -f tests/config/pgsql_schema.sql
         addons:
             mariadb:    10.1
-            postgresql: 11.2
+            postgresql: 9.6
 notifications:
   email:
     on_success: change
