@@ -8,9 +8,6 @@ use function PPA\dbal\query\builder\AST\catalogObjects\Field;
 use function PPA\dbal\query\builder\AST\expressions\Literal;
 use function PPA\dbal\query\builder\AST\operators\Equals;
 
-/**
- * @runTestsInSeparateProcesses
- */
 class PgsqlIntegrationTest extends DatabaseIntegrationTestCase
 {
 
