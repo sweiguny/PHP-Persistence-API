@@ -2,26 +2,16 @@
 
 namespace PPA\dbal\query\builder;
 
-use Latitude\QueryBuilder\Conditions;
-use Latitude\QueryBuilder\QueryFactory;
-use Latitude\QueryBuilder\Statement;
 use PPA\core\exceptions\ExceptionFactory;
 use PPA\dbal\drivers\DriverInterface;
 use PPA\dbal\query\builder\AST\ASTCollection;
 use PPA\dbal\query\builder\AST\expressions\Expression;
-use PPA\dbal\query\builder\AST\expressions\properties\Field;
-use PPA\dbal\query\builder\AST\expressions\properties\Literal;
-use PPA\dbal\query\builder\AST\expressions\UnnamedParameter;
 use PPA\dbal\query\builder\AST\keywords\_Distinct;
 use PPA\dbal\query\builder\AST\statements\DML\DeleteStatement;
 use PPA\dbal\query\builder\AST\statements\DML\InsertStatement;
 use PPA\dbal\query\builder\AST\statements\DML\UpdateStatement;
 use PPA\dbal\query\builder\AST\statements\DQL\SelectStatement;
 use PPA\dbal\query\builder\sub\SelectBuilder;
-use PPA\orm\Analysis;
-use PPA\orm\entity\Change;
-use PPA\orm\entity\ChangeSet;
-use PPA\orm\entity\Serializable;
 
 class QueryBuilder
 {
@@ -40,11 +30,6 @@ class QueryBuilder
      */
     private $driver;
     
-    /**
-     *
-     * @var QueryFactory
-     */
-    private $factory;
 
     private $state;
 
@@ -67,7 +52,7 @@ class QueryBuilder
     public function __construct(DriverInterface $driver)
     {
         $this->driver  = $driver;
-        $this->factory = new QueryFactory($this->driver->getDriverName());
+//        $this->factory = new QueryFactory($this->driver->getDriverName());
         $this->state   = self::STATE_INITIAL;
         
 //        $this->ASTCollection = [];
@@ -106,28 +91,28 @@ class QueryBuilder
 //    }
 
 
-    public function createStatementsForChangeSet(Serializable $entity, Analysis $analysis, ChangeSet $changeSet): Statement
-    {
-        $columnList = [];
-        $primProp   = $analysis->getPrimaryProperty();
-        $primValue  = $primProp->getColumn()->getDatatype()->quoteValueForQuery($primProp->getValue($entity));
-        
-        foreach ($changeSet as $change)
-        {
-            /* @var $change Change */
-
-            $column   = $change->getProperty()->getColumn();
-            $dataType = $column->getDatatype();
-            $value    = $dataType->quoteValueForQuery($change->getToValue());
-            
-            $columnList[$column->getName()] = $value;
-        }
-        
-        $statement = $this->factory->update($analysis->getTableName(), $columnList);
-        $statement->where(Conditions::make("{$primProp->getName()} = ?", $primValue));
-
-        return $statement;
-    }
+//    public function createStatementsForChangeSet(Serializable $entity, Analysis $analysis, ChangeSet $changeSet): Statement
+//    {
+//        $columnList = [];
+//        $primProp   = $analysis->getPrimaryProperty();
+//        $primValue  = $primProp->getColumn()->getDatatype()->quoteValueForQuery($primProp->getValue($entity));
+//        
+//        foreach ($changeSet as $change)
+//        {
+//            /* @var $change Change */
+//
+//            $column   = $change->getProperty()->getColumn();
+//            $dataType = $column->getDatatype();
+//            $value    = $dataType->quoteValueForQuery($change->getToValue());
+//            
+//            $columnList[$column->getName()] = $value;
+//        }
+//        
+//        $statement = $this->factory->update($analysis->getTableName(), $columnList);
+//        $statement->where(Conditions::make("{$primProp->getName()} = ?", $primValue));
+//
+//        return $statement;
+//    }
     
     protected function setStateInitial(): void
     {

@@ -3,7 +3,6 @@
 namespace PPA\orm;
 
 use Exception;
-use Latitude\QueryBuilder\Statement;
 use PPA\dbal\query\builder\QueryBuilder;
 use PPA\orm\entity\Change;
 use PPA\orm\entity\ChangeSet;
@@ -92,22 +91,22 @@ class UnitOfWork implements EventSubscriberInterface
         return $changeSet;
     }
     
-    protected function writeChanges(FlushEvent $event): int
-    {
-        $statements = $this->gatherStatements();
-        $this->entityManager->getTransactionManager()->getConnection()->getPdo();
-        
-//        \Doctrine\ORM\Repository\RepositoryFactory::class;
-        
-        foreach ($statements as $statement)
-        {
-            /* @var $statement Statement */
-//            var_dump($statement->sql());
-            
-        }
-        
-        return count($statements);
-    }
+//    protected function writeChanges(FlushEvent $event): int
+//    {
+//        $statements = $this->gatherStatements();
+//        $this->entityManager->getTransactionManager()->getConnection()->getPdo();
+//        
+////        \Doctrine\ORM\Repository\RepositoryFactory::class;
+//        
+//        foreach ($statements as $statement)
+//        {
+//            /* @var $statement Statement */
+////            var_dump($statement->sql());
+//            
+//        }
+//        
+//        return count($statements);
+//    }
 
     private function gatherStatements(): array
     {
@@ -124,7 +123,7 @@ class UnitOfWork implements EventSubscriberInterface
             
             if (!empty($changeSet))
             {
-                $statements[] = $queryBuilder->createStatementsForChangeSet($entity, $analysis, $changeSet);
+//                $statements[] = $queryBuilder->createStatementsForChangeSet($entity, $analysis, $changeSet);
             }
         }
         

@@ -53,6 +53,11 @@ class City implements Serializable
         return $this->id;
     }
 
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
     public function getName(): string
     {
         return $this->name;

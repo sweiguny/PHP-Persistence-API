@@ -13,6 +13,7 @@ before_script:
   - mysql ppa_test < tests/config/mysql_schema.sql
   - psql -U postgres -d ppa_test -f tests/config/pgsql_schema.sql
 script:
+  - php tests/config/phpunit.xml.php all
   - phpunit -c tests/config/phpunit.xml
 
 jobs:

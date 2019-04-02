@@ -1,3 +1,5 @@
 nbproject/
 /vendor/
 /tests/_coverage/
+/.phpunit.result.cache
+/tests/config/phpunit.dist.xml

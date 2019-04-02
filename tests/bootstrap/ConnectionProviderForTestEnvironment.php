@@ -13,7 +13,7 @@ use const PPA_TEST_CONFIG_PATH;
 
 class ConnectionProviderForTestEnvironment extends DriverManager
 {
-    private static $collection = [];
+    private static $collection  = [];
     private static $connections = [];
     private static $exceptions  = [];
     private static $drivernames = [];

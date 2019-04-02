@@ -18,12 +18,14 @@
         "symfony/dependency-injection": "^4",
         "symfony/event-dispatcher": "^4",
         "symfony/finder": "^4.0",
-        "latitude/latitude": "^2.3"
+        "symfony/cache": "^4.0",
+        "doctrine/orm": "^2.6"
     },
     "require-dev": {
-        "phpunit/phpunit": "6.2",
+        "phpunit/phpunit": "^8",
         "mockery/mockery": "^1.2"
     },
+    
     "autoload": {
         "psr-4": {
             "PPA\\": "src/"
