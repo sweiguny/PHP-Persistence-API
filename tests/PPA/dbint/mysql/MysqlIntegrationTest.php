@@ -5,6 +5,9 @@ namespace PPA\tests\dbint\mysql;
 use PPA\dbal\DriverManager;
 use PPA\tests\bootstrap\DatabaseIntegrationTestCase;
 
+/**
+ * @group mysql
+ */
 class MysqlIntegrationTest extends DatabaseIntegrationTestCase
 {
     

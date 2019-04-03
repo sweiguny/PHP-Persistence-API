@@ -32,13 +32,20 @@ class DynamicConfig
      * @var DOMNode
      */
     private $excludeNode;
+    
+    /**
+     *
+     * @var array
+     */
+    private $availableDrivers;
 
     public function __construct(string $path = null)
     {
         $this->dom = new DOMDocument();
         $this->dom->load($path ?: self::defaultPathForBaseConfig);
         
-        $this->excludeNode = $this->dom->createElement("exclude");
+        $this->excludeNode      = $this->dom->createElement("exclude");
+        $this->availableDrivers = DriverManager::getAvailableDrivers();
     }
 
     public function writeDynamicConfig(bool $noExclusions, string $path = null): void
@@ -84,7 +91,7 @@ class DynamicConfig
     
     public function excludeMysqlIfNotAvailable(): void
     {
-        if (!isset(DriverManager::getAvailableDrivers()[DriverManager::MYSQL]))
+        if (empty($this->availableDrivers[DriverManager::MYSQL]))
         {
             $this->excludes[] = DriverManager::MYSQL;
         }
@@ -92,7 +99,7 @@ class DynamicConfig
     
     public function excludePgsqlIfNotAvailable(): void
     {
-        if (!isset(DriverManager::getAvailableDrivers()[DriverManager::PGSQL]))
+        if (empty($this->availableDrivers[DriverManager::PGSQL]))
         {
             $this->excludes[] = DriverManager::PGSQL;
         }
