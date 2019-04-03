@@ -68,13 +68,13 @@ class DynamicConfig
         $finalDom->save($path ?: self::defaultPathForExtConfig);
     }
     
-    private function gatherExclusions()
+    private function gatherExclusions(): void
     {
         $this->excludeMysqlIfNotAvailable();
         $this->excludePgsqlIfNotAvailable();
     }
     
-    private function prepareNodes()
+    private function prepareNodes(): void
     {
         for ($i = 0; $i < count($this->excludes); $i++)
         {

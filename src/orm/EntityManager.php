@@ -14,7 +14,7 @@ use PPA\orm\repository\DefaultRepository;
 use PPA\orm\repository\RepositoryFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class EntityManager implements EventSubscriberInterface
+class EntityManager implements EntityManagerInterface, EventSubscriberInterface
 {
     /**
      *
@@ -58,7 +58,7 @@ class EntityManager implements EventSubscriberInterface
         $this->eventDispatcher->addSubscriber($this->unitOfWork);
     }
     
-    public function getRepository($classname): DefaultRepository
+    public function getRepository($classname): repository\RepositoryInterface
     {
         return $this->repositoryFactory->getRepository($classname);
     }
@@ -95,6 +95,31 @@ class EntityManager implements EventSubscriberInterface
     public function getTransactionManager(): TransactionManager
     {
         return $this->transactionManager;
+    }
+
+    public function clear(): void
+    {
+        
+    }
+
+    public function close(): void
+    {
+        
+    }
+
+    public function merge(entity\Serializable $entity): void
+    {
+        
+    }
+
+    public function retrieveQuerybuilder(): \PPA\dbal\query\builder\QueryBuilder
+    {
+        
+    }
+
+    public function retrieveRepository(string $classname): repository\RepositoryInterface
+    {
+        
     }
 
 }
