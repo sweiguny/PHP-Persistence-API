@@ -2,7 +2,7 @@
 
 namespace PPA\orm;
 
-use InvalidArgumentException;
+use PPA\core\exceptions\ExceptionFactory;
 
 class MetaDataMap
 {
@@ -16,7 +16,7 @@ class MetaDataMap
     {
         if (isset($this->map[$classname]))
         {
-            throw new InvalidArgumentException("There is already an entry for class '{$classname}' in " . __CLASS__ . ".");
+            throw ExceptionFactory::InvalidArgument("There is already an entry for class '{$classname}' in " . __CLASS__ . ".");
         }
         else
         {
@@ -44,7 +44,7 @@ class MetaDataMap
         }
         else
         {
-            throw new InvalidArgumentException("For class '{$classname}' was no entry in " . __CLASS__ . " found.");
+            throw ExceptionFactory::InvalidArgument("For class '{$classname}' was no entry in " . __CLASS__ . " found.");
         }
     }
     

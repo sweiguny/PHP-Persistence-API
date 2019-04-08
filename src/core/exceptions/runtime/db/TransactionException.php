@@ -1,6 +1,6 @@
 <?php
 
-namespace PPA\dbal;
+namespace PPA\core\exceptions\runtime\db;
 
 use PDOException;
 

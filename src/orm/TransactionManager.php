@@ -1,12 +1,14 @@
 <?php
 
-namespace PPA\dbal;
+namespace PPA\orm;
 
 use PDO;
+use PPA\core\EventDispatcher;
+use PPA\core\exceptions\runtime\db\TransactionException;
+use PPA\dbal\ConnectionInterface;
 use PPA\orm\event\transactions\TransactionBeginEvent;
 use PPA\orm\event\transactions\TransactionCommitEvent;
 use PPA\orm\event\transactions\TransactionRollbackEvent;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class TransactionManager
 {
