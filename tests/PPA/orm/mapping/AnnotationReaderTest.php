@@ -4,7 +4,7 @@ namespace PPA\tests\orm\mapping;
 
 use PHPUnit\Framework\TestCase;
 use PPA\orm\mapping\AnnotationReader;
-use PPA\tests\bootstrap\entity\DocCommentProvider;
+use PPA\tests\bootstrap\entity\analyser\DocCommentProvider;
 use ReflectionClass;
 use ReflectionProperty;
 

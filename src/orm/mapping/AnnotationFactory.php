@@ -75,8 +75,7 @@ class AnnotationFactory
                 catch (ReflectionException $exc) // when there's no setter-method.
                 {
                     /**
-                     * If there is no setter method
-                     * an exception is thrown
+                     * If there is no setter method an exception is thrown
                      * and we inject the property directly.
                      */
 

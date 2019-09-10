@@ -3,8 +3,8 @@
 namespace PPA\tests\other;
 
 use PHPUnit\Framework\TestCase;
-use PPA\tests\bootstrap\entity\City;
-use PPA\tests\bootstrap\entity\TestDefaultsEntity;
+use PPA\tests\bootstrap\entity\analyser\TestDefaultsEntity;
+use PPA\tests\bootstrap\entity\other\ApcuEntity;
 use stdClass;
 
 /**
@@ -15,18 +15,18 @@ class APCuTest extends TestCase
     /**
      * Is needed for testStoreVsAdd.
      * 
-     * @var City
+     * @var ApcuEntity
      */
-    private static $city;
+    private static $entity;
 
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         
         
-        self::$city = new City("Oftering", 4064, 1);
+        self::$entity = new ApcuEntity("test");
         
-        apcu_add("testStoreVsAdd", self::$city);
+        apcu_add("testStoreVsAdd", self::$entity);
     }
     
     public static function tearDownAfterClass(): void
@@ -68,7 +68,7 @@ class APCuTest extends TestCase
     public function provideObjects(): array
     {
         return [
-            ["city", new City("Linz", 4020, 123)],
+            ["ApcuEntity", new ApcuEntity("provideObjects")],
             ["test", new TestDefaultsEntity()],
         ];
     }
@@ -99,37 +99,37 @@ class APCuTest extends TestCase
         // add doesn't override value
         apcu_add("testStoreVsAdd", 100);
         
-        $city1 = apcu_fetch("testStoreVsAdd");
+        $entity1 = apcu_fetch("testStoreVsAdd");
         
-        $this->assertEquals($city1, self::$city);
+        $this->assertEquals($entity1, self::$entity);
         
         // but store does override value
         apcu_store("testStoreVsAdd", 10);
         
-        $city2 = apcu_fetch("testStoreVsAdd");
+        $entity2 = apcu_fetch("testStoreVsAdd");
         
-        $this->assertNotEquals($city2, self::$city);
-        $this->assertEquals(10, $city2);
+        $this->assertNotEquals($entity2, self::$entity);
+        $this->assertEquals(10, $entity2);
     }
     
     public function testObjectReferences()
     {
-        $city = new City("Oftering", 4064, 1);
+        $entity = new ApcuEntity("originalValue");
         
-        apcu_add("testObjectReferences", $city);
+        apcu_add("testObjectReferences", $entity);
         
         // set a new value
-        $city->setName("Kirchstetten");
+        $entity->setTest("newValue");
         
-        $city1 = apcu_fetch("testObjectReferences");
+        $entity1 = apcu_fetch("testObjectReferences");
         // we expect the old value, because we did not change object in cache
-        $this->assertEquals($city1->getName(), "Oftering");
+        $this->assertEquals($entity1->getTest(), "originalValue");
         
-        apcu_store("testObjectReferences", $city);
+        apcu_store("testObjectReferences", $entity);
         
-        $city2 = apcu_fetch("testObjectReferences");
+        $entity2 = apcu_fetch("testObjectReferences");
         // we expect the new value, because cache key was overriden
-        $this->assertEquals($city2->getName(), "Kirchstetten");
+        $this->assertEquals($entity2->getTest(), "newValue");
     }
     
 }

@@ -24,6 +24,13 @@ class Analysis
     private $tableName;
 
     /**
+     * The class of the repository which operates the entity.
+     * 
+     * @var string
+     */
+    private $repositoryClass;
+
+    /**
      * An array filled with properties indexed by the property name.
      * 
      * @var array
@@ -44,11 +51,12 @@ class Analysis
      */
 //    private $relations;
     
-    public function __construct(string $classname, EntityProperty $primaryProperty, string $tableName, array $propertiesByName, array $propertiesByColumn)
+    public function __construct(string $classname, EntityProperty $primaryProperty, string $tableName, string $repositoryClass, array $propertiesByName, array $propertiesByColumn)
     {
         $this->classname          = $classname;
         $this->primaryProperty    = $primaryProperty;
         $this->tableName          = $tableName;
+        $this->repositoryClass    = $repositoryClass;
         $this->propertiesByName   = $propertiesByName;
         $this->propertiesByColumn = $propertiesByColumn;
 //        $this->relations          = $relations;
@@ -67,6 +75,11 @@ class Analysis
     public function getTableName(): string
     {
         return $this->tableName;
+    }
+    
+    public function getRepositoryClass()
+    {
+        return $this->repositoryClass;
     }
 
     public function getPropertiesByName(): array

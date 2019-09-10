@@ -1,12 +1,12 @@
 <?php
 
-namespace PPA\tests\bootstrap\entity;
+namespace PPA\tests\bootstrap\entity\analyser;
 
 use PPA\orm\entity\Serializable;
 use PPA\orm\mapping\annotations\Column;
 use PPA\orm\mapping\annotations\Id;
 
-class NoTableAnnotation implements Serializable
+class NoEntityAnnotation implements Serializable
 {
     /**
      * @Id

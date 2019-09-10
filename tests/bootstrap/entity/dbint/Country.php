@@ -1,46 +1,45 @@
 <?php
 
-namespace PPA\tests\bootstrap\entity;
+namespace PPA\tests\bootstrap\entity\dbint;
 
 use PPA\orm\entity\Serializable;
 use PPA\orm\mapping\annotations\Column;
+use PPA\orm\mapping\annotations\Entity;
 use PPA\orm\mapping\annotations\Id;
-use PPA\orm\mapping\annotations\Table;
 
 /**
- * @Table(name="addr_district")
+ * @Entity(table="addr_country")
  */
-class District implements Serializable
+class Country implements Serializable
 {
-
     /**
      * @Id
      * @Column(datatype="integer")
-     * 
+     *
      * @var int
      */
     private $id;
-    
+
     /**
      * @Column(datatype="string")
      * 
      * @var string
      */
     private $name;
-    
-    /**
-     * @Column(datatype="integer")
-     * 
-     * @var int
-     */
-    private $state;
 
-    public function __construct(string $name, int $state)
+    /**
+     * @Column(name="short_name", datatype="string")
+     * 
+     * @var string
+     */
+    private $shortname;
+
+    public function __construct(string $name, string $shortname)
     {
-        $this->name  = $name;
-        $this->state = $state;
+        $this->name      = $name;
+        $this->shortname = $shortname;
     }
-    
+
     public function getId(): int
     {
         return $this->id;
@@ -51,10 +50,11 @@ class District implements Serializable
         return $this->name;
     }
 
-    public function getState(): int
+    public function getShortname(): string
     {
-        return $this->state;
+        return $this->shortname;
     }
 
 }
+
 ?>

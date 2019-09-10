@@ -1,6 +1,6 @@
 <?php
 
-namespace PPA\tests\bootstrap\entity;
+namespace PPA\tests\bootstrap\entity\analyser;
 
 use PPA\orm\entity\Serializable;
 

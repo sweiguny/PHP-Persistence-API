@@ -3,13 +3,12 @@
 namespace PPA\orm;
 
 use PPA\core\exceptions\ExceptionFactory;
-use PPA\orm\entity\Serializable;
+use PPA\orm\EntityProperty;
 use PPA\orm\mapping\AnnotationLoader;
 use PPA\orm\mapping\AnnotationReader;
 use PPA\orm\mapping\annotations\Column;
+use PPA\orm\mapping\annotations\Entity;
 use PPA\orm\mapping\annotations\Id;
-use PPA\orm\mapping\annotations\Table;
-use ReflectionClass;
 
 class EntityAnalyser
 {
@@ -57,13 +56,14 @@ class EntityAnalyser
 //        $this->reflector = new ReflectionClass($classname);
         $annotationBag   = $this->annotationLoader->load($classname, $this->annotationReader->readFromAnnotatableClass($classname));
         
-        list($tableName) = $this->analyseClassAnnotations($classname, $annotationBag->getClassAnnotations());
+        list($tableName, $repositoryClass) = $this->analyseClassAnnotations($classname, $annotationBag->getClassAnnotations());
         list($primaryProperty, $propertiesByName, $propertiesByColumn) = $this->analysePropertyAnnotations($classname, $annotationBag->getPropertyAnnotations());
         
         $analysis = new Analysis(
                 $classname,
                 $primaryProperty,
                 $tableName,
+                $repositoryClass,
                 $propertiesByName,
                 $propertiesByColumn
             );
@@ -75,16 +75,17 @@ class EntityAnalyser
     {
 //        print_r($classAnnotations);
         
-        if (!isset($classAnnotations[Table::class]))
+        if (!isset($classAnnotations[Entity::class]))
         {
-            throw ExceptionFactory::TableAnnotationMissing($classname);
+            throw ExceptionFactory::EntityAnnotationMissing($classname);
         }
         
-        /* @var $table Table */
-        $table = $classAnnotations[Table::class];
+        /* @var $entityAnnotation Entity */
+        $entityAnnotation = $classAnnotations[Entity::class];
         
         return [
-            $table->getName()
+            $entityAnnotation->getTable(),
+            $entityAnnotation->getRepositoryClass()
         ];
     }
 

@@ -4,11 +4,12 @@ namespace PPA\tests\bootstrap\entity;
 
 use PPA\orm\entity\Serializable;
 use PPA\orm\mapping\annotations\Column;
+use PPA\orm\mapping\annotations\Entity;
 use PPA\orm\mapping\annotations\Id;
-use PPA\orm\mapping\annotations\Table;
+use PPA\orm\repository\EntityRepository;
 
 /**
- * @Table
+ * @Entity(repositoryClass="\PPA\tests\bootstrap\entity\CustomerRepository")
  */
 class Customer implements Serializable
 {
@@ -74,6 +75,11 @@ class Customer implements Serializable
         return $this->address;
     }
 
+}
+
+class CustomerRepository extends EntityRepository
+{
+    
 }
 
 ?>

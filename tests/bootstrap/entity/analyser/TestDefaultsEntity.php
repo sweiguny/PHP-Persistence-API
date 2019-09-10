@@ -1,9 +1,9 @@
 <?php
 
-namespace PPA\tests\bootstrap\entity;
+namespace PPA\tests\bootstrap\entity\analyser;
 
 /**
- * @PPA\orm\mapping\annotations\Table
+ * @PPA\orm\mapping\annotations\Entity
  */
 class TestDefaultsEntity implements \PPA\orm\entity\Serializable
 {

@@ -11,12 +11,12 @@ use PPA\core\exceptions\logic\AlreadyExistentInOriginsMapException;
 use PPA\core\exceptions\logic\CouldNotLoadAnnotationException;
 use PPA\core\exceptions\logic\DatatypeDoesNotExistException;
 use PPA\core\exceptions\logic\DomainException;
+use PPA\core\exceptions\logic\EntityAnnotationMissingException;
 use PPA\core\exceptions\logic\InvalidArgumentException;
 use PPA\core\exceptions\logic\NotExistentInIdentityMapException;
 use PPA\core\exceptions\logic\NotExistentInOriginsMapException;
 use PPA\core\exceptions\logic\NotSerializableException;
 use PPA\core\exceptions\logic\ParameterRequiredException;
-use PPA\core\exceptions\logic\TableAnnotationMissingException;
 use PPA\core\exceptions\logic\TargetAnnotationNotExistentException;
 use PPA\core\exceptions\logic\TypeDirectoryAlreadyConsideredException;
 use PPA\core\exceptions\logic\UnknownCascadeTypeException;
@@ -103,9 +103,9 @@ final class ExceptionFactory
         return new CouldNotLoadAnnotationException(sprintf("Annotation '@%s' (set on class '%s') could not be loaded. Maybe you need to add/remove a leading slash.", $annotationClassname, $ownerClassname));
     }
     
-    public static function TableAnnotationMissing(string $entityClassname): TableAnnotationMissingException
+    public static function EntityAnnotationMissing(string $entityClassname): EntityAnnotationMissingException
     {
-        return new TableAnnotationMissingException(sprintf("@Table Annotation is missing on Entity class '%s'.", $entityClassname));
+        return new EntityAnnotationMissingException(sprintf("@Entity Annotation is missing on Entity class '%s'.", $entityClassname));
     }
     
     public static function NotExistentInIdentityMap(string $classname, $key): NotExistentInIdentityMapException
@@ -126,6 +126,11 @@ final class ExceptionFactory
     public static function AlreadyExistentInOriginsMap(string $classname, $key): AlreadyExistentInOriginsMapException
     {
         return new AlreadyExistentInOriginsMapException(sprintf("'{$classname}' with key '{$key}' already in OriginsMap.", $classname, $key));
+    }
+    
+    public static function AlreadyExistentInEntityStatesMap(string $classname, $key): AlreadyExistentInEntityStatesMapException
+    {
+        return new AlreadyExistentInEntityStatesMapException(sprintf("'{$classname}' with key '{$key}' already in EntityStatesMap.", $classname, $key));
     }
     
     public static function NotADirectory(string $path): NotADirectoryException

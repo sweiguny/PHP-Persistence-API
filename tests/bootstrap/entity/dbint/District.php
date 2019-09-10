@@ -1,17 +1,18 @@
 <?php
 
-namespace PPA\tests\bootstrap\entity;
+namespace PPA\tests\bootstrap\entity\dbint;
 
 use PPA\orm\entity\Serializable;
 use PPA\orm\mapping\annotations\Column;
+use PPA\orm\mapping\annotations\Entity;
 use PPA\orm\mapping\annotations\Id;
-use PPA\orm\mapping\annotations\Table;
 
 /**
- * @Table(name="addr_street")
+ * @Entity(table="addr_district")
  */
-class Street implements Serializable
+class District implements Serializable
 {
+
     /**
      * @Id
      * @Column(datatype="integer")
@@ -26,10 +27,18 @@ class Street implements Serializable
      * @var string
      */
     private $name;
+    
+    /**
+     * @Column(datatype="integer")
+     * 
+     * @var int
+     */
+    private $state;
 
-    public function __construct(string $name)
+    public function __construct(string $name, int $state)
     {
-        $this->name = $name;
+        $this->name  = $name;
+        $this->state = $state;
     }
     
     public function getId(): int
@@ -40,6 +49,11 @@ class Street implements Serializable
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getState(): int
+    {
+        return $this->state;
     }
 
 }

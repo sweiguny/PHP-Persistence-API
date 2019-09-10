@@ -3,11 +3,11 @@
 namespace PPA\tests\orm;
 
 use PHPUnit\Framework\TestCase;
-use PPA\core\exceptions\logic\TableAnnotationMissingException;
+use PPA\core\exceptions\logic\EntityAnnotationMissingException;
 use PPA\orm\entity\Serializable;
 use PPA\orm\EntityAnalyser;
+use PPA\tests\bootstrap\entity\analyser\NoEntityAnnotation;
 use PPA\tests\bootstrap\entity\Customer;
-use PPA\tests\bootstrap\entity\NoTableAnnotation;
 
 /**
  * @coversDefaultClass PPA\orm\EntityAnalyser
@@ -46,7 +46,7 @@ class EntityAnalyserTest extends TestCase
     {
         return [
             [new Customer(1, "John", "Doe", "at home"), null, "customerNo"],
-            [new NoTableAnnotation(1, "John", "Doe", "at home"), TableAnnotationMissingException::class, "customerNo"]
+            [new NoEntityAnnotation(1, "John", "Doe", "at home"), EntityAnnotationMissingException::class, "customerNo"]
         ];
     }
     

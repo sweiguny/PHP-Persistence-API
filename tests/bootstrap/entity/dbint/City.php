@@ -1,14 +1,14 @@
 <?php
 
-namespace PPA\tests\bootstrap\entity;
+namespace PPA\tests\bootstrap\entity\dbint;
 
 use PPA\orm\entity\Serializable;
 use PPA\orm\mapping\annotations\Column;
+use PPA\orm\mapping\annotations\Entity;
 use PPA\orm\mapping\annotations\Id;
-use PPA\orm\mapping\annotations\Table;
 
 /**
- * @Table(name="addr_city")
+ * @Entity(table="addr_city")
  */
 class City implements Serializable
 {

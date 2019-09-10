@@ -12,12 +12,12 @@ use PPA\orm\mapping\AnnotationFactory;
 use PPA\orm\mapping\AnnotationLoader;
 use PPA\orm\mapping\AnnotationReader;
 use PPA\orm\mapping\annotations\Column;
-use PPA\orm\mapping\annotations\Table;
+use PPA\orm\mapping\annotations\Entity;
 use PPA\tests\bootstrap\annotations\TestAnnotation;
 use PPA\tests\bootstrap\annotations\UnknownParametersAnnotation;
-use PPA\tests\bootstrap\entity\TargetClassWrong;
-use PPA\tests\bootstrap\entity\TargetPropertyWrong;
-use PPA\tests\bootstrap\entity\TestDefaultsEntity;
+use PPA\tests\bootstrap\entity\analyser\TargetClassWrong;
+use PPA\tests\bootstrap\entity\analyser\TargetPropertyWrong;
+use PPA\tests\bootstrap\entity\analyser\TestDefaultsEntity;
 
 /**
  * @coversDefaultClass PPA\orm\mapping\AnnotationFactory
@@ -108,7 +108,7 @@ class AnnotationFactoryTest extends TestCase
         $classAnnotations    = $annotationBag->getClassAnnotations();
         $propertyAnnotations = $annotationBag->getPropertyAnnotations();
         
-        $this->assertEquals(strtolower(array_pop($fqcn)), $classAnnotations[Table::class]->getName());
+        $this->assertEquals(strtolower(array_pop($fqcn)), $classAnnotations[Entity::class]->getTable());
         $this->assertEquals($entity->getColumn(), $propertyAnnotations["column"][Column::class]->getName());
     }
     

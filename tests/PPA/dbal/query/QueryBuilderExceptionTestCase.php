@@ -9,7 +9,7 @@ use PPA\tests\bootstrap\DummyDriver;
 /**
  * @coversDefaultClass \PPA\dbal\query\builder\QueryBuilder
  */
-class QueryBuilderExceptionTest extends TestCase
+class QueryBuilderExceptionTestCase extends TestCase
 {
     
     

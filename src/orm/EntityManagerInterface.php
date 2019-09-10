@@ -4,7 +4,7 @@ namespace PPA\orm;
 
 use PPA\dbal\query\builder\QueryBuilder;
 use PPA\orm\entity\Serializable;
-use PPA\orm\repository\RepositoryInterface;
+use PPA\orm\repository\EntityRepository;
 
 /**
  *
@@ -20,7 +20,7 @@ interface EntityManagerInterface
     public function merge(Serializable $entity): void;
     public function remove(Serializable $entity): void;
     
-    public function retrieveRepository(string $classname): RepositoryInterface;
+    public function retrieveRepository(string $classname): EntityRepository;
     
     public function retrieveQuerybuilder(): QueryBuilder;
 }
