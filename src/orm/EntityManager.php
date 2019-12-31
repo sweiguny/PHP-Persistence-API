@@ -2,7 +2,11 @@
 
 namespace PPA\orm;
 
+use PPA\dbal\drivers\concrete\MySQLDriver;
 use PPA\dbal\query\builder\QueryBuilder;
+use PPA\dbal\query\PreparedStatement;
+use PPA\dbal\query\Statement;
+use PPA\dbal\query\StatementInterface;
 use PPA\orm\entity\Serializable;
 use PPA\orm\event\entityManagement\EntityPersistEvent;
 use PPA\orm\event\entityManagement\EntityRemoveEvent;
@@ -19,6 +23,12 @@ class EntityManager implements EntityManagerInterface
 
     /**
      *
+     * @var TransactionManager
+     */
+    private $transactionManager;
+
+    /**
+     *
      * @var UnitOfWork
      */
     private $unitOfWork;
@@ -28,12 +38,21 @@ class EntityManager implements EntityManagerInterface
      * @var EntityAnalyser
      */
     private $analyser;
+    
+    /**
+     *
+     * @var QueryBuilder
+     */
+    private $queryBuilder;
 
-    public function __construct(EventDispatcherInterface $eventDispatcher, UnitOfWork $unitOfWork, EntityAnalyser $analyser)
+    public function __construct(EventDispatcherInterface $eventDispatcher, TransactionManager $transactionManager, UnitOfWork $unitOfWork, EntityAnalyser $analyser)
     {
-        $this->eventDispatcher = $eventDispatcher;
-        $this->unitOfWork      = $unitOfWork;
-        $this->analyser        = $analyser;
+        $this->eventDispatcher    = $eventDispatcher;
+        $this->transactionManager = $transactionManager;
+        $this->unitOfWork         = $unitOfWork;
+        $this->analyser           = $analyser;
+        
+        $this->queryBuilder = new QueryBuilder(new MySQLDriver());
         
         $this->eventDispatcher->addSubscriber($this->unitOfWork);
         
@@ -75,22 +94,33 @@ class EntityManager implements EntityManagerInterface
 
     public function retrieveQuerybuilder(): QueryBuilder
     {
-        
+        $this->queryBuilder->clear(); // Macht das überhaupt sinn?!?!
+        return $this->queryBuilder;
     }
 
-    public function retrieveRepository(string $classname): EntityRepository
+    public function getRepository(string $classname): EntityRepository
     {
-        $repositoryClass = $this->analyser->getMetaData($classname)->getRepositoryClass();
+        return $this->unitOfWork->getRepository($this, $this->transactionManager, $this->analyser->getMetaData($classname));
         
-        return new $repositoryClass();
+        // TODO: Get that from DI container
+//        return new $repositoryClass($this, $this->transactionManager, $this->analyser);
     }
     
-    public function findByPrimary(string $classname, array $primary)
+    public function findByPrimary(string $classname, array $primary): ?Serializable
     {
-        $repo = $this->retrieveRepository($classname);
-        print_r($repo);
+        $repo = $this->getRepository($classname);
+        return $repo->findByPrimary($primary);
     }
 
+    public function createStatement(string $statement): StatementInterface
+    {
+        return new Statement($this->transactionManager->getConnection(), $statement);
+    }
+    
+    public function createPreparedStatement(string $statement): StatementInterface
+    {
+        return new PreparedStatement($this->transactionManager->getConnection(), $statement);
+    }
 }
 
 ?>

@@ -20,9 +20,11 @@ interface EntityManagerInterface
     public function merge(Serializable $entity): void;
     public function remove(Serializable $entity): void;
     
-    public function retrieveRepository(string $classname): EntityRepository;
+    public function getRepository(string $classname): EntityRepository;
     
     public function retrieveQuerybuilder(): QueryBuilder;
+    
+    public function findByPrimary(string $classname, array $primary): ?Serializable;
 }
 
 ?>

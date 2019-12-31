@@ -2,7 +2,20 @@
 
 namespace PPA\orm;
 
-final class UnitOfWork implements \Symfony\Component\EventDispatcher\EventSubscriberInterface
+use Closure;
+use PPA\core\exceptions\ExceptionFactory;
+use PPA\orm\entity\Serializable;
+use PPA\orm\event\entityManagement\EntityPersistEvent;
+use PPA\orm\event\entityManagement\EntityRemoveEvent;
+use PPA\orm\maps\EntityStatesMap;
+use PPA\orm\maps\IdentityMap;
+use PPA\orm\maps\OriginsMap;
+use PPA\orm\repository\EntityRepository;
+use PPA\orm\repository\EntityRepositoryFactory;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+final class UnitOfWork implements EventSubscriberInterface
 {
     /**
      * An entity is in MANAGED state when its persistence is managed by an EntityManager.
@@ -36,13 +49,13 @@ final class UnitOfWork implements \Symfony\Component\EventDispatcher\EventSubscr
     
     /**
      *
-     * @var \Closure
+     * @var Closure
      */
     private $_invalidStateExceptionGenerator;
 
     /**
      *
-     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+     * @var EventDispatcherInterface
      */
     private $eventDispatcher;
     
@@ -54,37 +67,45 @@ final class UnitOfWork implements \Symfony\Component\EventDispatcher\EventSubscr
     
     /**
      *
-     * @var maps\IdentityMap
+     * @var IdentityMap
      */
     private $identityMap;
 
     /**
      *
-     * @var maps\EntityStatesMap
+     * @var EntityStatesMap
      */
     private $entityStatesMap;
-
+    
+    /**
+     *
+     * @var EntityRepositoryFactory
+     */
+    private $repositoryFactory;
+    
     public static function getSubscribedEvents(): array
     {
         return [
-            event\entityManagement\EntityPersistEvent::NAME => "doRegisterEntity",
-            event\entityManagement\EntityRemoveEvent::NAME  => "doRemoveEntity"
+            EntityPersistEvent::NAME => "doRegisterEntity",
+            EntityRemoveEvent::NAME  => "doRemoveEntity"
         ];
     }
 
-    public function __construct(\Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher, EntityAnalyser $analyser, maps\OriginsMap $originsMap, maps\IdentityMap $identityMap)
+    public function __construct(EventDispatcherInterface $eventDispatcher, EntityAnalyser $analyser, OriginsMap $originsMap, IdentityMap $identityMap)
     {
         $this->eventDispatcher = $eventDispatcher;
         $this->originsMap      = $originsMap;
         $this->identityMap     = $identityMap;
-        $this->entityStatesMap = new maps\EntityStatesMap($analyser);
+        
+        $this->entityStatesMap   = new EntityStatesMap($analyser);
+        $this->repositoryFactory = new EntityRepositoryFactory();
         
         $this->_invalidStateExceptionGenerator = function(int $status) {
-            return \PPA\core\exceptions\ExceptionFactory::NotInDomain("Entity status '{$status}' is invalid. Allowed statuses are: '" . implode("', '", $this->_statuses) . "'");
+            return ExceptionFactory::NotInDomain("Entity status '{$status}' is invalid. Allowed statuses are: '" . implode("', '", $this->_statuses) . "'");
         };
     }
     
-    public function doRegisterEntity(event\entityManagement\EntityPersistEvent $event)
+    public function doRegisterEntity(EntityPersistEvent $event)
     {
         // dispatch another event
         // logging?
@@ -95,12 +116,12 @@ final class UnitOfWork implements \Symfony\Component\EventDispatcher\EventSubscr
         // dispatch another event
     }
     
-    public function doRemoveEntity(event\entityManagement\EntityRemoveEvent $event)
+    public function doRemoveEntity(EntityRemoveEvent $event)
     {
         $this->removeEntity($event->getEntity());
     }
     
-    private function registerEntity(entity\Serializable $entity)
+    private function registerEntity(Serializable $entity)
     {
         $status = $this->entityStatesMap->getStatus($entity);
 //        var_dump($status);
@@ -127,7 +148,7 @@ final class UnitOfWork implements \Symfony\Component\EventDispatcher\EventSubscr
         
     }
     
-    private function removeEntity(entity\Serializable $entity)
+    private function removeEntity(Serializable $entity)
     {
         $status = $this->entityStatesMap->getStatus($entity);
         
@@ -147,6 +168,11 @@ final class UnitOfWork implements \Symfony\Component\EventDispatcher\EventSubscr
         
 //        $this->originsMap->addEntity($entity);
         
+    }
+    
+    public function getRepository(EntityManagerInterface $entityManager, TransactionManager $transactionManager, Analysis $metaData): EntityRepository
+    {
+        return $this->repositoryFactory->createRepository($metaData->getRepositoryClass(), $entityManager, $transactionManager, $this->identityMap, $this->entityStatesMap, $metaData);
     }
 
 }

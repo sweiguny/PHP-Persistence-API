@@ -2,7 +2,6 @@
 
 namespace PPA\orm;
 
-use PDO;
 use PPA\core\EventDispatcher;
 use PPA\core\exceptions\runtime\db\TransactionException;
 use PPA\dbal\ConnectionInterface;
@@ -17,12 +16,6 @@ class TransactionManager
      * @var ConnectionInterface
      */
     private $connection;
-    
-    /**
-     *
-     * @var PDO
-     */
-    private $pdo;
 
     /**
      *
@@ -33,7 +26,6 @@ class TransactionManager
     public function __construct(ConnectionInterface $connection, EventDispatcher $eventDispatcher)
     {
         $this->connection      = $connection;
-        $this->pdo             = $connection->getPdo();
         $this->eventDispatcher = $eventDispatcher;
     }
     
@@ -46,8 +38,7 @@ class TransactionManager
         
         $this->eventDispatcher->dispatch(TransactionBeginEvent::NAME, new TransactionBeginEvent());
         
-//        $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
-        $this->pdo->beginTransaction();
+        $this->connection->begin();
     }
 
     public function commit(): void
@@ -59,8 +50,7 @@ class TransactionManager
         
         $this->eventDispatcher->dispatch(TransactionCommitEvent::NAME, new TransactionCommitEvent());
         
-        $this->pdo->commit();
-//        $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
+        $this->connection->commit();
     }
 
     public function rollback(): void
@@ -72,13 +62,17 @@ class TransactionManager
         
         $this->eventDispatcher->dispatch(TransactionRollbackEvent::NAME, new TransactionRollbackEvent());
         
-        $this->pdo->rollBack();
-//        $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
+        $this->connection->rollBack();
     }
+    
+//    public function executeSql(string $query, array $parameters): \PPA\dbal\query\ResultSet
+//    {
+////        $this->connection->
+//    }
 
     public function inTransaction(): bool
     {
-        return (bool) $this->pdo->inTransaction();
+        return $this->connection->inTransaction();
     }
     
     public function getConnection(): ConnectionInterface

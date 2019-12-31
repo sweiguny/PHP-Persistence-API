@@ -11,10 +11,10 @@ use PPA\dbal\Connection;
 use PPA\dbal\query\builder\AST\catalogObjects\_Field;
 use PPA\dbal\query\builder\AST\expressions\UnnamedParameter;
 use PPA\dbal\query\builder\QueryBuilder;
-use PPA\dbal\TransactionManager;
 use PPA\orm\Analysis;
 use PPA\orm\EntityAnalyser;
 use PPA\orm\EntityProperty;
+use PPA\orm\TransactionManager;
 use const PPA_TEST_BOOTSTRAP_PATH;
 
 class FixtureSetup

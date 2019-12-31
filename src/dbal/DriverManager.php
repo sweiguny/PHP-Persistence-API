@@ -9,6 +9,7 @@ use PPA\dbal\drivers\AbstractDriver;
 
 class DriverManager
 {
+    # Please check './concrete/README.md' for a guidance how to add new drivers.
     const PGSQL = "pgsql";
     const MYSQL = "mysql";
     

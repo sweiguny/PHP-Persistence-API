@@ -27,7 +27,7 @@ class EntityStatesMap
     {
         $this->analyser = $analyser;
         
-        $this->map = new SplObjectStorage(); // Be carful on interations
+        $this->map = new SplObjectStorage(); // Be careful on interations
 //        $this->map->at
     }
     

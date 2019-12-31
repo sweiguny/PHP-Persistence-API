@@ -8,7 +8,7 @@ use PPA\dbal\DriverManager;
 use const PPA_TEST_CONFIG_PATH;
 
 /**
- * Dynamically creates 
+ * Dynamically creates a phpunit config file for testing PPA.
  */
 class DynamicConfig
 {

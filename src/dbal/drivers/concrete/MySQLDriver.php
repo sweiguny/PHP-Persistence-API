@@ -2,6 +2,7 @@
 
 namespace PPA\dbal\drivers\concrete;
 
+use PDO;
 use PPA\dbal\drivers\AbstractDriver;
 
 class MySQLDriver extends AbstractDriver
@@ -14,7 +15,9 @@ class MySQLDriver extends AbstractDriver
 
     public function getDefaultOptions(): array
     {
-        return [];
+        return [
+            PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => false
+        ];
     }
 
     public function getDefaultPort(): int

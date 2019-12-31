@@ -2,6 +2,7 @@
 
 namespace PPA\tests\dbal\drivers;
 
+use PDO;
 use PPA\dbal\drivers\AbstractDriver;
 use PPA\dbal\drivers\concrete\MySQLDriver;
 use PPA\tests\bootstrap\AbstractDriverTestCase;
@@ -28,7 +29,9 @@ class MySQLDriverTest extends AbstractDriverTestCase
      */
     public function getDefaultOptions(): array
     {
-        return [];
+        return [
+            PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => false
+        ];
     }
 
     /**

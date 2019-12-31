@@ -5,6 +5,7 @@ namespace PPA\dbal;
 use LogicException;
 use PDO;
 use PDOException;
+use PDOStatement;
 use PPA\core\exceptions\ExceptionFactory;
 use PPA\dbal\drivers\AbstractDriver;
 use PPA\dbal\event\ConnectionEvent;
@@ -156,7 +157,45 @@ class Connection implements ConnectionInterface
     {
         return $this->port;
     }
-    
+
+    public function begin(): void
+    {
+        $this->getPdo()->beginTransaction();
+    }
+
+    public function commit(): void
+    {
+        $this->getPdo()->commit();
+    }
+
+    public function query(string $query, array $parameters): PDOStatement
+    {
+        $statement = $this->getPdo()->prepare($query);
+        $resultSet = $statement->execute($parameters);
+//        $statement->
+        
+        return $statement;
+    }
+
+    public function prepare(string $query, array $parameters): PDOStatement
+    {
+        $statement = $this->getPdo()->prepare($query);
+        $resultSet = $statement->execute($parameters);
+//        $statement->
+        
+        return $statement;
+    }
+
+    public function inTransaction(): bool
+    {
+        return (bool) $this->getPdo()->inTransaction();
+    }
+
+    public function rollback(): void
+    {
+        $this->getPdo()->rollBack();
+    }
+
 }
 
 ?>

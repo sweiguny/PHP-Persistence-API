@@ -4,13 +4,18 @@ namespace PPA\tests\orm;
 
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
+use PDO;
+use PDOStatement;
 use PPA\core\EventDispatcher;
 use PPA\core\exceptions\logic\DomainException;
+use PPA\dbal\Connection;
+use PPA\dbal\ConnectionInterface;
 use PPA\orm\EntityAnalyser;
 use PPA\orm\EntityManager;
 use PPA\orm\maps\EntityStatesMap;
 use PPA\orm\maps\IdentityMap;
 use PPA\orm\maps\OriginsMap;
+use PPA\orm\TransactionManager;
 use PPA\orm\UnitOfWork;
 use PPA\tests\bootstrap\entity\Customer;
 use PPA\tests\bootstrap\entity\em\Entity1;
@@ -34,14 +39,17 @@ class EntityManagerTest extends MockeryTestCase
     {
         parent::setUpBeforeClass();
         
-        $eventDispatcher = new EventDispatcher();
-        $analyser        = new EntityAnalyser();
-        $originsMap      = new OriginsMap();
-        $identityMap     = new IdentityMap($analyser);
+        
+        
+        $eventDispatcher    = new EventDispatcher();
+        $analyser           = new EntityAnalyser();
+        $originsMap         = new OriginsMap();
+        $identityMap        = new IdentityMap($analyser);
+        $transactionManager = new TransactionManager(self::getConnectionMock(), $eventDispatcher);
         
         self::$unitOfWork = new UnitOfWork($eventDispatcher, $analyser, $originsMap, $identityMap);
         
-        self::$entityManager = new EntityManager($eventDispatcher, self::$unitOfWork, $analyser);
+        self::$entityManager = new EntityManager($eventDispatcher, $transactionManager, self::$unitOfWork, $analyser);
     }
     
     public static function tearDownAfterClass(): void
@@ -49,6 +57,27 @@ class EntityManagerTest extends MockeryTestCase
         parent::tearDownAfterClass();
     }
     
+    private static function getConnectionMock(): ConnectionInterface
+    {
+        $pdoStatementMock = \Mockery::mock(PDOStatement::class);
+        $pdoStatementMock->shouldReceive("execute"
+                , "fetchObject"
+                );
+        
+        
+        $pdoMock = \Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive("prepare")->andReturn($pdoStatementMock);
+//        $pdoMock->shouldReceive("prepare");
+        $pdoMock->shouldReceive("query");
+        $pdoMock->shouldReceive("execute");
+        
+        $connectionMock = \Mockery::mock(Connection::class);
+        $connectionMock->shouldReceive("connect");
+        $connectionMock->shouldReceive("getPdo")->andReturn($pdoMock);
+        
+        return $connectionMock;
+    }
+
 //    protected function setUp(): void
 //    {
 //        parent::setUp();
@@ -108,7 +137,7 @@ class EntityManagerTest extends MockeryTestCase
             $property->setValue(self::$unitOfWork, $entityStatesMapOrig);
         }
 
-        $this->assertTrue($exceptionThrown, "Expected to throw a " . DomainException::class . ".");
+        $this->assertTrue($exceptionThrown, "Expected to throw a '" . DomainException::class . "'.");
     }
     
     
