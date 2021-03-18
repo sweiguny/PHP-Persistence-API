@@ -175,6 +175,15 @@ abstract class DatabaseIntegrationTestCase extends DatabaseTestCase
         
         $this->assertEquals($maxId, $executions);
     }
+    
+    public function testSystemIntegration()
+    {
+        $x = new \PPA\tests\orm\EntityManagerTest();
+        $y = $x->run();
+        
+        print_r($y);
+        echo "done?";
+    }
 }
 
 ?>

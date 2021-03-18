@@ -85,10 +85,12 @@ class EntityRepository
         {
             $qb = $this->entityManager->retrieveQuerybuilder();
             $qb->select()->from(Table($table))->where()->criteria(Equals(Field($field), Parameter()));
+//            echo $qb->sql();
             
             $statement = $this->entityManager->createPreparedStatement($qb->sql());
             $result    = $statement->execute([$primary])->getSingleResult($this->metaData->getClassname());
             var_dump($result);
+            
             if ($result != null)
             {
                 $this->primaryKeyHashMap[$pKey] = spl_object_hash($result);

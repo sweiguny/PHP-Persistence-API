@@ -142,12 +142,12 @@ class EntityManagerTest extends MockeryTestCase
     
     
     
-    public function testPersistingNewEntity()
-    {
-        $entity = new Entity1(1);
-        
-        self::$entityManager->persist($entity);
-    }
+//    public function testPersistingNewEntity()
+//    {
+//        $entity = new Entity1(1);
+//        
+//        self::$entityManager->persist($entity);
+//    }
     
     public function testRetrieveEntityFromIdentityMap()
     {
@@ -157,19 +157,21 @@ class EntityManagerTest extends MockeryTestCase
         // there should be no SQL statement, but a request from identitymap
         // 
         
-        self::$entityManager->findByPrimary(Entity1::class, [1]);
+        $entity = self::$entityManager->findByPrimary(Entity1::class, [1]);
+        print_r($entity);
+        
         self::$entityManager->findByPrimary(Customer::class, [1]);
     }
     
-    public function testTransactionalScope()
-    {
-        // retrieve Entity from Repo
-        // modify entity
-        // begin transaction
-        // another modification
-        // rollback
-        // second modification should be rolled back in originsmap
-    }
+//    public function testTransactionalScope()
+//    {
+//        // retrieve Entity from Repo
+//        // modify entity
+//        // begin transaction
+//        // another modification
+//        // rollback
+//        // second modification should be rolled back in originsmap
+//    }
     
     
 }
